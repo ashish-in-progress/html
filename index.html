@@ -1,482 +1,391 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Your 2,000 INR Portfolio | Allocation, Picks, What‑If & Risk</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" />
+  <title>Your Portfolio Overview – Allocation, Stocks, MFs, Bonds, Risk & What‑If</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <style>
     :root {
-      --bg: #0f1222;
-      --card: #161a2f;
-      --card-2: #1b2040;
-      --text: #e7e9f1;
-      --muted: #aab0c5;
-      --accent: #6ea8ff;
-      --accent-2: #ffad66;
-      --good: #54a24b;
-      --bad: #e45756;
-      --warn: #f2b01e;
-      --blue: #4c78a8;
-      --shadow: 0 10px 30px rgba(0,0,0,0.35);
-      --radius: 14px;
+      --bg: #0f172a;
+      --card: #121a32;
+      --muted: #94a3b8;
+      --text: #e2e8f0;
+      --accent: #60a5fa;
+      --accent-2: #34d399;
+      --warn: #f59e0b;
+      --danger: #f43f5e;
+      --border: #1f2a44;
+      --chip: #1e293b;
     }
     * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background: radial-gradient(1200px 600px at 10% -10%, #1f2350 0%, #0f1222 40%) fixed;
-      color: var(--text);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Apple Color Emoji","Segoe UI Emoji";
-    }
-    a { color: var(--accent); text-decoration: none; }
+    html, body { margin: 0; background: var(--bg); color: var(--text); font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji"; }
+    a { color: #93c5fd; text-decoration: none; }
     a:hover { text-decoration: underline; }
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 32px 20px 60px;
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 20px; }
+    header {
+      display: grid; gap: 12px; padding: 16px 20px; border: 1px solid var(--border);
+      background: linear-gradient(180deg, #0f172a 0%, #0f172a 40%, #0d1428 100%);
+      border-radius: 14px;
     }
-    header.hero {
-      display: grid;
-      gap: 14px;
-      margin-bottom: 24px;
-    }
-    header .title {
-      font-size: 26px;
-      font-weight: 800;
-      letter-spacing: 0.2px;
-    }
-    header .subtitle {
-      font-size: 14px;
-      color: var(--muted);
+    .title { display:flex; align-items:center; gap:10px; flex-wrap: wrap; }
+    .title h1 { margin:0; font-weight: 700; font-size: 22px; letter-spacing: .3px; }
+    .chips { display:flex; gap:8px; flex-wrap: wrap; }
+    .chip {
+      background: var(--chip); color: var(--muted); border: 1px solid var(--border);
+      padding: 6px 10px; border-radius: 999px; font-size: 12px;
     }
     .grid {
-      display: grid;
-      gap: 18px;
-    }
-    @media (min-width: 900px) {
-      .grid.cols-3 { grid-template-columns: 1.2fr 1fr 1fr; }
-      .grid.cols-2 { grid-template-columns: 1.1fr 1fr; }
+      display: grid; gap: 16px;
+      grid-template-columns: repeat(12, 1fr);
+      margin-top: 16px;
     }
     .card {
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)), var(--card);
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 18px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
     }
-    .card h3 {
-      margin: 0 0 12px 0;
-      font-size: 16px;
-      letter-spacing: 0.3px;
+    .card h2 { margin: 0 0 12px 0; font-size: 18px; }
+    .muted { color: var(--muted); font-size: 13px; }
+    .kpi { display: flex; gap: 12px; flex-wrap: wrap; }
+    .kpi .box {
+      flex: 1 1 180px;
+      background: #0c1327; border: 1px solid var(--border); border-radius: 12px; padding: 12px;
     }
-    .tag {
-      display: inline-block;
-      font-size: 12px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.1);
-      color: var(--muted);
-      background: rgba(255,255,255,0.03);
-      margin-right: 8px;
+    .box .label { font-size: 12px; color: var(--muted); }
+    .box .val { font-size: 18px; margin-top: 4px; }
+    .val .pos { color: var(--accent-2); }
+    .val .neg { color: var(--danger); }
+    .sec { grid-column: span 12; }
+    .half { grid-column: span 6; }
+    .third { grid-column: span 4; }
+    @media (max-width: 980px) {
+      .half { grid-column: span 12; }
+      .third { grid-column: span 12; }
     }
-    .kpi {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 12px;
-      border-radius: 10px;
-      background: var(--card-2);
-      border: 1px solid rgba(255,255,255,0.06);
-      margin-bottom: 10px;
-      gap: 8px;
-    }
-    .kpi .label { color: var(--muted); font-size: 12px; }
-    .kpi .value { font-weight: 700; font-size: 14px; }
-    .flex { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
-    .pill {
-      padding: 6px 12px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 999px;
-      color: var(--muted);
-      font-size: 12px;
-    }
-    .alloc-row {
-      display: grid;
-      grid-template-columns: 1fr auto auto;
-      gap: 10px;
-      padding: 10px 0;
-      border-bottom: 1px dashed rgba(255,255,255,0.08);
-    }
-    .alloc-row:last-child { border-bottom: none; }
-    .alloc-row .name { color: var(--text); }
-    .alloc-row .amt, .alloc-row .pct { color: var(--muted); font-variant-numeric: tabular-nums; }
-    .progress {
-      height: 8px;
-      background: rgba(255,255,255,0.08);
-      border-radius: 999px;
-      overflow: hidden;
-      margin: 6px 0 2px;
-    }
-    .progress > span {
-      display: block;
-      height: 100%;
-      border-radius: 999px;
-      background: linear-gradient(90deg, var(--blue), var(--accent));
-    }
-    .table {
-      width: 100%;
-      border-collapse: collapse;
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td {
+      border-bottom: 1px solid var(--border);
+      padding: 10px 8px; text-align: left; vertical-align: middle;
       font-size: 14px;
     }
-    .table th, .table td {
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      padding: 10px 8px;
-      vertical-align: top;
-    }
-    .table th { color: var(--muted); font-weight: 600; text-align: left; }
-    .chg-pos { color: var(--good); font-weight: 600; }
-    .chg-neg { color: var(--bad); font-weight: 600; }
-    .stock-card {
-      display: grid;
-      gap: 10px;
-      grid-template-columns: 140px 1fr;
-      align-items: center;
-    }
-    .stock-card img {
-      width: 100%;
-      border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.08);
-    }
-    .hint {
-      color: var(--muted);
-      font-size: 12px;
-      margin-top: 8px;
-    }
-    .chart {
-      width: 100%;
-      border-radius: 12px;
-      background: #0f1222;
-      border: 1px solid rgba(255,255,255,0.08);
-    }
-    .badge-good { color: var(--good); }
-    .badge-warn { color: var(--warn); }
-    .badge-bad  { color: var(--bad); }
-    .risk-meter {
-      width: 100%;
-      height: 12px;
-      border-radius: 999px;
-      overflow: hidden;
-      background: linear-gradient(90deg, #2e7d32, #f2b01e 45%, #e45756 80%);
-      border: 1px solid rgba(255,255,255,0.12);
-      margin: 6px 0 4px;
-      position: relative;
-    }
-    .risk-pointer {
-      position: absolute;
-      top: -6px;
-      width: 2px;
-      height: 24px;
-      background: #fff;
-      box-shadow: 0 0 0 2px rgba(255,255,255,0.25);
-      left: 62%; /* Adjust pointer along meter (0–100%) */
-    }
-    .footnote {
-      color: var(--muted);
-      font-size: 11px;
-      line-height: 1.5;
-    }
-    .btn {
+    thead th { color: #c7d2fe; font-weight: 600; position: sticky; top: 0; background: #0f172a; }
+    tbody tr:hover { background: #0c1327; }
+    .badge {
+      padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 600;
       display: inline-block;
-      background: linear-gradient(90deg, var(--blue), var(--accent));
-      color: white;
-      padding: 10px 14px;
-      border-radius: 10px;
-      border: none;
-      cursor: pointer;
-      font-weight: 700;
-      letter-spacing: 0.3px;
     }
-    .btn.secondary {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.12);
-      color: var(--text);
+    .up { background: rgba(34,197,94,.15); color: #34d399; border: 1px solid rgba(34,197,94,.3); }
+    .down { background: rgba(244,63,94,.15); color: #f43f5e; border: 1px solid rgba(244,63,94,.3); }
+    .img-grid { display: grid; grid-template-columns: repeat(5, minmax(120px, 1fr)); gap: 10px; }
+    @media (max-width: 900px) { .img-grid { grid-template-columns: repeat(2, 1fr); } }
+    .thumb {
+      background: #0b1120; border: 1px solid var(--border); border-radius: 10px; padding: 8px; display: grid; gap: 8px;
     }
-    .stack-vert { display: grid; gap: 10px; }
-    .row { display: flex; gap: 10px; flex-wrap: wrap; }
-    .spaced { justify-content: space-between; align-items: center; }
-    .muted { color: var(--muted); }
-    .em { font-weight: 700; color: #fff; }
+    .thumb img { width: 100%; height: auto; display: block; border-radius: 6px; }
+    .legend { display:flex; gap:10px; flex-wrap: wrap; margin-top: 8px; }
+    .legend .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+    .list { display: grid; gap: 6px; }
+    .list-item {
+      display: flex; justify-content: space-between; align-items: center; gap: 10px;
+      background: #0c1327; border: 1px solid var(--border); border-radius: 10px; padding: 10px;
+      font-size: 14px;
+    }
+    .list-item span.small { color: var(--muted); font-size: 12px; }
+    .warn { color: var(--warn); }
+    footer { color: var(--muted); font-size: 12px; margin-top: 18px; }
+    .subtle { color: var(--muted); }
+    .pill {
+      display:inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; border: 1px solid var(--border);
+      background: #101936;
+    }
+    .section-note { margin: 8px 0 0; font-size: 12px; color: var(--muted); }
+    .inline-note { font-size: 12px; color: var(--muted); }
+    .rebal { margin-top: 8px; font-size: 13px; color:#cbd5e1; }
+    .cta { display:flex; gap:8px; flex-wrap:wrap; margin-top: 10px; }
+    .btn {
+      background: #1e3a8a; border: 1px solid #2947a9; color: #e2e8f0; padding: 8px 12px; border-radius: 8px;
+      font-size: 13px; text-decoration: none; display:inline-block;
+    }
+    .btn:hover { background: #2543a0; }
+    .divider { height: 1px; background: var(--border); margin: 12px 0; }
+    .note-box { background: #0c1327; border: 1px solid var(--border); border-radius: 10px; padding: 10px; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header class="hero">
-      <div class="title">Your Portfolio Plan (India)</div>
-      <div class="subtitle">Assumed total = ₹ 2,000 based on your inputs: Stocks ₹ 800 (40%), Mutual Funds ₹ 1,000 (50%), Crypto ₹ 100 (5%), FD/RBC ₹ 100 (5%). Prices/links in “Stocks” are user-provided.</div>
-      <div class="flex">
-        <span class="tag">Diversified</span>
-        <span class="tag">Low-cost core + cyclical tilt</span>
-        <span class="tag">Crash What‑If Included</span>
+  <div class="wrap">
+    <header>
+      <div class="title">
+        <h1>Personal Portfolio Dashboard</h1>
+        <span class="chip">As provided: ₹5,000 total</span>
+        <span class="chip">30% Stocks • 60% Mutual Funds • 10% FD/Bonds</span>
+      </div>
+      <div class="chips">
+        <span class="chip">Momentum equity picks (1M & 1Y)</span>
+        <span class="chip">MF core: index + flexi-cap + debt</span>
+        <span class="chip">Risk & What‑if included</span>
       </div>
     </header>
 
-    <section class="grid cols-3">
-      <div class="card">
-        <h3>Allocation Overview</h3>
-        <div class="alloc-row">
-          <div class="name">Stocks</div>
-          <div class="amt">₹ 800</div>
-          <div class="pct">40%</div>
-          <div class="progress" style="grid-column: 1 / -1;">
-            <span style="width: 40%"></span>
+    <section class="grid">
+      <div class="card sec">
+        <h2>Allocation Overview</h2>
+        <div class="kpi">
+          <div class="box">
+            <div class="label">Total Portfolio</div>
+            <div class="val">₹5,000</div>
+          </div>
+          <div class="box">
+            <div class="label">Equity Exposure (approx)</div>
+            <div class="val">₹3,900 <span class="pill">78%</span></div>
+          </div>
+          <div class="box">
+            <div class="label">Fixed Income (MF Debt + FD/Bonds)</div>
+            <div class="val">₹1,100 <span class="pill">22%</span></div>
           </div>
         </div>
-        <div class="alloc-row">
-          <div class="name">Mutual Funds</div>
-          <div class="amt">₹ 1,000</div>
-          <div class="pct">50%</div>
-          <div class="progress" style="grid-column: 1 / -1;">
-            <span style="width: 50%; background: linear-gradient(90deg, #f58518, #ffad66)"></span>
+        <div class="divider"></div>
+        <div class="grid">
+          <div class="half card" style="background:#0c1327">
+            <h2 style="margin-bottom:6px">Asset Split</h2>
+            <div class="inline-note">Your stated allocation</div>
+            <img
+              alt="Asset allocation doughnut"
+              src="https://quickchart.io/chart?c=%7B%22type%22%3A%22doughnut%22%2C%22data%22%3A%7B%22labels%22%3A%5B%22Stocks%22%2C%22Mutual%20Funds%22%2C%22FD%2FBonds%22%5D%2C%22datasets%22%3A%5B%7B%22data%22%3A%5B1500%2C3000%2C500%5D%2C%22backgroundColor%22%3A%5B%22%234e79a7%22%2C%22%2359a14f%22%2C%22%23f28e2b%22%5D%7D%5D%7D%2C%22options%22%3A%7B%22plugins%22%3A%7B%22legend%22%3A%7B%22position%22%3A%22bottom%22%7D%2C%22title%22%3A%7B%22display%22%3Atrue%2C%22text%22%3A%22Asset%20Allocation%20%28%E2%82%B95%2C000%29%22%7D%7D%7D%7D"
+              style="width:100%;max-width:520px"
+            />
+            <div class="legend">
+              <span><span class="dot" style="background:#4e79a7"></span>Stocks ₹1,500</span>
+              <span><span class="dot" style="background:#59a14f"></span>Mutual Funds ₹3,000</span>
+              <span><span class="dot" style="background:#f28e2b"></span>FD/Bonds ₹500</span>
+            </div>
+          </div>
+          <div class="half card" style="background:#0c1327">
+            <h2 style="margin-bottom:6px">Stocks: Suggested Split of ₹1,500</h2>
+            <img
+              alt="Stock allocation bar"
+              src="https://quickchart.io/chart?c=%7B%22type%22%3A%22bar%22%2C%22data%22%3A%7B%22labels%22%3A%5B%22EICHERMOT%22%2C%22BAJFINANCE%22%2C%22MARUTI%22%2C%22SBIN%22%2C%22JSWSTEEL%22%5D%2C%22datasets%22%3A%5B%7B%22label%22%3A%22%E2%82%B9%20Allocation%22%2C%22data%22%3A%5B375%2C375%2C300%2C225%2C225%5D%2C%22backgroundColor%22%3A%22%234e79a7%22%7D%5D%7D%2C%22options%22%3A%7B%22indexAxis%22%3A%22y%22%2C%22plugins%22%3A%7B%22legend%22%3A%7B%22display%22%3Afalse%7D%2C%22title%22%3A%7B%22display%22%3Atrue%2C%22text%22%3A%22Suggested%20Split%20of%20%E2%82%B91%2C500%20in%20Stocks%22%7D%7D%7D%7D"
+              style="width:100%;max-width:520px"
+            />
+            <div class="list" style="margin-top:6px">
+              <div class="list-item"><strong>EICHERMOT</strong> <span>₹375</span></div>
+              <div class="list-item"><strong>BAJFINANCE</strong> <span>₹375</span></div>
+              <div class="list-item"><strong>MARUTI</strong> <span>₹300</span></div>
+              <div class="list-item"><strong>SBIN</strong> <span>₹225</span></div>
+              <div class="list-item"><strong>JSWSTEEL</strong> <span>₹225</span></div>
+            </div>
+            <div class="section-note">Rationale: diversified momentum leaders across premium autos, consumer finance, passenger vehicles, PSU banking, and steel.</div>
           </div>
         </div>
-        <div class="alloc-row">
-          <div class="name">Crypto (Stablecoin‑tilt)</div>
-          <div class="amt">₹ 100</div>
-          <div class="pct">5%</div>
-          <div class="progress" style="grid-column: 1 / -1;">
-            <span style="width: 5%; background: linear-gradient(90deg, #54a24b, #7cc37a)"></span>
+      </div>
+
+      <div class="card sec">
+        <h2>Stocks Allocated – Recommended Indian Equity Picks</h2>
+        <div class="muted">Sorted by solid 1-month and 1-year momentum. Prices/returns per provided dataset snapshot.</div>
+        <div class="table-wrap" style="margin-top:10px">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Stock</th>
+                <th>Current Price (₹)</th>
+                <th>1M Return</th>
+                <th>1Y Return</th>
+                <th>NSE Buy</th>
+                <th style="min-width:220px">Chart</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>Eicher Motors (EICHERMOT)</td>
+                <td>7,021.50</td>
+                <td><span class="badge up">+11.68%</span></td>
+                <td><span class="badge up">+41.35%</span></td>
+                <td><a class="btn" href="https://www.nseindia.com/get-quotes/equity?symbol=EICHERMOT" target="_blank" rel="noopener">NSE</a></td>
+                <td>
+                  <img alt="EICHERMOT chart" src="https://r2.chart-img.com/20251015/tradingview/advanced-chart/b0a052ec-a198-40a0-aaed-3fcda2a1766a.png" style="width:240px;max-width:100%;border-radius:8px" />
+                </td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>Bajaj Finance (BAJFINANCE)</td>
+                <td>987.70</td>
+                <td><span class="badge up">+12.08%</span></td>
+                <td><span class="badge up">+30.03%</span></td>
+                <td><a class="btn" href="https://www.nseindia.com/get-quotes/equity?symbol=BAJFINANCE" target="_blank" rel="noopener">NSE</a></td>
+                <td>
+                  <img alt="BAJFINANCE chart" src="https://r2.chart-img.com/20251015/tradingview/advanced-chart/4d86fb65-a726-4878-a462-e47b8b2c8c68.png" style="width:240px;max-width:100%;border-radius:8px" />
+                </td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>Maruti Suzuki (MARUTI)</td>
+                <td>15,965.00</td>
+                <td><span class="badge up">+7.48%</span></td>
+                <td><span class="badge up">+22.17%</span></td>
+                <td><a class="btn" href="https://www.nseindia.com/get-quotes/equity?symbol=MARUTI" target="_blank" rel="noopener">NSE</a></td>
+                <td>
+                  <img alt="MARUTI chart" src="https://r2.chart-img.com/20251015/tradingview/advanced-chart/a27f1a63-07ba-4047-9e68-f043871f2135.png" style="width:240px;max-width:100%;border-radius:8px" />
+                </td>
+              </tr>
+              <tr>
+                <td>4</td>
+                <td>State Bank of India (SBIN)</td>
+                <td>864.10</td>
+                <td><span class="badge up">+8.71%</span></td>
+                <td><span class="badge up">+13.45%</span></td>
+                <td><a class="btn" href="https://www.nseindia.com/get-quotes/equity?symbol=SBIN" target="_blank" rel="noopener">NSE</a></td>
+                <td>
+                  <img alt="SBIN chart" src="https://r2.chart-img.com/20251015/tradingview/advanced-chart/5e52c33c-6217-4c93-a82e-fe65306d0314.png" style="width:240px;max-width:100%;border-radius:8px" />
+                </td>
+              </tr>
+              <tr>
+                <td>5</td>
+                <td>JSW Steel (JSWSTEEL)</td>
+                <td>1,146.10</td>
+                <td><span class="badge up">+10.75%</span></td>
+                <td><span class="badge up">+11.63%</span></td>
+                <td><a class="btn" href="https://www.nseindia.com/get-quotes/equity?symbol=JSWSTEEL" target="_blank" rel="noopener">NSE</a></td>
+                <td>
+                  <img alt="JSWSTEEL chart" src="https://r2.chart-img.com/20251015/tradingview/advanced-chart/dbbebe12-b9a4-4cb3-92fb-167624411cbe.png" style="width:240px;max-width:100%;border-radius:8px" />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="rebal">Tip: Review quarterly and rebalance if any stock drifts ±5% from intended weight.</div>
+      </div>
+
+      <div class="card half">
+        <h2>Mutual Funds – Suggested Split of ₹3,000</h2>
+        <div class="muted">Core: broad market + flexible equity + a debt stabilizer</div>
+        <div class="list" style="margin-top:8px">
+          <div class="list-item">
+            <div><strong>Nifty 50 Index Fund (Equity)</strong><div class="subtle">Low-cost broad market exposure</div></div>
+            <div>₹1,200</div>
+          </div>
+          <div class="list-item">
+            <div><strong>Flexi Cap Fund (Equity)</strong><div class="subtle">Active across market caps</div></div>
+            <div>₹900</div>
+          </div>
+          <div class="list-item">
+            <div><strong>Midcap Index Fund (Equity)</strong><div class="subtle">Momentum & growth tilt</div></div>
+            <div>₹300</div>
+          </div>
+          <div class="list-item">
+            <div><strong>Short Duration Debt Fund</strong><div class="subtle">Stability & lower duration risk</div></div>
+            <div>₹600</div>
           </div>
         </div>
-        <div class="alloc-row">
-          <div class="name">FD / RBI Bonds</div>
-          <div class="amt">₹ 100</div>
-          <div class="pct">5%</div>
-          <div class="progress" style="grid-column: 1 / -1;">
-            <span style="width: 5%; background: linear-gradient(90deg, #e45756, #ff7b7b)"></span>
+        <img
+          alt="MF split doughnut"
+          style="width:100%;max-width:520px;margin-top:10px"
+          src="https://quickchart.io/chart?c=%7B%22type%22%3A%22doughnut%22%2C%22data%22%3A%7B%22labels%22%3A%5B%22Nifty%2050%20Index%22%2C%22Flexi%20Cap%22%2C%22Midcap%20Index%22%2C%22Short%20Duration%20Debt%22%5D%2C%22datasets%22%3A%5B%7B%22data%22%3A%5B1200%2C900%2C300%2C600%5D%2C%22backgroundColor%22%3A%5B%22%2338bdf8%22%2C%22%2334d399%22%2C%22%23f472b6%22%2C%22%23f59e0b%22%5D%7D%5D%7D%2C%22options%22%3A%7B%22plugins%22%3A%7B%22legend%22%3A%7B%22position%22%3A%22bottom%22%7D%2C%22title%22%3A%7B%22display%22%3Atrue%2C%22text%22%3A%22Suggested%20Split%20%28%E2%82%B93%2C000%29%22%7D%7D%7D%7D"
+        />
+        <div class="section-note">Illustrative scheme types only; pick specific AMCs with low expense ratios and consistent track records.</div>
+      </div>
+
+      <div class="card half">
+        <h2>Fixed Deposits / Bonds – ₹500</h2>
+        <div class="list">
+          <div class="list-item">
+            <div><strong>Bank Fixed Deposit</strong><div class="subtle">Short tenor for liquidity buffer</div></div>
+            <div>₹500</div>
           </div>
         </div>
-      </div>
-
-      <div class="card">
-        <h3>Allocation Pie</h3>
-        <img class="chart" alt="Portfolio Allocation Pie" src="https://quickchart.io/chart?width=500&height=300&backgroundColor=white&c={%22type%22:%22doughnut%22,%22data%22:{%22labels%22:[%22Stocks%22,%22Mutual%20Funds%22,%22Crypto%22,%22FD/RBC%22],%22datasets%22:[{%22data%22:[800,1000,100,100],%22backgroundColor%22:[%22%234c78a8%22,%22%23f58518%22,%22%2354a24b%22,%22%23e45756%22]}]},%22options%22:{%22plugins%22:{%22legend%22:{%22position%22:%22bottom%22},%22title%22:{%22display%22:true,%22text%22:%22Portfolio%20Allocation%20(%E2%82%B92%2C000)%22}}}" />
-        <div class="hint">Static snapshot based on your target amounts.</div>
-      </div>
-
-      <div class="card">
-        <h3>Quick KPIs</h3>
-        <div class="kpi"><span class="label">Total Budget</span><span class="value">₹ 2,000</span></div>
-        <div class="kpi"><span class="label">Equity Weight</span><span class="value">40%</span></div>
-        <div class="kpi"><span class="label">Defensive Weight (Debt + FD)</span><span class="value">15%</span></div>
-        <div class="kpi"><span class="label">Alt/Stablecoin Sleeve</span><span class="value">5%</span></div>
-        <div class="hint">Mix balances growth drivers with stability and liquidity.</div>
-      </div>
-    </section>
-
-    <section class="card" style="margin-top: 18px;">
-      <h3>Stocks (₹ 800 | 40%)</h3>
-      <div class="hint">Below are the user-provided picks and figures. Consider limit orders and quarterly reviews.</div>
-      <table class="table" style="margin-top: 10px;">
-        <thead>
-          <tr>
-            <th>Stock</th>
-            <th>Details</th>
-            <th>Suggested Split</th>
-            <th>Chart</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>HINDALCO</strong><br><span class="muted">Metals</span></td>
-            <td>
-              <div class="stock-card">
-                <div>
-                  <div class="pill">Price: ₹ 765.95</div>
-                  <div>1M: <span class="chg-pos">+5.97%</span> • 1Y: <span class="chg-pos">+1.58%</span></div>
-                  <div class="hint">Rationale: Aluminium & copper up‑cycle; strong balance‑sheet.</div>
-                  <div class="row" style="margin-top:6px;">
-                    <a href="https://www.nseindia.com/get-quotes/equity?symbol=HINDALCO" target="_blank" class="btn secondary">NSE Page</a>
-                  </div>
-                </div>
-                <img src="https://r2.chart-img.com/20251015/tradingview/advanced-chart/bdcafa9f-a7d3-4db9-8d4f-26b0a0771a8b.png" alt="HINDALCO chart" />
-              </div>
-            </td>
-            <td>₹ 320 (≈ 40%)</td>
-            <td>Shown left</td>
-          </tr>
-          <tr>
-            <td><strong>BPCL</strong><br><span class="muted">Energy</span></td>
-            <td>
-              <div class="stock-card">
-                <div>
-                  <div class="pill">Price: ₹ 339.70</div>
-                  <div>1M: <span class="chg-pos">+7.55%</span> • 1Y: <span class="chg-neg">–5.29%</span></div>
-                  <div class="hint">Rationale: Divestment expectations, robust refining margins, high dividend yield.</div>
-                  <div class="row" style="margin-top:6px;">
-                    <a href="https://www.nseindia.com/get-quotes/equity?symbol=BPCL" target="_blank" class="btn secondary">NSE Page</a>
-                  </div>
-                </div>
-                <img src="https://r2.chart-img.com/20251015/tradingview/advanced-chart/0fad3453-3526-47c2-b5ee-d4d282858278.png" alt="BPCL chart" />
-              </div>
-            </td>
-            <td>₹ 280 (≈ 35%)</td>
-            <td>Shown left</td>
-          </tr>
-          <tr>
-            <td><strong>UPL</strong><br><span class="muted">Agri‑Chem</span></td>
-            <td>
-              <div class="stock-card">
-                <div>
-                  <div class="pill">Price: ₹ 661.00</div>
-                  <div>1M: <span class="chg-neg">–10.39%</span> • 1Y: <span class="chg-pos">+7.36%</span></div>
-                  <div class="hint">Rationale: Global crop‑protection; recent correction offers entry.</div>
-                  <div class="row" style="margin-top:6px;">
-                    <a href="https://www.nseindia.com/get-quotes/equity?symbol=UPL" target="_blank" class="btn secondary">NSE Page</a>
-                  </div>
-                </div>
-                <img src="https://r2.chart-img.com/20251015/tradingview/advanced-chart/383e1734-e4d7-4612-9db3-0ceb4a89673b.png" alt="UPL chart" />
-              </div>
-            </td>
-            <td>₹ 200 (≈ 25%)</td>
-            <td>Shown left</td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="hint">Execution tips: fractional/SIP-in-stocks if needed, use limit orders, review quarterly and switch out laggards underperforming NIFTY 50 by over 15%.</div>
-    </section>
-
-    <section class="grid cols-2" style="margin-top: 18px;">
-      <div class="card">
-        <h3>Mutual Funds (₹ 1,000 | 50%)</h3>
-        <div class="stack-vert">
-          <div class="kpi"><span class="label">Suggested Split (illustrative)</span><span class="value">Core + Stability</span></div>
-          <div class="alloc-row">
-            <div class="name">Large‑cap Index (Nifty 50)</div>
-            <div class="amt">₹ 500</div>
-            <div class="pct">50% of MF</div>
-          </div>
-          <div class="alloc-row">
-            <div class="name">Balanced Advantage / Dynamic Asset Allocation</div>
-            <div class="amt">₹ 300</div>
-            <div class="pct">30% of MF</div>
-          </div>
-          <div class="alloc-row">
-            <div class="name">Short Duration Debt Fund</div>
-            <div class="amt">₹ 200</div>
-            <div class="pct">20% of MF</div>
-          </div>
-        </div>
-        <div class="hint">Why this mix: keep costs low and capture market beta (Index), add smoother ride (Balanced Advantage), and cushion volatility (Short Duration Debt).</div>
-      </div>
-
-      <div class="card">
-        <h3>Crypto (₹ 100 | 5%) — Stablecoin Focus</h3>
-        <ul>
-          <li>Prioritize high‑quality stablecoins: USDC, USDT, DAI (avoid long‑vol like BTC per your constraint).</li>
-          <li>Diversify across 2 issuers (e.g., 60/40) and consider holding via reputable INR on‑ramps or custodial wallets.</li>
-          <li>Risks: de‑peg, exchange/custody risk, regulatory changes. Keep sizing small (as allocated).</li>
-        </ul>
-        <div class="hint">This sleeve is for liquidity and tactical flexibility, not high returns.</div>
-      </div>
-    </section>
-
-    <section class="grid cols-2" style="margin-top: 18px;">
-      <div class="card">
-        <h3>FD / RBI Bonds (₹ 100 | 5%)</h3>
-        <ul>
-          <li>Bank Fixed Deposit (short‑term or laddered) — choose your bank and tenure based on your liquidity needs.</li>
-          <li>RBI Floating Rate Savings Bond (Taxable) — government‑backed option with floating rate linked to benchmarks.</li>
-        </ul>
-        <div class="hint">Use for capital protection and emergency buffer. Confirm latest interest rates with your bank/RBI before investing.</div>
-      </div>
-
-      <div class="card">
-        <h3>Checklist to Execute</h3>
-        <ul>
-          <li>Verify KYC for MF and broker; enable UPI/SIP mandates.</li>
-          <li>Set calendar reminders to review allocation quarterly.</li>
-          <li>Auto‑invest: MF SIP on salary day; keep equity buys as SIP‑style as well.</li>
-          <li>Document your sell rules (e.g., thesis break or sustained underperformance).</li>
-        </ul>
-      </div>
-    </section>
-
-    <section class="card" style="margin-top: 18px;">
-      <h3>What‑If Analysis — Market Crash Scenario</h3>
-      <div class="hint">Illustrative shock assumptions used for this scenario:</div>
-      <ul>
-        <li>Stocks: −25%</li>
-        <li>Nifty 50 Index Fund: −22%</li>
-        <li>Balanced Advantage Fund: −12%</li>
-        <li>Short Duration Debt Fund: −3%</li>
-        <li>Crypto (Stablecoins): −2% (stress de‑peg)</li>
-        <li>FD / RBI Bonds: 0% (capital protected in the crash window)</li>
-      </ul>
-
-      <div class="grid cols-2" style="margin-top: 10px;">
-        <div class="stack-vert">
-          <div class="kpi"><span class="label">Starting Portfolio</span><span class="value">₹ 2,000</span></div>
-          <div class="kpi"><span class="label">After Crash (modeled)</span><span class="value badge-bad">₹ 1,646</span></div>
-          <div class="kpi"><span class="label">Drawdown</span><span class="value badge-bad">−17.7%</span></div>
-          <div class="hint">Diversification cushions the fall versus all‑equity.</div>
-        </div>
-        <div>
-          <img class="chart" alt="Crash scenario chart" src="https://quickchart.io/chart?width=600&height=340&backgroundColor=white&c={%22type%22:%22bar%22,%22data%22:{%22labels%22:[%22Stocks%22,%22Nifty%2050%20Index%20Fund%22,%22Balanced%20Advantage%22,%22Short%20Duration%20Debt%22,%22Crypto%20(Stablecoins)%22,%22FD/RBC%22],%22datasets%22:[{%22label%22:%22Base%20(%E2%82%B9)%22,%22backgroundColor%22:%22%234c78a8%22,%22data%22:[800,500,300,200,100,100]},{%22label%22:%22Crash%20Scenario%20(%E2%82%B9)%22,%22backgroundColor%22:%22%23e45756%22,%22data%22:[600,390,264,194,98,100]}]},%22options%22:{%22plugins%22:{%22legend%22:{%22position%22:%22bottom%22},%22title%22:{%22display%22:true,%22text%22:%22What-if:%20Market%20Crash%20Impact%22}},%22scales%22:{%22y%22:{%22beginAtZero%22:true}}}}" />
-        </div>
-      </div>
-
-      <div class="grid cols-2" style="margin-top: 14px;">
-        <div class="card" style="background: rgba(84,162,75,0.08); border-color: rgba(84,162,75,0.3);">
-          <h3 style="margin-bottom:6px;">Crash‑Resilience Drivers</h3>
-          <ul>
-            <li><span class="badge-good">Debt & FD</span> provide stability and liquidity.</li>
-            <li><span class="badge-good">Balanced Advantage</span> auto‑rebalances towards debt in downtrends.</li>
-            <li><span class="badge-good">Small stablecoin sleeve</span> avoids large crypto beta during risk‑off.</li>
-          </ul>
-        </div>
-        <div class="card" style="background: rgba(228,87,86,0.08); border-color: rgba(228,87,86,0.3);">
-          <h3 style="margin-bottom:6px;">Vulnerabilities</h3>
-          <ul>
-            <li><span class="badge-bad">Cyclical stocks</span> can amplify drawdowns.</li>
-            <li><span class="badge-warn">Stablecoin de‑peg</span> small but non‑zero tail‑risk.</li>
-            <li><span class="badge-warn">Debt funds</span> still carry duration/credit risk (kept short‑duration here).</li>
+        <div class="note-box" style="margin-top:10px">
+          Alternatives (if you prefer market-linked fixed income):
+          <ul style="margin-top:6px">
+            <li>RBI Floating Rate Savings Bonds (Govt. backed)</li>
+            <li>AAA-rated PSU/NBFC Bonds (check YTM, credit rating, and liquidity)</li>
+            <li>Ultra Short Duration Debt Fund (for T+1/T+2 liquidity)</li>
           </ul>
         </div>
       </div>
-    </section>
 
-    <section class="card" style="margin-top: 18px;">
-      <h3>Risk Corner</h3>
-      <div class="row spaced">
-        <div>
-          Overall risk profile of this mix:
-          <div class="risk-meter">
-            <div class="risk-pointer" title="Moderate‑to‑Moderately High risk"></div>
+      <div class="card sec">
+        <h2>What‑If Analysis – 5‑Year Projection (Illustrative)</h2>
+        <div class="muted">Blended assumptions from your split: approx 78% equity and 22% fixed income</div>
+        <div class="list" style="margin-top:6px">
+          <div class="list-item">
+            <div><strong>Bull</strong> <span class="subtle">(equity ~15%, debt ~6%)</span></div>
+            <div>Weighted ≈ 13.0% CAGR</div>
           </div>
-          <div class="muted">Low  ———————————  Moderate  ———————————  High</div>
+          <div class="list-item">
+            <div><strong>Base</strong> <span class="subtle">(equity ~10%, debt ~6%)</span></div>
+            <div>Weighted ≈ 9.1% CAGR</div>
+          </div>
+          <div class="list-item">
+            <div><strong>Crash & Recover</strong> <span class="subtle">Year‑1 equity −25%, debt −2%, then Base</span></div>
+            <div>Year‑1 drawdown ≈ −19.9%</div>
+          </div>
         </div>
-        <div>
-          <button class="btn secondary">Download as PDF</button>
-        </div>
+        <img
+          alt="What-if projection line chart"
+          style="width:100%;max-width:900px;margin-top:10px"
+          src="https://quickchart.io/chart?c=%7B%22type%22%3A%22line%22%2C%22data%22%3A%7B%22labels%22%3A%5B%22Now%22%2C%22Y1%22%2C%22Y2%22%2C%22Y3%22%2C%22Y4%22%2C%22Y5%22%5D%2C%22datasets%22%3A%5B%7B%22label%22%3A%22Bull%22%2C%22data%22%3A%5B5000%2C5650%2C6384.5%2C7214.485%2C8152.367%2C9212.175%5D%2C%22borderColor%22%3A%22%232ca02c%22%2C%22fill%22%3Afalse%2C%22tension%22%3A0.25%7D%2C%7B%22label%22%3A%22Base%22%2C%22data%22%3A%5B5000%2C5455%2C5951.405%2C6492.982%2C7083.843%2C7728.472%5D%2C%22borderColor%22%3A%22%231f77b4%22%2C%22fill%22%3Afalse%2C%22tension%22%3A0.25%7D%2C%7B%22label%22%3A%22Crash%20%26%20Recover%22%2C%22data%22%3A%5B5000%2C4003%2C4367.273%2C4764.695%2C5198.282%2C5671.325%5D%2C%22borderColor%22%3A%22%23d62728%22%2C%22fill%22%3Afalse%2C%22tension%22%3A0.25%7D%5D%7D%2C%22options%22%3A%7B%22plugins%22%3A%7B%22legend%22%3A%7B%22position%22%3A%22bottom%22%7D%2C%22title%22%3A%7B%22display%22%3Atrue%2C%22text%22%3A%225-Year%20What-if%20Projection%20%28Illustrative%29%22%7D%7D%2C%22scales%22%3A%7B%22y%22%3A%7B%22grid%22%3A%7B%22color%22%3A%22rgba%28255%2C255%2C255%2C0.06%29%22%7D%7D%2C%22x%22%3A%7B%22grid%22%3A%7B%22display%22%3Afalse%7D%7D%7D%7D%7D"
+        />
+        <div class="section-note">For illustration only; not predictions or guarantees.</div>
       </div>
-      <div class="grid cols-2" style="margin-top: 12px;">
-        <div>
-          <div class="kpi"><span class="label">Time Horizon (suggested)</span><span class="value">3–5+ years</span></div>
-          <div class="kpi"><span class="label">Rebalance</span><span class="value">Every 6–12 months</span></div>
-          <div class="kpi"><span class="label">Max Equity Drift</span><span class="value">±5%</span></div>
+
+      <div class="card sec">
+        <h2>Risk Corner – Crash Impact Scenarios</h2>
+        <div class="muted">Approximate instantaneous portfolio loss given your mix (Equity ~₹3,900, Debt MF ~₹600, FD/Bonds ~₹500)</div>
+        <div class="kpi" style="margin-top:8px">
+          <div class="box">
+            <div class="label">Mild: Equity −20%, Debt −2%, FD 0%</div>
+            <div class="val"><span class="neg">−₹792</span> <span class="pill">−15.8%</span></div>
+          </div>
+          <div class="box">
+            <div class="label">Base: Equity −30%, Debt −2%, FD 0%</div>
+            <div class="val"><span class="neg">−₹1,182</span> <span class="pill">−23.6%</span></div>
+          </div>
+          <div class="box">
+            <div class="label">Severe: Equity −40%, Debt −2%, FD 0%</div>
+            <div class="val"><span class="neg">−₹1,572</span> <span class="pill">−31.4%</span></div>
+          </div>
         </div>
-        <div>
-          <ul>
-            <li>Keep an emergency fund outside this portfolio (3–6 months expenses).</li>
-            <li>Use SIPs and avoid lump‑sum in volatile phases.</li>
-            <li>Tax‑optimize via index funds and holding periods.</li>
+        <img
+          alt="Crash impact bar chart"
+          style="width:100%;max-width:700px;margin-top:10px"
+          src="https://quickchart.io/chart?c=%7B%22type%22%3A%22bar%22%2C%22data%22%3A%7B%22labels%22%3A%5B%22Mild%20%28-20%25%20Eq%29%22%2C%22Base%20%28-30%25%20Eq%29%22%2C%22Severe%20%28-40%25%20Eq%29%22%5D%2C%22datasets%22%3A%5B%7B%22label%22%3A%22Estimated%20Portfolio%20Loss%20%28%E2%82%B9%29%22%2C%22data%22%3A%5B792%2C1182%2C1572%5D%2C%22backgroundColor%22%3A%5B%22%23f28e2b%22%2C%22%23e15759%22%2C%22%23b07aa1%22%5D%7D%5D%7D%2C%22options%22%3A%7B%22plugins%22%3A%7B%22legend%22%3A%7B%22display%22%3Afalse%7D%2C%22title%22%3A%7B%22display%22%3Atrue%2C%22text%22%3A%22Crash%20Impact%20Estimate%20%28Instantaneous%29%22%7D%7D%2C%22scales%22%3A%7B%22y%22%3A%7B%22grid%22%3A%7B%22color%22%3A%22rgba%28255%2C255%2C255%2C0.06%29%22%7D%7D%7D%7D%7D"
+        />
+        <div class="note-box" style="margin-top:10px">
+          Managing risk:
+          <ul style="margin-top:6px">
+            <li>Maintain 6–12 months of expenses in cash/FDs before adding risk.</li>
+            <li>Use SIPs to average into equity mutual funds through cycles.</li>
+            <li>Rebalance back to target weights annually or when drift exceeds ±5%.</li>
+            <li>For downside protection, consider increasing short-duration debt or adding multi-asset funds.</li>
           </ul>
         </div>
       </div>
-      <div class="footnote" style="margin-top: 8px;">
-        This is an illustrative plan using the amounts and stock data you provided. It is not financial advice. Verify latest fund details, rates, and risk factors before investing.
+
+      <div class="card sec">
+        <h2>Why this Mix</h2>
+        <ul>
+          <li>Equity sleeve targets sectors with visible earnings triggers (premium autos, consumer finance, PVs, PSU banking, steel).</li>
+          <li>Mutual funds provide broad market exposure and professional management.</li>
+          <li>Fixed income adds stability and liquidity for near-term needs.</li>
+        </ul>
+        <div class="rebal">Review the mix quarterly and after major life events; rebalance if weights drift.</div>
+      </div>
+
+      <div class="card sec">
+        <h2>Disclaimers</h2>
+        <ul class="muted">
+          <li>This is an illustrative layout based on your provided allocation and a sample fund split. It is not financial advice.</li>
+          <li>Past performance is not indicative of future results. Returns and charts are examples and not guarantees.</li>
+          <li>Verify live prices/expense ratios before investing. Consider your risk profile and horizon.</li>
+        </ul>
       </div>
     </section>
+
+    <footer>
+      Data references: NSE closing prices and historical performance per your provided snapshot. Images embedded for charts and visuals as requested.
+    </footer>
   </div>
 </body>
 </html>
