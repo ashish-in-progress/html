@@ -4,28 +4,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Investment Portfolio Dashboard</title>
+    <title>Investment Portfolio Overview</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* CSS Variables for Dark Theme */
         :root {
-            --bg: #0f172a; /* Dark Blue-Gray Background */
-            --card: #111827; /* Slightly Lighter Card Background */
-            --text: #e5e7eb; /* Light Gray Text */
-            --muted: #9aa4b2; /* Muted Text/Secondary Information */
-            --accent: #60a5fa; /* Blue Accent Color */
-            --green: #10b981; /* Green for positive values/MF */
-            --yellow: #f59e0b; /* Yellow for crypto/warning */
-            --purple: #a855f7; /* Purple for Gold ETF */
-            --red: #ef4444; /* Red for negative values/FD */
-            --blue: #2563eb; /* Strong Blue for Stocks */
-            --radius: 12px; /* Border Radius for Cards */
-            --shadow: 0 10px 24px rgba(0,0,0,0.3); /* Subtle Shadow */
-            --gradient-card-start: #1e293b; /* Start color for card gradient */
-            --gradient-card-end: #0f172a; /* End color for card gradient */
+            --bg: #0f172a;
+            --card: #111827;
+            --text: #e5e7eb;
+            --muted: #9aa4b2;
+            --accent: #60a5fa; /* Blue for primary accent */
+            --green: #10b981;
+            --yellow: #f59e0b;
+            --purple: #a855f7;
+            --red: #ef4444;
+            --blue: #2563eb;
+            --radius: 12px;
+            --shadow: 0 10px 24px rgba(0,0,0,0.3);
+            --gradient-card: linear-gradient(135deg, var(--card) 0%, #1a2233 100%);
         }
 
-        /* Base Body Styles */
+        /* Base Styles */
         body {
             margin: 0;
             font-family: 'Inter', system-ui, sans-serif;
@@ -36,19 +35,17 @@
             -moz-osx-font-smoothing: grayscale;
         }
 
-        /* Main Container */
         .container {
-            max-width: 1200px;
+            max-width: 1300px;
             margin: 0 auto;
             padding: 20px;
         }
 
-        /* Header Styling */
+        /* Header */
         header {
-            margin-bottom: 30px;
             text-align: center;
-            padding: 20px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 40px 0;
+            margin-bottom: 30px;
         }
 
         header h1 {
@@ -61,38 +58,33 @@
         header p {
             font-size: 1.1em;
             color: var(--muted);
-            margin: 0;
         }
 
-        /* Section Styling */
+        /* Section Styles */
         section {
-            margin-bottom: 40px;
+            margin-bottom: 30px;
         }
 
-        /* Card Styling */
         .card {
-            background: linear-gradient(145deg, var(--gradient-card-start), var(--gradient-card-end));
+            background: var(--gradient-card);
             border-radius: var(--radius);
-            padding: 20px;
+            padding: 24px;
             box-shadow: var(--shadow);
-            margin-bottom: 20px; /* Spacing for non-grid layouts */
-            border: 1px solid rgba(255, 255, 255, 0.05); /* Subtle border for definition */
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        /* Heading Styles */
         h2 {
-            font-size: 2em;
-            color: var(--accent);
-            margin-top: 0;
+            color: var(--text);
+            font-size: 1.8em;
             margin-bottom: 20px;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             padding-bottom: 10px;
             font-weight: 600;
         }
 
         h3 {
-            font-size: 1.4em;
-            color: var(--text);
+            color: var(--accent);
+            font-size: 1.3em;
             margin: 0 0 15px 0;
             font-weight: 500;
         }
@@ -101,311 +93,326 @@
             margin-bottom: 10px;
         }
 
-        .muted {
-            color: var(--muted);
-            font-size: 0.9em;
-        }
-
-        /* Grid Layout for Sections */
-        .grid-layout {
+        /* Grid Layout for Responsiveness */
+        .grid-container {
             display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
-            grid-template-columns: 1fr; /* Default to 1 column on small screens */
+            margin-bottom: 20px;
         }
 
-        @media (min-width: 768px) {
-            .grid-layout {
-                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* 2-3 columns on medium screens */
-            }
+        /* Allocation Details & Chart */
+        .allocation-details p {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
         }
 
-        @media (min-width: 1024px) {
-            .grid-layout {
-                grid-template-columns: repeat(3, 1fr); /* 3 columns on large screens */
-            }
-            .grid-layout.four-col {
-                grid-template-columns: repeat(4, 1fr); /* 4 columns for specific sections like tips */
-            }
+        .dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            display: inline-block;
+            flex-shrink: 0;
         }
 
-        /* Table Styling */
+        .dot.stocks { background-color: var(--blue); }
+        .dot.mutual-funds { background-color: var(--green); }
+        .dot.crypto { background-color: var(--yellow); }
+        .dot.gold-debt { background-color: var(--purple); }
+
+        .chart-card {
+            grid-column: span 2; /* Occupy two columns on larger screens */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--gradient-card);
+        }
+
+        .chart-card img {
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--radius);
+            margin-top: 15px;
+        }
+
+        /* Tables */
         table {
             width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
+            border-collapse: collapse;
             margin-top: 20px;
-            background: var(--card);
+            background: rgba(0,0,0,0.2);
             border-radius: var(--radius);
-            overflow: hidden; /* Ensures rounded corners apply to content */
-            box-shadow: var(--shadow);
+            overflow: hidden;
         }
 
         table th, table td {
             padding: 12px 15px;
             text-align: left;
             border-bottom: 1px solid rgba(255,255,255,0.08);
-            vertical-align: top;
+            font-size: 0.9em;
         }
 
         table th {
-            background-color: var(--accent);
-            color: var(--bg);
+            background: rgba(255,255,255,0.05);
+            color: var(--accent);
             font-weight: 600;
             text-transform: uppercase;
-            font-size: 0.9em;
-        }
-
-        table tbody tr:last-child td {
-            border-bottom: none;
         }
 
         table tbody tr:hover {
-            background-color: rgba(255,255,255,0.05);
+            background-color: rgba(255,255,255,0.03);
         }
 
-        /* Chart Image Styling */
-        .chart-container {
-            text-align: center;
-            margin-top: 20px;
-            background-color: var(--card); /* Background to fill transparency if any */
-            border-radius: var(--radius);
-            padding: 10px;
+        table td a {
+            color: var(--accent);
+            text-decoration: none;
         }
 
-        .chart-container img {
+        table td a:hover {
+            text-decoration: underline;
+        }
+
+        table img.stock-chart {
+            max-width: 150px;
+            height: auto;
+            border-radius: 4px;
+            vertical-align: middle;
+            display: block; /* Ensures chart img takes full cell width */
+            margin: 0 auto; /* Center image in cell */
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* What-If & Risk Corner charts */
+        .chart-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 15px;
+        }
+        .chart-wrapper img {
             max-width: 100%;
             height: auto;
             border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            display: block; /* Remove extra space below image */
-            margin: 0 auto;
+            margin-top: 10px;
         }
 
-        .stock-chart-img {
-            max-width: 100px; /* Smaller image for table column */
-            height: auto;
-            border-radius: 4px;
-            margin: 0;
-            box-shadow: none;
+        /* Tips and Notes */
+        .notes ul {
+            list-style: none;
+            padding: 0;
         }
 
-        /* Allocation Summary Specifics */
-        .allocation-summary .dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 8px;
-            vertical-align: middle;
+        .notes li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
         }
 
-        .allocation-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-
-        /* Buy Button Styling */
-        .button {
-            display: inline-block;
-            padding: 8px 15px;
-            background-color: var(--accent);
-            color: var(--bg);
-            text-decoration: none;
-            border-radius: 6px;
+        .notes li::before {
+            content: '✓';
+            color: var(--green);
+            position: absolute;
+            left: 0;
             font-weight: bold;
-            transition: background-color 0.3s ease;
-            white-space: nowrap; /* Prevent button text from wrapping */
-            font-size: 0.9em;
         }
 
-        .button:hover {
-            background-color: #4a90f2; /* Slightly darker accent on hover */
-        }
-
-        /* Footer Styling */
+        /* Footer */
         footer {
             text-align: center;
-            padding: 20px;
-            margin-top: 40px;
+            padding: 30px 20px;
+            margin-top: 50px;
             color: var(--muted);
-            border-top: 1px solid rgba(255,255,255,0.08);
             font-size: 0.9em;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 992px) {
+            .chart-card {
+                grid-column: span 1; /* Single column for chart on medium screens */
+            }
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2em;
+            }
+            .grid-container {
+                grid-template-columns: 1fr; /* Single column on smaller screens */
+            }
+            .chart-card {
+                grid-column: span 1; /* Ensure single column */
+            }
+            table th, table td {
+                padding: 10px;
+                font-size: 0.85em;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Investment Portfolio Dashboard</h1>
-            <p>Your path to financial growth. Data as of 2025.</p>
+            <h1>My Investment Portfolio Dashboard</h1>
+            <p>A comprehensive overview of your high-risk investment strategy.</p>
         </header>
 
         <section id="portfolio-summary">
-            <h2>Portfolio Overview</h2>
             <div class="card">
-                <h3>Total Capital Invested: <span style="color: var(--green);">₹20,00,000 INR</span></h3>
-                <p><strong>Investment Horizon:</strong> 10 years</p>
-                <p><strong>Risk Tolerance:</strong> High</p>
-                <p><strong>Expected Annual Return:</strong> 12%</p>
-                <p>
-                    This portfolio is strategically designed for a high-risk investor with a 10-year horizon and a 12% annual return expectation. A significant portion of the capital (80%) is allocated to equity, split between direct stocks and mutual funds, to leverage the growth potential of the market. The stock selection focuses on companies with strong historical profit and revenue growth, positive 1-year performance, and good market capitalization, while also including a higher-risk, high-momentum stock. The mutual fund selection emphasizes funds with consistently high 3-year and 5-year returns, across flexi-cap, large & mid-cap, and small-cap categories, to maximize growth and diversification within equities. Diversifiers like crypto, gold ETF, and fixed deposits are included to a smaller extent (20%) to provide some level of risk mitigation and exposure to alternative assets, aligning with a high-risk profile that still acknowledges the need for some diversification. The crypto allocation is kept at 10% due to its inherently high volatility but also its potential for significant returns. Gold ETF and FD provide minimal stability. The overall portfolio aims for aggressive growth while maintaining a calculated approach to risk.
-                </p>
-            </div>
-        </section>
-
-        <section id="allocation-summary">
-            <h2>Allocation Summary</h2>
-            <div class="grid-layout">
-                <div class="card">
-                    <h3>Equity Sleeves</h3>
-                    <div class="allocation-item"><span class="dot" style="background-color: var(--blue);"></span> Stocks: 60% and 12,00,000 INR</div>
-                    <div class="allocation-item"><span class="dot" style="background-color: var(--green);"></span> Mutual Funds: 20% and 4,00,000 INR</div>
-                    <p style="margin-top: 15px;">Suggested Splits for Stocks/Funds: Focus on large-cap (40%), mid-cap (30%), small-cap (20%), and international (10%) exposure within these, adjusted for fund categories.</p>
-                </div>
-                <div class="card">
-                    <h3>Diversifiers</h3>
-                    <div class="allocation-item"><span class="dot" style="background-color: var(--yellow);"></span> Crypto: 10% and 2,00,000 INR</div>
-                    <div class="allocation-item"><span class="dot" style="background-color: var(--purple);"></span> Gold ETF: 5% and 1,00,000 INR</div>
-                    <div class="allocation-item"><span class="dot" style="background-color: var(--red);"></span> FD/Debt: 5% and 1,00,000 INR</div>
-                </div>
-                <div class="card">
-                    <h3>Current Allocation Distribution</h3>
-                    <div class="chart-container">
-                        <img src="https://quickchart.io/chart?c={type:'doughnut',data:{labels:['Stocks','Mutual Funds','Crypto','Gold ETF','FD/Debt'],datasets:[{data:[60,20,10,5,5],backgroundColor:['%232563eb','%2310b981','%23f59e0b','%23a855f7','%23ef4444']}]}}" alt="Portfolio Allocation Chart">
+                <h2>Portfolio Summary</h2>
+                <div class="grid-container">
+                    <div>
+                        <h3>Overall Snapshot</h3>
+                        <p><strong>Total Capital Invested:</strong> ₹2,00,000</p>
+                        <p><strong>Investment Horizon:</strong> 7 Years</p>
+                        <p><strong>Target Annual Return:</strong> 11%</p>
+                        <p class="summary-text">
+                            This portfolio is designed for a high-risk investor with a ₹2,00,000 investment over 7 years,
+                            targeting an 11% annual return. It allocates 80% to equity (40% stocks, 40% mutual funds)
+                            and 20% to diversifiers (15% crypto, 5% gold/debt). The selected stocks demonstrate strong
+                            fundamentals and positive technical momentum, while the chosen mutual funds are
+                            high-performing in categories known for growth, aligning with the aggressive risk profile
+                            and long-term return expectations.
+                        </p>
                     </div>
-                    <p style="text-align: center; margin-top: 15px; font-style: italic; color: var(--muted);">Visual representation of your current portfolio spread.</p>
+                    <div class="allocation-details">
+                        <h3>Allocation Breakdown</h3>
+                        <p><span class="dot stocks"></span> <strong>Stocks:</strong> 40% (₹80,000)</p>
+                        <p><span class="dot mutual-funds"></span> <strong>Mutual Funds:</strong> 40% (₹80,000)</p>
+                        <p><span class="dot crypto"></span> <strong>Crypto:</strong> 15% (₹30,000)</p>
+                        <p><span class="dot gold-debt"></span> <strong>Gold & Debt:</strong> 5% (₹10,000)</p>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Allocation Chart</h3>
+                        <!-- QuickChart URL updated with URL-encoded consistent colors from CSS variables -->
+                        <img src="https://quickchart.io/chart?width=600&height=330&c={type:'doughnut',data:{labels:['Stocks','Mutual Funds','Crypto','Gold & Debt'],datasets:[{data:[40,40,15,5],backgroundColor:['%232563eb','%2310b981','%23f59e0b','%23a855f7']}]}}" alt="Portfolio Allocation Chart" />
+                    </div>
                 </div>
             </div>
         </section>
 
         <section id="stocks-portfolio">
-            <h2>Stock Holdings</h2>
             <div class="card">
-                <div style="overflow-x: auto;">
+                <h2>Stock Holdings</h2>
+                <div class="table-responsive">
                     <table>
                         <thead>
                             <tr>
+                                <th>Stock</th>
                                 <th>Ticker</th>
                                 <th>Current Price</th>
-                                <th>1-Month % Change</th>
-                                <th>1-Year % Change</th>
+                                <th>Past 1-Month (%)</th>
+                                <th>Past 1-Year (%)</th>
                                 <th>EPS</th>
-                                <th>Div. Yield</th>
-                                <th>Profit Growth YoY</th>
-                                <th>Revenue Growth YoY</th>
+                                <th>Dividend Yield (%)</th>
+                                <th>Profit Growth YoY (%)</th>
+                                <th>Revenue Growth YoY (%)</th>
                                 <th>50-Day MA</th>
                                 <th>200-Day MA</th>
                                 <th>RSI (14)</th>
-                                <th>Proj. 1 Yr %</th>
+                                <th>Projected 1 Year Return (%)</th>
                                 <th>Chart</th>
                                 <th>Why to Choose</th>
-                                <th>Buy Link</th>
+                                <th>Buy</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>BAJFINANCE.NS</td>
-                                <td>₹1022.80</td>
-                                <td>N/A</td>
-                                <td>40.90%</td>
+                                <td>BAJFINANCE</td>
+                                <td>BAJFINANCE</td>
+                                <td>₹1,025.00</td>
+                                <td>+5.90</td>
+                                <td>+40.90</td>
                                 <td>28.06</td>
-                                <td>N/A</td>
-                                <td>15.13%</td>
-                                <td>23.39%</td>
-                                <td>N/A</td>
-                                <td>N/A</td>
-                                <td>N/A</td>
-                                <td>N/A</td>
-                                <td><img src="https://r2.chart-img.com/20251024/tradingview/advanced-chart/ea42074f-6324-4f56-a302-386ab6dbf3e3.png" alt="BAJFINANCE Chart" class="stock-chart-img"></td>
-                                <td>Bajaj Finance has shown strong historical growth in both profit and revenue, indicating good future growth potential.</td>
-                                <td><a href="https://www.nseindia.com/get-quotes/equity?symbol=BAJFINANCE" target="_blank" class="button">Buy</a></td>
+                                <td>0.43</td>
+                                <td>15.13</td>
+                                <td>23.39</td>
+                                <td>942.71</td>
+                                <td>881.96</td>
+                                <td>66.31</td>
+                                <td>42.95</td>
+                                <td><img src="https://r2.chart-img.com/20251024/tradingview/advanced-chart/9ea6370c-bc7f-4403-b400-a278b43f141a.png" alt="BAJFINANCE Chart" class="stock-chart"></td>
+                                <td>BAJFINANCE shows strong fundamental growth in both profit and revenue year-over-year, coupled with excellent one-year and one-month price appreciation, indicating strong bullish momentum. Its 50-day moving average is above the 200-day moving average, confirming an uptrend.</td>
+                                <td><a href="https://www.nseindia.com/get-quotes/equity?symbol=BAJFINANCE" target="_blank">Buy</a></td>
                             </tr>
                             <tr>
-                                <td>EICHERMOT.NS</td>
-                                <td>₹6929.50</td>
-                                <td>N/A</td>
-                                <td>49.80%</td>
+                                <td>BHARTIARTL</td>
+                                <td>BHARTIARTL</td>
+                                <td>₹1,941.00</td>
+                                <td>+2.62</td>
+                                <td>+16.63</td>
+                                <td>59.04</td>
+                                <td>0.82</td>
+                                <td>349.39</td>
+                                <td>15.34</td>
+                                <td>1907.36</td>
+                                <td>1797.07</td>
+                                <td>58.27</td>
+                                <td>17.46</td>
+                                <td><img src="https://r2.chart-img.com/20251024/tradingview/advanced-chart/aec6fd6f-1f43-4ede-9244-fab15fbdab20.png" alt="BHARTIARTL Chart" class="stock-chart"></td>
+                                <td>Bharti Airtel demonstrates exceptional profit growth year-over-year and solid revenue growth, indicating a healthy and expanding business. The stock is in a clear uptrend with its 50-day MA above the 200-day MA, supported by positive short and long-term price changes.</td>
+                                <td><a href="https://www.nseindia.com/get-quotes/equity?symbol=BHARTIARTL" target="_blank">Buy</a></td>
+                            </tr>
+                            <tr>
+                                <td>EICHERMOT</td>
+                                <td>EICHERMOT</td>
+                                <td>₹6,947.50</td>
+                                <td>+1.62</td>
+                                <td>+49.80</td>
                                 <td>175.86</td>
-                                <td>N/A</td>
-                                <td>18.33%</td>
-                                <td>14.19%</td>
-                                <td>N/A</td>
-                                <td>N/A</td>
-                                <td>N/A</td>
-                                <td>N/A</td>
-                                <td><img src="https://r2.chart-img.com/20251024/tradingview/advanced-chart/a59e5e3c-5f85-4485-9f93-6b1a3aab8708.png" alt="EICHERMOT Chart" class="stock-chart-img"></td>
-                                <td>Eicher Motors demonstrates robust profit and revenue growth, and an impressive one-year return.</td>
-                                <td><a href="https://www.nseindia.com/get-quotes/equity?symbol=EICHERMOT" target="_blank" class="button">Buy</a></td>
+                                <td>1.02</td>
+                                <td>18.33</td>
+                                <td>14.19</td>
+                                <td>6441.75</td>
+                                <td>5541.01</td>
+                                <td>61.43</td>
+                                <td>52.29</td>
+                                <td><img src="https://r2.chart-img.com/20251024/tradingview/advanced-chart/75f2e5ef-04f4-4998-8d41-a2e29dd27998.png" alt="EICHERMOT Chart" class="stock-chart"></td>
+                                <td>Eicher Motors has shown robust growth in both profit and revenue, with an impressive almost 50% return over the last year. Its strong technical indicators, including the 50-day MA being significantly above the 200-day MA, suggest sustained positive momentum.</td>
+                                <td><a href="https://www.nseindia.com/get-quotes/equity?symbol=EICHERMOT" target="_blank">Buy</a></td>
                             </tr>
                             <tr>
-                                <td>HINDALCO.NS</td>
-                                <td>₹767.55</td>
-                                <td>N/A</td>
-                                <td>5.57%</td>
-                                <td>76.09</td>
-                                <td>N/A</td>
-                                <td>57.57%</td>
-                                <td>10.34%</td>
-                                <td>N/A</td>
-                                <td>N/A</td>
-                                <td>N/A</td>
-                                <td>N/A</td>
-                                <td><img src="https://r2.chart-img.com/20251024/tradingview/advanced-chart/36641290-b050-4ed3-a265-8e53928c0a47.png" alt="HINDALCO Chart" class="stock-chart-img"></td>
-                                <td>Hindalco shows exceptional profit growth and decent revenue growth.</td>
-                                <td><a href="https://www.nseindia.com/get-quotes/equity?symbol=HINDALCO" target="_blank" class="button">Buy</a></td>
+                                <td>LT</td>
+                                <td>LT</td>
+                                <td>₹3,782.00</td>
+                                <td>+6.54</td>
+                                <td>+10.31</td>
+                                <td>115.34</td>
+                                <td>0.90</td>
+                                <td>15.15</td>
+                                <td>16.02</td>
+                                <td>3636.67</td>
+                                <td>3484.22</td>
+                                <td>67.06</td>
+                                <td>10.83</td>
+                                <td><img src="https://r2.chart-img.com/20251024/tradingview/advanced-chart/eba3c8c6-f359-4d19-9aa9-49f3b644952f.png" alt="LT Chart" class="stock-chart"></td>
+                                <td>Larsen & Toubro exhibits consistent profit and revenue growth, alongside positive performance in both the short and long term. The stock maintains a healthy uptrend, with its 50-day MA above the 200-day MA, indicating continued investor confidence.</td>
+                                <td><a href="https://www.nseindia.com/get-quotes/equity?symbol=LT" target="_blank">Buy</a></td>
                             </tr>
                             <tr>
-                                <td>HINDPETRO.NS</td>
-                                <td>₹458.05</td>
-                                <td>N/A</td>
-                                <td>20.28%</td>
-                                <td>48.00</td>
-                                <td>N/A</td>
-                                <td>-57.94%</td>
-                                <td>0.00%</td>
-                                <td>N/A</td>
-                                <td>N/A</td>
-                                <td>N/A</td>
-                                <td>N/A</td>
-                                <td><img src="https://r2.chart-img.com/20251024/tradingview/advanced-chart/a4a4428d-df08-4ded-97b6-4b8568d8dfe9.png" alt="HINDPETRO Chart" class="stock-chart-img"></td>
-                                <td>While Hindustan Petroleum shows negative profit growth, its strong 1-year change suggests recent positive momentum.</td>
-                                <td><a href="https://www.nseindia.com/get-quotes/equity?symbol=HINDPETRO" target="_blank" class="button">Buy</a></td>
-                            </tr>
-                            <tr>
-                                <td>MARUTI.NS</td>
-                                <td>₹16089.00</td>
-                                <td>N/A</td>
-                                <td>25.21%</td>
-                                <td>461.97</td>
-                                <td>N/A</td>
-                                <td>7.50%</td>
-                                <td>8.05%</td>
-                                <td>N/A</td>
-                                <td>N/A</td>
-                                <td>N/A</td>
-                                <td>N/A</td>
-                                <td><img src="https://r2.chart-img.com/20251024/tradingview/advanced-chart/456e2e05-270d-46a0-9177-963cb6a2c668.png" alt="MARUTI Chart" class="stock-chart-img"></td>
-                                <td>Maruti Suzuki shows consistent profit and revenue growth, coupled with a strong one-year return.</td>
-                                <td><a href="https://www.nseindia.com/get-quotes/equity?symbol=MARUTI" target="_blank" class="button">Buy</a></td>
-                            </tr>
-                            <tr>
-                                <td>SBIN.NS</td>
-                                <td>₹882.45</td>
-                                <td>N/A</td>
-                                <td>12.40%</td>
+                                <td>SBIN</td>
+                                <td>SBIN</td>
+                                <td>₹878.50</td>
+                                <td>+7.37</td>
+                                <td>+12.40</td>
                                 <td>89.05</td>
-                                <td>N/A</td>
-                                <td>15.62%</td>
-                                <td>8.01%</td>
-                                <td>N/A</td>
-                                <td>N/A</td>
-                                <td>N/A</td>
-                                <td>N/A</td>
-                                <td><img src="https://r2.chart-img.com/20251024/tradingview/advanced-chart/271daf1d-3879-4ce2-8a95-f3c048328a1a.png" alt="SBIN Chart" class="stock-chart-img"></td>
-                                <td>State Bank of India exhibits healthy profit and revenue growth, along with a solid one-year return.</td>
-                                <td><a href="https://www.nseindia.com/get-quotes/equity?symbol=SBIN" target="_blank" class="button">Buy</a></td>
+                                <td>1.84</td>
+                                <td>15.62</td>
+                                <td>8.01</td>
+                                <td>832.01</td>
+                                <td>783.83</td>
+                                <td>65.15</td>
+                                <td>13.02</td>
+                                <td><img src="https://r2.chart-img.com/20251024/tradingview/advanced-chart/067a34b8-2bf3-4b6a-a7e9-69e079bf7f7d.png" alt="SBIN Chart" class="stock-chart"></td>
+                                <td>State Bank of India shows solid profit and revenue growth, with respectable gains over the past month and year. The positive crossover and spread between its 50-day and 200-day moving averages suggest a strong and sustained bullish trend.</td>
+                                <td><a href="https://www.nseindia.com/get-quotes/equity?symbol=SBIN" target="_blank">Buy</a></td>
                             </tr>
                         </tbody>
                     </table>
@@ -414,18 +421,18 @@
         </section>
 
         <section id="mutual-funds-portfolio">
-            <h2>Mutual Fund Selections</h2>
             <div class="card">
-                <div style="overflow-x: auto;">
+                <h2>Mutual Fund Holdings</h2>
+                <div class="table-responsive">
                     <table>
                         <thead>
                             <tr>
                                 <th>MF Name</th>
                                 <th>Category</th>
-                                <th>3-Year Return</th>
-                                <th>5-Year Return</th>
-                                <th>Projected Return</th>
-                                <th>SIP Amount (Min)</th>
+                                <th>3Y Return (%)</th>
+                                <th>5Y Return (%)</th>
+                                <th>Projected Return (%)</th>
+                                <th>SIP Amount (₹)</th>
                                 <th>Why to Choose</th>
                             </tr>
                         </thead>
@@ -433,113 +440,133 @@
                             <tr>
                                 <td>Franklin Build India Fund</td>
                                 <td>Flexi Cap</td>
-                                <td>29.98%</td>
-                                <td>35.04%</td>
-                                <td>N/A</td>
-                                <td>₹500</td>
-                                <td>Consistently delivered high returns over 3 and 5 years, strong performance in a flexible investment approach.</td>
-                            </tr>
-                            <tr>
-                                <td>Motilal Oswal Large & Midcap Fund</td>
-                                <td>Large & Mid Cap</td>
-                                <td>29.94%</td>
-                                <td>30.41%</td>
-                                <td>N/A</td>
-                                <td>₹500</td>
-                                <td>Impressive 3-year and 5-year returns, provides blend of stability from large-cap and growth from mid-cap.</td>
+                                <td>29.98</td>
+                                <td>35.04</td>
+                                <td>35.04</td>
+                                <td>500</td>
+                                <td>This fund offers excellent historical returns over both 3 and 5 years within the Flexi Cap category, providing diversification across market capitalizations and aligning with a high-risk, high-return strategy.</td>
                             </tr>
                             <tr>
                                 <td>ICICI Prudential BHARAT 22 FOF</td>
                                 <td>Equity Fund of Funds</td>
-                                <td>28.96%</td>
-                                <td>34.86%</td>
-                                <td>N/A</td>
-                                <td>₹1000</td>
-                                <td>Offers diversification by investing in other equity funds, strong track record and potential for good returns.</td>
+                                <td>28.96</td>
+                                <td>34.86</td>
+                                <td>34.86</td>
+                                <td>1000</td>
+                                <td>With very strong 3 and 5-year returns, this Equity Fund of Funds provides exposure to a diversified basket of equity-oriented funds, offering a broad market play suitable for aggressive investors seeking high growth.</td>
                             </tr>
                             <tr>
-                                <td>Invesco India Smallcap Fund</td>
-                                <td>Small Cap</td>
-                                <td>26.47%</td>
-                                <td>31.14%</td>
-                                <td>N/A</td>
-                                <td>₹500</td>
-                                <td>Provides aggressive growth potential, demonstrated excellent 3-year and 5-year returns.</td>
+                                <td>Motilal Oswal Midcap Fund</td>
+                                <td>Mid Cap</td>
+                                <td>26.22</td>
+                                <td>33.32</td>
+                                <td>33.32</td>
+                                <td>500</td>
+                                <td>This Mid Cap fund has delivered impressive returns over both the 3 and 5-year periods. Mid-cap funds typically offer higher growth potential than large-cap funds, making it a suitable choice for a high-risk portfolio aiming for aggressive capital appreciation.</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </section>
+        
+        <section id="crypto-holdings">
+            <div class="card">
+                <h2>Cryptocurrency Holdings</h2>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Symbol</th>
+                                <th>Current Price (INR)</th>
+                                <th>Buy Link</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Bitcoin</td>
+                                <td>BTC</td>
+                                <td>₹10,760,438</td>
+                                <td><a href="https://www.coingecko.com/en/coins/bitcoin" target="_blank">Buy BTC</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p style="margin-top: 20px; color: var(--muted);">
+                    <em>Note: ROI for crypto is highly volatile and not provided as a stable metric.
+                    This portfolio includes a 15% allocation to crypto for high-growth potential and diversification,
+                    reflecting a high-risk tolerance.</em>
+                </p>
+            </div>
+        </section>
+
 
         <section id="what-if-analysis">
-            <h2>What-If Analysis</h2>
-            <div class="grid-layout">
-                <div class="card">
-                    <h3>Conservative Scenario</h3>
-                    <p>Assuming a conservative annual return of 8% on the total ₹20,00,000 INR investment over 10 years, your investment could grow to approximately <strong style="color: var(--yellow);">₹43,17,849 INR</strong>.</p>
-                    <p class="muted"><em>Calculation: ₹20,00,000 * (1 + 0.08)^10</em></p>
-                </div>
-                <div class="card">
-                    <h3>Optimistic Scenario</h3>
-                    <p>Assuming an optimistic annual return of 15% on the total ₹20,00,000 INR investment over 10 years, your investment could grow to approximately <strong style="color: var(--green);">₹80,91,123 INR</strong>.</p>
-                    <p class="muted"><em>Calculation: ₹20,00,000 * (1 + 0.15)^10</em></p>
-                </div>
-                <div class="card">
-                    <h3>Projected Growth Chart</h3>
-                    <div class="chart-container">
-                        <img src="https://quickchart.io/chart?c={type:'bar',data:{labels:['Initial Investment','Conservative Return (8%)','Optimistic Return (15%)'],datasets:[{label:'Portfolio Value',data:[2000000,4317849,8091123],backgroundColor:['%2336A2EB','%23FFCE56','%23FF6384']}]}}" alt="What-If Analysis Chart">
+            <div class="card">
+                <h2>What-If Analysis</h2>
+                <div class="grid-container">
+                    <div>
+                        <h3>Conservative Scenario (8% Annual Return)</h3>
+                        <p>Assuming a conservative annual return of 8% over 7 years on an initial investment of ₹2,00,000:</p>
+                        <p><strong>Future Value = ₹3,42,764.40</strong></p>
+                        <div class="chart-wrapper">
+                            <img src="https://quickchart.io/chart?c={type:'bar',data:{labels:['Initial Investment','Conservative Return'],datasets:[{data:[200000,342764.40],backgroundColor:['%23ADD8E6','%2390EE90']}]}}" alt="Conservative Return Chart" />
+                        </div>
+                    </div>
+                    <div>
+                        <h3>Optimistic Scenario (15% Annual Return)</h3>
+                        <p>Assuming an optimistic annual return of 15% over 7 years on an initial investment of ₹2,00,000:</p>
+                        <p><strong>Future Value = ₹5,31,680.18</strong></p>
+                        <div class="chart-wrapper">
+                            <img src="https://quickchart.io/chart?c={type:'bar',data:{labels:['Initial Investment','Optimistic Return'],datasets:[{data:[200000,531680.18],backgroundColor:['%23ADD8E6','%2390EE90']}]}}" alt="Optimistic Return Chart" />
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
         <section id="risk-corner">
-            <h2>Risk Corner: Crash Impact</h2>
-            <div class="grid-layout">
-                <div class="card">
-                    <h3>Mild Market Correction (10-20%)</h3>
-                    <p>In a mild market correction of 10-20%, your equity portfolio (stocks and mutual funds, ₹16,00,000 INR) could see a decline of approximately <strong>₹1,60,000 INR to ₹3,20,000 INR</strong>. The total portfolio value could decrease by 8% to 16%, resulting in a loss of ₹1,60,000 INR to ₹3,20,000 INR. For example, a 10% drop on ₹20,00,000 INR would mean your portfolio value becomes <strong style="color: var(--yellow);">₹18,00,000 INR</strong>.</p>
-                </div>
-                <div class="card">
-                    <h3>Severe Market Crash (30-50%)</h3>
-                    <p>In a severe market crash of 30-50%, your equity portfolio could decline by approximately <strong>₹4,80,000 INR to ₹8,00,000 INR</strong>. The total portfolio value could decrease by 24% to 40%, resulting in a loss of ₹4,80,000 INR to ₹8,00,000 INR. For example, a 30% drop on ₹20,00,000 INR would mean your portfolio value becomes <strong style="color: var(--red);">₹14,00,000 INR</strong>.</p>
-                </div>
-                <div class="card">
-                    <h3>Crash Impact Chart</h3>
-                    <div class="chart-container">
-                        <img src="https://quickchart.io/chart?c={type:'bar',data:{labels:['Initial Investment','Mild Crash (10% Loss)','Severe Crash (30% Loss)'],datasets:[{label:'Portfolio Value',data:[2000000,1800000,1400000],backgroundColor:['%2336A2EB','%23FFCE56','%23FF6384']}]}}" alt="Risk Corner Crash Impact Chart">
+            <div class="card">
+                <h2>Risk Corner: Crash Impact Analysis</h2>
+                <div class="grid-container">
+                    <div>
+                        <h3>Mild Market Crash (20% Drop)</h3>
+                        <p>In a mild market crash (e.g., 20% drop): Your ₹2,00,000 investment could temporarily decrease to ₹1,60,000, representing a loss of ₹40,000.</p>
+                        <div class="chart-wrapper">
+                            <img src="https://quickchart.io/chart?c={type:'bar',data:{labels:['Initial Investment','After Mild Crash'],datasets:[{data:[200000,160000],backgroundColor:['%23ADD8E6','%23FF6384']}]}}" alt="Mild Crash Impact Chart" />
+                        </div>
+                    </div>
+                    <div>
+                        <h3>Severe Market Crash (40% Drop)</h3>
+                        <p>In a severe market crash (e.g., 40% drop): Your ₹2,00,000 investment could temporarily decrease to ₹1,20,000, representing a loss of ₹80,000.</p>
+                        <div class="chart-wrapper">
+                            <img src="https://quickchart.io/chart?c={type:'bar',data:{labels:['Initial Investment','After Severe Crash'],datasets:[{data:[200000,120000],backgroundColor:['%23ADD8E6','%23FF0000']}]}}" alt="Severe Crash Impact Chart" />
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="tips-notes">
-            <h2>Important Tips & Notes</h2>
-            <div class="grid-layout four-col">
-                <div class="card">
-                    <h3>Diversification is Key</h3>
-                    <p>Always maintain a diversified portfolio across different asset classes (stocks, bonds, gold, real estate, crypto) and market capitalizations. This helps in mitigating risk and ensures stability during market downturns.</p>
-                </div>
-                <div class="card">
-                    <h3>Systematic Investment Plans (SIPs)</h3>
-                    <p>Consider investing through SIPs in mutual funds. This strategy helps average out your purchase cost over time (rupee-cost averaging) and reduces the impact of market volatility, especially for long-term goals.</p>
-                </div>
-                <div class="card">
-                    <h3>Review & Rebalance</h3>
-                    <p>Regularly review your portfolio (e.g., quarterly or annually) to ensure it aligns with your financial goals and risk tolerance. Rebalance by selling assets that have overperformed and buying those that have underperformed to maintain your target allocation.</p>
-                </div>
-                <div class="card">
-                    <h3>Hedge Your Bets</h3>
-                    <p>For high-risk portfolios, consider including safe-haven assets like Gold or Debt Funds to act as a hedge against equity market volatility. These can provide stability when other assets are declining.</p>
-                </div>
+        <section id="tips-and-notes">
+            <div class="card notes">
+                <h2>Important Investment Tips & Notes</h2>
+                <ul>
+                    <li>Diversify your portfolio across different asset classes (stocks, mutual funds, crypto, gold) to mitigate risk.</li>
+                    <li>Consider Systematic Investment Plans (SIPs) in mutual funds to average out costs and benefit from compounding.</li>
+                    <li>Regularly review and rebalance your portfolio to ensure it aligns with your risk tolerance and financial goals.</li>
+                    <li>For high-risk components like crypto, invest only what you can afford to lose.</li>
+                    <li>Include hedges like Gold or Debt in small percentages to provide stability during market downturns.</li>
+                    <li>Stay informed about market trends and economic indicators, but avoid emotional decisions.</li>
+                </ul>
             </div>
         </section>
     </div>
 
     <footer>
-        <p>&copy; 2025 Investment Portfolio. All rights reserved. Data for informational purposes only.</p>
+        <p>&copy; 2025 Investment Portfolio Dashboard. All rights reserved. For informational purposes only.</p>
     </footer>
+
 </body>
 </html>
 ```
