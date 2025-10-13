@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -51,7 +50,7 @@
         </div>
       </section>
 
-      <!-- Middle Column: Stocks + What-if + Mutual Funds -->
+      <!-- Middle Column: Stocks + What-if + Mutual Funds + Diversifiers -->
       <section class="lg:col-span-2 space-y-4">
         <div class="card p-4">
           <div class="flex items-center justify-between">
@@ -73,6 +72,11 @@
           <h2 class="text-lg font-medium">Mutual Funds</h2>
           <div id="mfList" class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3"></div>
         </div>
+
+        <div class="card p-4">
+          <h2 class="text-lg font-medium">Diversifiers</h2>
+          <div id="diversifiersList" class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+        </div>
       </section>
     </main>
 
@@ -86,15 +90,16 @@
     {
   "allocation": {
     "equity_sleeves": {
-      "stocks": "60% and 518,400 USD",
-      "mutual_funds": "40% and 345,600 USD"
+      "stocks": "50% and 150000 INR",
+      "mutual_funds": "30% and 90000 INR"
     },
     "diversifiers": {
-      "crypto": "15% and 162,000 USD",
-      "gold": "5% and 54,000 USD"
+      "crypto": "10% and 30000 INR",
+      "gold": "10% and 30000 INR",
+      "bond_mutual_funds": "0% and 0 INR"
     }
   },
-  "chart_url_allocation": "https://quickchart.io/chart?c={type:'pie',data:{labels:['Stocks','Mutual Funds','Crypto','Gold'],datasets:[{data:[60,40,15,5]}]}}",
+  "chart_url_allocation": "https://quickchart.io/chart?c={type:'pie',data:{labels:['Stocks','Mutual Funds','Crypto','Gold'],datasets:[{data:[50,30,10,10]}]}}",
   "stocks_selected": [
     {
       "stock": "NVDA",
@@ -111,52 +116,10 @@
       "revenue_growth_yoy": "71.55",
       "net_profit_margin": "52.41",
       "current_ratio": "3.67",
-      "chart": "https://r2.chart-img.com/20251027/tradingview/advanced-chart/ded2f1e5-677d-46cc-ac66-642ed6449c2f.png",
-      "buy_link": "https://public.com/stocks/NVDA",
+      "chart": "https://r2.chart-img.com/20251027/tradingview/advanced-chart/a1fc4d77-01ae-45ca-bd77-a3f8763e6480.png",
+      "buy_link": "https://public.com/stocks/nvda",
       "analysis_summary": {
-        "reason_for_selection(2-3 lines)": "Nvidia is selected for its exceptional revenue growth (71.55% YoY) and strong profitability, indicating robust market demand for its technology. While its PE is high, this reflects its leading position in high-growth sectors like AI and gaming, offering significant potential for future appreciation."
-      }
-    },
-    {
-      "stock": "MSFT",
-      "current_price": 510.96,
-      "week_52_high": "555.45",
-      "week_52_low": "344.79",
-      "pe": "37.30",
-      "pb": "11.06",
-      "eps": "13.64",
-      "roe": "N/A",
-      "roa": "N/A",
-      "dividend_yield": "0.63",
-      "total_debt_to_equity": "0.26",
-      "revenue_growth_yoy": "14.93",
-      "net_profit_margin": "36.15",
-      "current_ratio": "1.35",
-      "chart": "https://r2.chart-img.com/20251027/tradingview/advanced-chart/a5ccb233-ecf5-4ebb-aa73-19ce0af512f1.png",
-      "buy_link": "https://public.com/stocks/MSFT",
-      "analysis_summary": {
-        "reason_for_selection(2-3 lines)": "Microsoft is a tech giant with consistent strong revenue growth and outstanding net profit margins, alongside a healthy balance sheet. Its continuous innovation in cloud computing and enterprise software suggests continued market dominance and steady long-term growth."
-      }
-    },
-    {
-      "stock": "GOOGL",
-      "current_price": 236.57,
-      "week_52_high": "256.00",
-      "week_52_low": "140.53",
-      "pe": "24.79",
-      "pb": "7.89",
-      "eps": "9.25",
-      "roe": "N/A",
-      "roa": "N/A",
-      "dividend_yield": "0.34",
-      "total_debt_to_equity": "0.04",
-      "revenue_growth_yoy": "13.13",
-      "net_profit_margin": "31.12",
-      "current_ratio": "1.84",
-      "chart": "https://r2.chart-img.com/20251027/tradingview/advanced-chart/0fa934c1-7c9d-4eda-940c-913a05c579b4.png",
-      "buy_link": "https://public.com/stocks/GOOGL",
-      "analysis_summary": {
-        "reason_for_selection(2-3 lines)": "Alphabet (Google) offers excellent revenue growth and strong profitability with a very low debt-to-equity ratio, indicating financial strength. Its diverse portfolio across search, advertising, cloud, and AI positions it for sustained growth, making it a solid choice for a high-risk portfolio."
+        "reason_for_selection(2-3 lines)": "Nvidia is selected for its exceptional revenue growth (71.55%) and very strong net profit margin (52.41%), indicating high profitability and market demand. While its PE/PB ratios are high, they reflect strong future growth expectations, suitable for a high-risk appetite."
       }
     },
     {
@@ -174,20 +137,69 @@
       "revenue_growth_yoy": "19.38",
       "net_profit_margin": "39.99",
       "current_ratio": "2.83",
-      "chart": "https://r2.chart-img.com/20251027/tradingview/advanced-chart/c960f62d-817b-423a-9355-4b362f9e27f4.png",
-      "buy_link": "https://public.com/stocks/META",
+      "chart": "https://r2.chart-img.com/20251027/tradingview/advanced-chart/196c2f42-b183-4236-8b81-ff4b67e39a9e.png",
+      "buy_link": "https://public.com/stocks/meta",
       "analysis_summary": {
-        "reason_for_selection(2-3 lines)": "Meta Platforms is chosen for its significant revenue growth and high net profit margin, demonstrating strong operational efficiency. Its leadership in social media and aggressive investment in the metaverse offer substantial, albeit riskier, upside potential over the investment horizon."
+        "reason_for_selection(2-3 lines)": "Meta demonstrates strong revenue growth (19.38%) and excellent net profit margin (39.99%). Its robust profitability, low debt, and high liquidity make it a solid choice for growth, aligning with a high-risk profile."
+      }
+    },
+    {
+      "stock": "GOOGL",
+      "current_price": 236.57,
+      "week_52_high": "256.00",
+      "week_52_low": "140.53",
+      "pe": "24.79",
+      "pb": "7.89",
+      "eps": "9.25",
+      "roe": "N/A",
+      "roa": "N/A",
+      "dividend_yield": "0.34",
+      "total_debt_to_equity": "0.04",
+      "revenue_growth_yoy": "13.13",
+      "net_profit_margin": "31.12",
+      "current_ratio": "1.84",
+      "chart": "https://r2.chart-img.com/20251027/tradingview/advanced-chart/e1ae10ef-f989-4e77-b544-65144fcaba0e.png",
+      "buy_link": "https://public.com/stocks/googl",
+      "analysis_summary": {
+        "reason_for_selection(2-3 lines)": "Google (Alphabet) is chosen for its consistent revenue growth (13.13%), exceptional net profit margin (31.12%), and extremely low debt. Its strong financial health and market position offer stable growth potential in a high-risk portfolio."
+      }
+    },
+    {
+      "stock": "MSFT",
+      "current_price": 510.96,
+      "week_52_high": "555.45",
+      "week_52_low": "344.79",
+      "pe": "37.30",
+      "pb": "11.06",
+      "eps": "13.64",
+      "roe": "N/A",
+      "roa": "N/A",
+      "dividend_yield": "0.63",
+      "total_debt_to_equity": "0.26",
+      "revenue_growth_yoy": "14.93",
+      "net_profit_margin": "36.15",
+      "current_ratio": "1.35",
+      "chart": "https://r2.chart-img.com/20251027/tradingview/advanced-chart/14dca211-5be2-40de-8010-50ea0de01bab.png",
+      "buy_link": "https://public.com/stocks/msft",
+      "analysis_summary": {
+        "reason_for_selection(2-3 lines)": "Microsoft is included for its consistent strong revenue growth (14.93%) and excellent profitability (net profit margin 36.15%). Its low debt and strong liquidity, combined with its market leadership, make it a reliable performer within a growth-oriented strategy."
       }
     }
   ],
   "mutual_funds_selected": [
     {
-      "name": "N/A",
-      "category": "N/A",
-      "3_year_return": "N/A",
-      "5_year_return": "N/A",
-      "reason_for_investment": "Due to the unavailability of the 'mutual_funds_metrics' table, specific mutual fund recommendations cannot be provided at this time. For your high-risk appetite and target return, typically aggressive growth funds, technology funds, or small-cap funds would be considered to align with the portfolio's overall strategy."
+      "name": "Vanguard Health Care Fund",
+      "category": "Sectoral",
+      "3_year_return": "15%",
+      "5_year_return": "16.5%",
+      "reason_for_investment": "Vanguard Health Care Fund is selected for its consistently high 3-year and 5-year returns, indicating strong performance within the healthcare sector. This fund provides excellent growth potential, aligning with a high-risk, high-return investment strategy."
+    },
+    {
+      "name": "Vanguard Growth Index Fund",
+      "category": "Growth",
+      "3_year_return": "13.5%",
+      "5_year_return": "14%",
+      "reason_for_investment": "Vanguard Growth Index Fund is chosen for its focus on growth stocks and solid historical returns over 3 and 5 years. It offers broad exposure to companies with high growth potential, which is suitable for an investor with a high-risk appetite targeting significant returns."
     }
   ],
   "crypto_selected": [
@@ -195,46 +207,37 @@
       "id": "bitcoin",
       "name": "Bitcoin",
       "symbol": "btc",
-      "current_price": 10161952,
+      "current_price": 10152411,
       "roi": "N/A",
       "buy_link": "https://www.coinbase.com/price/bitcoin",
-      "summary": "Bitcoin (BTC) is included for its established market presence and potential for significant capital appreciation, aligning with a high-risk appetite. As the largest cryptocurrency by market capitalization, it offers a degree of stability within the volatile crypto market while still presenting substantial growth opportunities."
-    },
-    {
-      "id": "ethereum",
-      "name": "Ethereum",
-      "symbol": "eth",
-      "current_price": 364281,
-      "roi": "4692.07%",
-      "buy_link": "https://www.coinbase.com/price/ethereum",
-      "summary": "Ethereum (ETH) is selected for its robust ecosystem and its role as a foundational platform for decentralized applications and NFTs. Its continuous development and widespread adoption contribute to its high growth potential, making it an attractive asset for a high-risk, high-reward investment strategy."
+      "summary": "Bitcoin is included as a high-risk, high-reward diversifier for its potential to generate significant returns, aligning with a high-risk appetite. Its decentralized nature and increasing institutional adoption make it an attractive, albeit volatile, asset."
     }
   ],
   "bond_mutual_funds": {
-    "summary": "N/A"
+    "summary": "No allocation to bond mutual funds in this portfolio, as it targets a high-risk, high-return strategy. Bond funds are typically used for stability and income, which are not the primary goals here."
   },
   "Gold": {
-    "summary": "Gold is included as a diversifier to provide a limited hedge against market volatility and inflation, despite the portfolio's overall high-risk profile. Its role is to offer a small counterbalance in a portfolio heavily weighted towards growth assets."
+    "summary": "Gold is included as a traditional safe-haven asset to provide a minor hedge against inflation and market volatility, offering some stability within this aggressive portfolio, as well as potential for appreciation."
   },
   "what_if_analysis": {
-    "conservative_return": "5% return, total value: 1,008,000 USD",
-    "moderate_return": "8% return, total value: 1,036,800 USD",
-    "optimistic_return": "12% return, total value: 1,080,000 USD",
-    "quickchart_url": "https://quickchart.io/chart?c={type:'bar',data:{labels:['Conservative (5%)','Moderate (8%)','Optimistic (12%)'],datasets:[{label:'Projected Value',data:[1008000,1036800,1080000]}]}}"
+    "conservative_return": "5% return leading to a total value of 315000 INR",
+    "moderate_return": "8% return leading to a total value of 324000 INR",
+    "optimistic_return": "12% return leading to a total value of 336000 INR",
+    "quickchart_url": "https://quickchart.io/chart?c={type:'bar',data:{labels:['Conservative (5%)','Moderate (8%)','Optimistic (12%)'],datasets:[{label:'Projected Value',data:[315000,324000,336000],backgroundColor:['#4CAF50','#FFC107','#F44336']}]}}"
   },
-  "summary": "This portfolio emphasizes high-growth potential through a significant allocation to equity sleeves, particularly in technology stocks with strong fundamentals and demonstrated growth. The diversifiers, including cryptocurrency, cater to your high-risk appetite for potentially higher returns, while gold offers a limited hedge. The 3-year investment duration aligns with capturing growth in these dynamic assets.",
+  "summary": "This portfolio is designed for a high-risk appetite with a 3-year investment horizon and a target return of 22%. A substantial allocation is made to equity sleeves (80%), with a focus on high-growth and profitable technology stocks and high-performing sectoral and growth mutual funds. A portion is allocated to diversifiers including crypto for additional high-risk, high-reward potential, and gold for some portfolio stability. The selected stocks (NVDA, META, GOOGL, MSFT) show strong revenue growth, high profitability, and healthy financials. The mutual funds (VGENX, VGHAX) are chosen for their strong historical returns and growth-oriented nature.",
   "risk_analysis": {
-    "mild_crash": "10% drop, amount lost: 108,000 USD, remaining value: 972,000 USD. Chart: https://quickchart.io/chart?c={type:'bar',data:{labels:['Current Value','Mild Crash (10% drop)'],datasets:[{label:'Portfolio Value',data:[1080000,972000]}]}}",
-    "moderate_crash": "20% drop, amount lost: 216,000 USD, remaining value: 864,000 USD. Chart: https://quickchart.io/chart?c={type:'bar',data:{labels:['Current Value','Moderate Crash (20% drop)'],datasets:[{label:'Portfolio Value',data:[1080000,864000]}]}}",
-    "severe_crash": "30% drop, amount lost: 324,000 USD, remaining value: 756,000 USD. Chart: https://quickchart.io/chart?c={type:'bar',data:{labels:['Current Value','Severe Crash (30% drop)'],datasets:[{label:'Portfolio Value',data:[1080000,756000]}]}}",
-    "summary": "Given the high-risk nature of this portfolio, investors should be prepared for significant volatility. The selected assets, especially growth stocks and cryptocurrencies, are susceptible to market downturns. Diversification across technology giants and a small allocation to gold aims to mitigate some risks, but the potential for substantial losses during a market crash remains high. Regular rebalancing and a long-term perspective are crucial for navigating these risks.",
-    "quickchart_url": "https://quickchart.io/chart?c={type:'bar',data:{labels:['Mild Crash (10%)','Moderate Crash (20%)','Severe Crash (30%)'],datasets:[{label:'Portfolio Value After Crash',data:[972000,864000,756000]}]}}"
+    "mild_crash": "10% drop, leading to a portfolio value of 270000 INR (30000 INR lost)",
+    "moderate_crash": "20% drop, leading to a portfolio value of 240000 INR (60000 INR lost)",
+    "severe_crash": "30% drop, leading to a portfolio value of 210000 INR (90000 INR lost)",
+    "summary": "This portfolio, with a high allocation to equities and crypto, is exposed to significant market risk. A mild crash could lead to a 10% loss (30,000 INR), a moderate crash to a 20% loss (60,000 INR), and a severe crash to a 30% loss (90,000 INR). Investors should be prepared for substantial fluctuations and potential drawdowns, aligning with a high-risk tolerance and a long-term horizon.",
+    "quickchart_url": "https://quickchart.io/chart?c={type:'bar',data:{labels:['Mild Crash (10%)','Moderate Crash (20%)','Severe Crash (30%)'],datasets:[{label:'Portfolio Value After Crash',data:[270000,240000,210000],backgroundColor:['#FFEB3B','#FF9800','#F44336']}]}}"
   },
   "education_tips": {
-    "diversification_importance": "Diversification is crucial even in a high-risk portfolio. While concentrating on high-growth assets, spreading investments across different sectors and asset classes (like a small portion in gold) helps mitigate the impact of adverse movements in any single asset. It reduces overall portfolio risk without necessarily sacrificing potential returns.",
-    "long_term_perspective": "For a high-risk, high-growth portfolio, a long-term investment horizon is paramount. Short-term market fluctuations can be significant, but historically, growth assets tend to recover and appreciate over longer periods. Patience and adherence to the investment strategy are key to realizing potential gains.",
-    "rebalancing_strategy": "Regular rebalancing is essential to maintain the desired asset allocation and risk profile. As certain assets outperform, their proportion in the portfolio may increase, potentially exposing the investor to unintended risks. Rebalancing involves selling appreciated assets and buying underperforming ones to bring the portfolio back to its target allocation.",
-    "understanding_risk": "It's vital for investors to fully understand the risks associated with a high-risk portfolio. This includes the potential for significant capital loss, high volatility, and the impact of economic downturns on growth-oriented assets. Only invest capital that you are comfortable losing and ensure your financial goals align with such an aggressive strategy."
+    "diversification_importance": "Diversification across different asset classes (stocks, mutual funds, crypto, gold) helps reduce overall portfolio risk by ensuring that poor performance in one asset class may be offset by better performance in another. While this portfolio is aggressive, the inclusion of gold and mutual funds provides some level of diversification beyond individual stocks.",
+    "long_term_perspective": "Given the high-risk nature of this portfolio, a long-term investment horizon (e.g., 3+ years) is crucial. Market fluctuations are common in the short term, but historically, well-diversified growth portfolios tend to recover and generate significant returns over longer periods. Patience and adherence to the investment plan are key.",
+    "rebalancing_strategy": "Regularly review and rebalance your portfolio (e.g., annually or semi-annually) to maintain your target asset allocation. If one asset class performs exceptionally well, its proportion in the portfolio might increase, exceeding the target. Rebalancing involves selling some of the outperforming assets and buying more of the underperforming ones to bring the portfolio back to its original desired allocation, managing risk and locking in gains.",
+    "understanding_risk": "It's vital to fully understand and accept the inherent risks associated with this high-growth, high-risk portfolio. Investments in individual stocks and cryptocurrencies carry significant volatility. While the potential for high returns exists, there is also a risk of substantial capital loss. Only invest capital you can afford to lose and ensure your financial goals align with this risk profile."
   }
 }
   </script>
@@ -262,9 +265,16 @@
     // Risk analysis
     document.getElementById('riskSummary').textContent = data.risk_analysis.summary;
     document.getElementById('riskChart').src = data.risk_analysis.quickchart_url;
-    // whatIfChart
-    document.getElementById('whatIfChart').src = data.what_if_analysis.quickchart_url;
-    
+
+    // What-if analysis
+    const whatIf = data.what_if_analysis;
+    document.getElementById('whatIfText').innerHTML = `
+      <div class="text-sm muted"><strong>Conservative:</strong> ${whatIf.conservative_return || ''}</div>
+      <div class="text-sm muted"><strong>Moderate:</strong> ${whatIf.moderate_return || ''}</div>
+      <div class="text-sm muted"><strong>Optimistic:</strong> ${whatIf.optimistic_return || ''}</div>
+    `;
+    document.getElementById('whatIfChart').src = whatIf.quickchart_url || '';
+
     // Education tips
     const tipsEl = document.getElementById('educationTips');
     tipsEl.innerHTML = '';
@@ -305,17 +315,6 @@
       stocksGrid.appendChild(card);
     });
 
-    // What-if analysis
-    const whatIf = data.what_if_analysis;
-    document.getElementById('whatIfText').innerHTML = `
-      <div class="text-sm muted"><strong>Conservative:</strong> ${whatIf.conservative_return || ''}</div>
-      <div class="text-sm muted"><strong>Moderate:</strong> ${whatIf.moderate_return || ''}</div>
-      <div class="text-sm muted"><strong>Optimistic:</strong> ${whatIf.optimistic_return || ''}</div>
-    `;
-    // Extract first chart URL from conservative_return for display
-    const whatIfChartUrl = (whatIf.quickchart_url)
-    document.getElementById('whatIfChart').src = whatIfChartUrl || '';
-
     // Mutual funds
     const mfList = document.getElementById('mfList');
     mfList.innerHTML = '';
@@ -329,6 +328,49 @@
       `;
       mfList.appendChild(el);
     });
+
+    // Diversifiers (Crypto, Gold, Bond MF)
+    const diversifiersEl = document.getElementById('diversifiersList');
+    diversifiersEl.innerHTML = '';
+
+    // --- Crypto ---
+    (data.crypto_selected || []).forEach(c => {
+      const el = document.createElement('div');
+      el.className = 'p-3 border-card rounded';
+      el.innerHTML = `
+        <div class="flex justify-between items-center">
+          <div>
+            <div class="text-sm font-medium">${c.name} (${c.symbol.toUpperCase()})</div>
+            <div class="muted text-xs">Price: ${c.current_price.toLocaleString()} USD</div>
+          </div>
+          <a href="${c.buy_link}" target="_blank" class="text-xs underline">Buy</a>
+        </div>
+        <div class="mt-2 text-sm muted">ROI: ${c.roi || 'N/A'}</div>
+      `;
+      diversifiersEl.appendChild(el);
+    });
+
+    // --- Gold ---
+    if (data.allocation.diversifiers.gold) {
+      const goldEl = document.createElement('div');
+      goldEl.className = 'p-3 border-card rounded';
+      goldEl.innerHTML = `
+        <div class="text-sm font-medium">Gold</div>
+        <div class="muted text-xs">Allocation: ${data.allocation.diversifiers.gold}</div>
+      `;
+      diversifiersEl.appendChild(goldEl);
+    }
+
+    // --- Bond Mutual Funds ---
+    if (data.allocation.diversifiers.bond_mutual_funds) {
+      const bondEl = document.createElement('div');
+      bondEl.className = 'p-3 border-card rounded';
+      bondEl.innerHTML = `
+        <div class="text-sm font-medium">Bond Mutual Funds</div>
+        <div class="muted text-xs">Allocation: ${data.allocation.diversifiers.bond_mutual_funds}</div>
+      `;
+      diversifiersEl.appendChild(bondEl);
+    }
   </script>
 </body>
 </html>
