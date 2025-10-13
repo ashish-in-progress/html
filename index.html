@@ -83,7 +83,143 @@
 
   <!-- Embedded JSON data -->
   <script id="portfolio-data" type="application/json">
-    
+    {
+  "allocation": {
+    "equity_sleeves": {
+      "stocks": "30% and $3600",
+      "mutual_funds": "30% and $3600"
+    },
+    "diversifiers": {
+      "crypto": "0% and $0",
+      "gold": "10% and $1200",
+      "bond_mutual_funds": "30% and $3600"
+    }
+  },
+  "chart_url_allocation": "https://quickchart.io/chart?c={type:'pie',data:{labels:['Stocks','Mutual Funds','Gold','Bond Mutual Funds'],datasets:[{data:[30,30,10,30]}]}}",
+  "stocks_selected": [
+    {
+      "stock": "JNJ",
+      "current_price": 190.72,
+      "week_52_high": "192.10",
+      "week_52_low": "140.68",
+      "pe": "20.27",
+      "pb": "5.85",
+      "eps": "9.35",
+      "roe": "N/A",
+      "roa": "N/A",
+      "dividend_yield": "2.63",
+      "total_debt_to_equity": "0.51",
+      "revenue_growth_yoy": "4.68",
+      "net_profit_margin": "25.00",
+      "current_ratio": "0.78",
+      "chart": "https://r2.chart-img.com/20251027/tradingview/advanced-chart/40deab2d-9d1f-4ecc-b886-4b45e214dc92.png",
+      "buy_link": "https://public.com/stocks/jnj",
+      "analysis_summary": {
+        "reason_for_selection(2-3 lines)": "Johnson & Johnson is a healthcare giant known for its stability and consistent dividends. Its reasonable P/E and strong financial health make it a suitable choice for a moderate risk portfolio, offering both growth and income."
+      }
+    },
+    {
+      "stock": "GOOGL",
+      "current_price": 236.57,
+      "week_52_high": "256.00",
+      "week_52_low": "140.53",
+      "pe": "24.79",
+      "pb": "7.89",
+      "eps": "9.25",
+      "roe": "N/A",
+      "roa": "N/A",
+      "dividend_yield": "0.34",
+      "total_debt_to_equity": "0.04",
+      "revenue_growth_yoy": "13.13",
+      "net_profit_margin": "31.12",
+      "current_ratio": "1.84",
+      "chart": "https://r2.chart-img.com/20251027/tradingview/advanced-chart/1895657a-25f7-475f-9940-55a73c3a7c05.png",
+      "buy_link": "https://public.com/stocks/googl",
+      "analysis_summary": {
+        "reason_for_selection(2-3 lines)": "Alphabet (Google) offers strong growth potential with excellent financials and a very low debt-to-equity ratio. Its consistent revenue growth and high net profit margin indicate a robust business model, fitting a moderate risk strategy with a growth component."
+      }
+    },
+    {
+      "stock": "PFE",
+      "current_price": 24.78,
+      "week_52_high": "30.43",
+      "week_52_low": "20.92",
+      "pe": "13.10",
+      "pb": "1.59",
+      "eps": "1.88",
+      "roe": "N/A",
+      "roa": "N/A",
+      "dividend_yield": "6.84",
+      "total_debt_to_equity": "0.73",
+      "revenue_growth_yoy": "13.54",
+      "net_profit_margin": "16.85",
+      "current_ratio": "0.92",
+      "chart": "https://r2.chart-img.com/20251027/tradingview/advanced-chart/78bbb0d6-0f1e-47be-a016-fd5d8105fa33.png",
+      "buy_link": "https://public.com/stocks/pfe",
+      "analysis_summary": {
+        "reason_for_selection(2-3 lines)": "Pfizer presents a compelling value proposition with a low P/E and a high dividend yield, indicating a potentially undervalued stock. Its strong dividend and positive revenue growth make it attractive for income-focused investors within a moderate risk tolerance."
+      }
+    },
+    {
+      "stock": "BAC",
+      "current_price": 48.65,
+      "week_52_high": "52.88",
+      "week_52_low": "33.07",
+      "pe": "12.84",
+      "pb": "1.20",
+      "eps": "3.60",
+      "roe": "N/A",
+      "roa": "N/A",
+      "dividend_yield": "2.64",
+      "total_debt_to_equity": "2.22",
+      "revenue_growth_yoy": "99.37",
+      "net_profit_margin": "30.16",
+      "current_ratio": "N/A",
+      "chart": "https://r2.chart-img.com/20251027/tradingview/advanced-chart/82b54b0c-2442-4172-b9b9-1dbc151060f2.png",
+      "buy_link": "https://public.com/stocks/bac",
+      "analysis_summary": {
+        "reason_for_selection(2-3 lines)": "Bank of America offers a strong financial sector exposure with impressive revenue growth and a low P/E ratio. Its solid dividend yield and profitability make it a valuable addition to a moderate risk portfolio, balancing growth with income."
+      }
+    }
+  ],
+  "mutual_funds_selected": [
+    {
+      "name": "Vanguard Total Stock Market Index Fund Admiral Shares",
+      "category": "Total Market",
+      "3_year_return": "13",
+      "5_year_return": "15",
+      "reason_for_investment": "VTSAX provides broad exposure to the entire U.S. stock market, offering diversification across market capitalizations. Its strong historical returns make it an excellent choice for long-term growth within a moderate risk profile."
+    },
+    {
+      "name": "Vanguard Balanced Index Fund Admiral Shares",
+      "category": "Balanced",
+      "3_year_return": "7.8",
+      "5_year_return": "8.2",
+      "reason_for_investment": "VBIAX is a balanced fund that invests in a mix of stocks and bonds, providing diversification and potentially lower volatility than an all-equity fund. This makes it well-suited for a moderate risk investor seeking a blend of growth and stability."
+    }
+  ],
+  "crypto_selected": [],
+  "what_if_analysis": {
+    "conservative_return": "5% return, total value $12600 (gain of $600)",
+    "moderate_return": "8% return, total value $12960 (gain of $960)",
+    "optimistic_return": "12% return, total value $13440 (gain of $1440)",
+    "quickchart_url": "https://quickchart.io/chart?c={type:'bar',data:{labels:['Conservative (5%)','Moderate (8%)','Optimistic (12%)'],datasets:[{label:'Projected Value',data:[12600,12960,13440],backgroundColor:['#4CAF50','#FFC107','#2196F3']}]}}"
+  },
+  "summary": "This portfolio allocates 60% to equity (stocks and mutual funds) and 40% to diversifiers like gold and fixed deposits/bonds, aligning with a moderate risk profile over a 5-year duration. The selected stocks offer a mix of stable dividend payers and growth-oriented companies with solid fundamentals. The mutual funds provide broad market and balanced exposure for further diversification and steady returns. This strategy aims for a balance between capital appreciation and risk mitigation.",
+  "risk_analysis": {
+    "mild_crash": "10% drop, potential loss of $1200, portfolio value $10800",
+    "moderate_crash": "20% drop, potential loss of $2400, portfolio value $9600",
+    "severe_crash": "30% drop, potential loss of $3600, portfolio value $8400",
+    "summary": "This portfolio has a moderate risk profile. In a market downturn, the diversified nature, particularly the inclusion of gold and bond mutual funds, is expected to provide some cushion against significant losses compared to an all-equity portfolio. However, investors should be prepared for potential fluctuations in portfolio value during volatile periods.",
+    "quickchart_url": "https://quickchart.io/chart?c={type:'bar',data:{labels:['Mild Crash (10%)','Moderate Crash (20%)','Severe Crash (30%)'],datasets:[{label:'Portfolio Value After Crash',data:[10800,9600,8400],backgroundColor:['#FFEB3B','#FF9800','#F44336']}]}}"
+  },
+  "education_tips": {
+    "diversification_importance": "Diversification is crucial for reducing risk. By spreading investments across different asset classes (stocks, mutual funds, gold, bonds), you can mitigate the impact of poor performance in any single asset category.",
+    "long_term_perspective": "Investing with a long-term horizon (e.g., 5+ years) allows your investments to ride out short-term market volatility and benefit from compounding returns. Patience is key to successful investing.",
+    "rebalancing_strategy": "Regularly rebalance your portfolio to maintain your desired asset allocation. This involves selling assets that have performed well and buying those that have underperformed to bring your portfolio back in line with your original strategy.",
+    "understanding_risk": "All investments carry some level of risk. Understand your personal risk tolerance and align your portfolio with it. While higher returns often come with higher risk, diversification and a long-term view can help manage it."
+  }
+}
   </script>
 
   <script>
