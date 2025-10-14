@@ -88,16 +88,128 @@
 
   <!-- Embedded JSON data -->
   <script id="portfolio-data" type="application/json">
-   [
-  {
-    "name": "First item",
-    "code": 1
+   {
+  "allocation": {
+    "equity_sleeves": {
+      "stocks": "40% and 6000 USD",
+      "mutual_funds": "30% and 4500 USD"
+    },
+    "diversifiers": {
+      "crypto": "0% and 0 USD",
+      "gold": "10% and 1500 USD",
+      "bond_mutual_funds": "20% and 3000 USD"
+    }
   },
-  {
-    "name": "Second item",
-    "code": 2
+  "chart_url_allocation": "https://quickchart.io/chart?c={type:'pie',data:{labels:['Stocks','Mutual Funds','Gold','Bond Mutual Funds'],datasets:[{data:[40,30,10,20]}]}}",
+  "stocks_selected": [
+    {
+      "stock": "AAPL",
+      "current_price": 247.66,
+      "week_52_high": "260.10",
+      "week_52_low": "169.21",
+      "pe": "36.66",
+      "pb": "55.29",
+      "eps": "6.58",
+      "roe": "N/A",
+      "roa": "N/A",
+      "dividend_yield": "0.42",
+      "total_debt_to_equity": "1.89",
+      "revenue_growth_yoy": "5.97",
+      "net_profit_margin": "24.30",
+      "current_ratio": "0.83",
+      "chart": "https://quickchart.io/chart?c={type:'line',data:{labels:['Jan','Feb','Mar','Apr','May','Jun'],datasets:[{label:'AAPL',data:[170,180,190,200,220,240]}]}}",
+      "buy_link": "https://public.com/stocks/aapl",
+      "analysis_summary": {
+        "reason_for_selection(2-3 lines)": "Apple Inc. (AAPL) is selected for its strong brand, consistent innovation, and healthy profit margins, making it a reliable growth stock for a long-term portfolio. Expected future changes include continued product innovation and ecosystem expansion, potentially leading to stable revenue growth."
+      }
+    },
+    {
+      "stock": "GOOGL",
+      "current_price": 244.15,
+      "week_52_high": "256.00",
+      "week_52_low": "140.53",
+      "pe": "24.79",
+      "pb": "7.89",
+      "eps": "9.25",
+      "roe": "N/A",
+      "roa": "N/A",
+      "dividend_yield": "0.34",
+      "total_debt_to_equity": "0.04",
+      "revenue_growth_yoy": "13.13",
+      "net_profit_margin": "31.12",
+      "current_ratio": "1.84",
+      "chart": "https://quickchart.io/chart?c={type:'line',data:{labels:['Jan','Feb','Mar','Apr','May','Jun'],datasets:[{label:'GOOGL',data:[140,150,160,180,200,220]}]}}",
+      "buy_link": "https://public.com/stocks/googl",
+      "analysis_summary": {
+        "reason_for_selection(2-3 lines)": "Alphabet Inc. (GOOGL) is included due to its dominant position in search and advertising, strong revenue growth, and high net profit margin. Its minimal debt and robust free cash flow per share indicate financial health, pointing towards continued strong performance in the digital economy."
+      }
+    },
+    {
+      "stock": "WMT",
+      "current_price": 102.12,
+      "week_52_high": "106.11",
+      "week_52_low": "79.37",
+      "pe": "38.04",
+      "pb": "9.01",
+      "eps": "2.65",
+      "roe": "N/A",
+      "roa": "N/A",
+      "dividend_yield": "0.88",
+      "total_debt_to_equity": "0.50",
+      "revenue_growth_yoy": "4.23",
+      "net_profit_margin": "3.08",
+      "current_ratio": "0.20",
+      "chart": "https://quickchart.io/chart?c={type:'line',data:{labels:['Jan','Feb','Mar','Apr','May','Jun'],datasets:[{label:'WMT',data:[80,85,90,95,100,102]}]}}",
+      "buy_link": "https://public.com/stocks/wmt",
+      "analysis_summary": {
+        "reason_for_selection(2-3 lines)": "Walmart Inc. (WMT) provides stability and a steady dividend, acting as a defensive play in the portfolio. Its consistent revenue growth and essential consumer services make it resilient, offering a balance to higher-growth tech stocks."
+      }
+    }
+  ],
+  "mutual_funds_selected": [
+    {
+      "name": "Vanguard Total Stock Market Index Fund Admiral Shares",
+      "category": "Total Market",
+      "3_year_return": "13%",
+      "5_year_return": "15%",
+      "reason_for_investment": "VTSAX offers broad market exposure to the entire US stock market, providing excellent diversification and strong historical returns, ideal for long-term growth with medium risk."
+    },
+    {
+      "name": "Vanguard 500 Index Fund Admiral Shares",
+      "category": "Large-Cap Equity",
+      "3_year_return": "12.5%",
+      "5_year_return": "14.3%",
+      "reason_for_investment": "VFIAX tracks the performance of the S&P 500, representing large-cap US companies. It's a reliable choice for core equity exposure, offering solid returns and stability for a medium-risk profile."
+    }
+  ],
+  "crypto_selected": [],
+  "bond_mutual_funds": {
+    "summary": "Investing in bond mutual funds, represented here by FD/Debt funds, provides stability and income to the portfolio. They typically have lower volatility than stocks, offering a conservative component that can help preserve capital and reduce overall portfolio risk, especially important given the 7-year investment horizon and medium-risk tolerance."
+  },
+  "Gold": {
+    "summary": "Gold serves as a traditional safe-haven asset, offering protection against inflation and market volatility. Its inclusion diversifies the portfolio and acts as a hedge during economic uncertainties, aligning with a balanced approach to managing risk."
+  },
+  "what_if_analysis": {
+    "conservative_return": "5% return leading to a total value of 15750 USD",
+    "moderate_return": "8% return leading to a total value of 16200 USD",
+    "optimistic_return": "12% return leading to a total value of 16800 USD",
+    "quickchart_url": "https://quickchart.io/chart?c={type:'bar',data:{labels:['Conservative (5%)','Moderate (8%)','Optimistic (12%)'],datasets:[{label:'Projected Value',data:[15750,16200,16800]}]}}"
+  },
+  "summary": "This portfolio allocates 70% to equity (stocks and mutual funds) for growth over your 7-year investment horizon, balanced with 30% in diversifiers like gold and fixed deposits/debt funds for capital preservation and reduced volatility, aligning with your medium-risk tolerance and no-crypto preference. The selected stocks and mutual funds offer a mix of growth, stability, and broad market exposure.",
+  "risk_analysis": {
+    "mild_crash": "10% drop, amounting to a loss of 1500 USD, with the portfolio value at 13500 USD",
+    "moderate_crash": "20% drop, amounting to a loss of 3000 USD, with the portfolio value at 12000 USD",
+    "severe_crash": "30% drop, amounting to a loss of 4500 USD, with the portfolio value at 10500 USD",
+    "summary": "This portfolio is designed with a medium-risk tolerance, balancing growth potential with risk mitigation. While diversified across equities, gold, and bond funds, market downturns can still impact returns. The simulated crash scenarios illustrate potential losses under different market conditions, emphasizing the importance of a long-term perspective and regular rebalancing to manage risk effectively.",
+    "quickchart_url": "https://quickchart.io/chart?c={type:'bar',data:{labels:['Mild Crash (10%)','Moderate Crash (20%)','Severe Crash (30%)'],datasets:[{label:'Portfolio Value After Crash',data:[13500,12000,10500]}]}}"
+  },
+  "education_tips": {
+    "diversification_importance": "Diversification across different asset classes like stocks, mutual funds, gold, and bonds is crucial. It helps reduce overall portfolio risk by spreading investments, ensuring that a poor performance in one asset class doesn't severely impact the entire portfolio.",
+    "long_term_perspective": "Adopting a long-term investment horizon (e.g., 7 years as in your case) allows your investments to weather short-term market fluctuations and benefit from the power of compounding. Patience and consistency are key to achieving financial goals.",
+    "rebalancing_strategy": "Periodically reviewing and rebalancing your portfolio (e.g., annually or semi-annually) is essential. Rebalancing involves adjusting your asset allocation back to your original target percentages by selling assets that have performed well and buying those that have underperformed. This helps maintain your desired risk level and capitalize on market movements.",
+    "understanding_risk": "Every investment carries some level of risk. It's vital to understand the potential for both gains and losses. Your medium-risk tolerance means you're comfortable with some volatility for higher potential returns, but it's important to monitor market conditions and adjust your strategy if your risk tolerance changes."
   }
-]
+}
   </script>
 
   <script>
