@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -13,6 +12,10 @@
     .chip { background: rgba(255,255,255,0.1); padding: 0.25rem 0.5rem; border-radius: 999px; font-size: 0.75rem; }
     .chart-img { max-width: 100%; height: auto; border-radius: 8px; }
     .border-card { border: 1px solid rgba(255,255,255,0.2); }
+    .spinner { border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid #3b82f6; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .error-box { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; padding: 1rem; }
+    .img-placeholder { background: rgba(255,255,255,0.05); min-height: 200px; display: flex; align-items: center; justify-content: center; border-radius: 8px; }
   </style>
 </head>
 <body class="p-6">
@@ -22,265 +25,230 @@
       <p class="text-sm muted">BY AJTITAN</p>
     </header>
 
-    <main class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <!-- Left Column: Summary + Allocation -->
+    <!-- Loading State -->
+    <div id="loadingState" class="flex flex-col items-center justify-center py-20">
+      <div class="spinner"></div>
+      <p class="mt-4 text-sm muted">Loading portfolio data...</p>
+    </div>
+
+    <!-- Error State -->
+    <div id="errorState" class="hidden error-box">
+      <h3 class="font-semibold text-red-400">Failed to Load Portfolio</h3>
+      <p class="mt-2 text-sm muted" id="errorMessage"></p>
+      <button onclick="location.reload()" class="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded text-sm">Retry</button>
+    </div>
+
+    <!-- Main Content -->
+    <main id="mainContent" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Left Column -->
       <section class="lg:col-span-1 space-y-4">
         <div class="card p-4">
           <h2 class="text-lg font-medium">Summary</h2>
-          <p id="summaryText" class="mt-2 text-sm muted"></p>
+          <p id="summaryText" class="mt-2 text-sm muted">No summary available</p>
           <div class="mt-4">
             <h3 class="text-sm font-medium">Allocation</h3>
             <div id="allocationList" class="mt-2 space-y-2 text-sm"></div>
-            <div class="mt-3">
-              <img id="allocationChart" class="chart-img" alt="Allocation Chart" />
-            </div>
+            <div class="mt-3" id="allocationChartContainer"></div>
           </div>
         </div>
 
         <div class="card p-4">
           <h2 class="text-lg font-medium">Risk Analysis</h2>
-          <div id="riskSummary" class="mt-2 text-sm muted"></div>
-          <div class="mt-3">
-            <img id="riskChart" class="chart-img" alt="Risk Chart" />
-          </div>
+          <div id="riskSummary" class="mt-2 text-sm muted">No risk analysis available</div>
+          <div class="mt-3" id="riskChartContainer"></div>
         </div>
 
         <div class="card p-4">
           <h2 class="text-lg font-medium">Education Tips</h2>
-          <ul id="educationTips" class="mt-2 text-sm list-disc list-inside muted"></ul>
+          <ul id="educationTips" class="mt-2 text-sm list-disc list-inside muted">
+            <li>No tips available</li>
+          </ul>
         </div>
       </section>
 
-      <!-- Middle Column: Stocks + What-if + Mutual Funds + Diversifiers -->
+      <!-- Middle Column -->
       <section class="lg:col-span-2 space-y-4">
         <div class="card p-4">
           <div class="flex items-center justify-between">
             <h2 class="text-lg font-medium">Stocks Selected</h2>
             <span id="equityChip" class="chip">Equity Sleeve</span>
           </div>
-          <div id="stocksGrid" class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-        </div>
-
-        <div class="card p-4">
-          <h2 class="text-lg font-medium">What-if Analysis</h2>
-          <div id="whatIfText" class="mt-2 text-sm muted"></div>
-          <div class="mt-3">
-            <img id="whatIfChart" class="chart-img" alt="What-if Chart" />
+          <div id="stocksGrid" class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <p class="text-sm muted col-span-2">No stocks selected</p>
           </div>
         </div>
 
         <div class="card p-4">
+          <h2 class="text-lg font-medium">What-if Analysis</h2>
+          <div id="whatIfText" class="mt-2 text-sm muted">No what-if analysis available</div>
+          <div class="mt-3" id="whatIfChartContainer"></div>
+        </div>
+
+        <div class="card p-4">
           <h2 class="text-lg font-medium">Mutual Funds</h2>
-          <div id="mfList" class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+          <div id="mfList" class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+            <p class="text-sm muted col-span-2">No mutual funds selected</p>
+          </div>
         </div>
 
         <div class="card p-4">
           <h2 class="text-lg font-medium">Diversifiers</h2>
-          <div id="diversifiersList" class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+          <div id="diversifiersList" class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+            <p class="text-sm muted col-span-2">No diversifiers selected</p>
+          </div>
         </div>
       </section>
     </main>
 
     <footer class="mt-6 text-sm muted text-center">
-      Generated view — charts are loaded from QuickChart / TradingView links present in the JSON.
+      <span id="footerYear"></span> . AJTITAN
     </footer>
   </div>
 
-  <!-- Embedded JSON data -->
-  <script id="portfolio-data" type="application/json">
-   {
-  "allocation": {
-    "equity_sleeves": {
-      "stocks": "40% and 6000 USD",
-      "mutual_funds": "30% and 4500 USD"
-    },
-    "diversifiers": {
-      "crypto": "N/A",
-      "gold": "15% and 2250 USD",
-      "bond_mutual_funds": "15% and 2250 USD"
+<script>
+// Utility functions
+function safeGet(obj, path, defaultValue = '') {
+  return path.split('.').reduce((acc, part) => acc && acc[part], obj) || defaultValue;
+}
+
+function createImageElement(src, alt, fallbackText = 'Chart unavailable') {
+  if (!src) {
+    return `<div class="img-placeholder text-sm muted">${fallbackText}</div>`;
+  }
+  return `<img src="${src}" alt="${alt}" class="chart-img" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'img-placeholder text-sm muted\\'>${fallbackText}</div>';" />`;
+}
+
+function showError(message) {
+  document.getElementById('loadingState').classList.add('hidden');
+  document.getElementById('errorState').classList.remove('hidden');
+  document.getElementById('errorMessage').textContent = message;
+}
+
+function showContent() {
+  document.getElementById('loadingState').classList.add('hidden');
+  document.getElementById('mainContent').classList.remove('hidden');
+}
+
+async function loadPortfolio() {
+  const userId = new URLSearchParams(window.location.search).get('user') || 'default';
+  const jsonUrl = `https://raw.githubusercontent.com/ashish-in-progress/portfolio-json/main/${userId}.json`;
+
+  try {
+    const res = await fetch(jsonUrl);
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
     }
-  },
-  "chart_url_allocation": "https://quickchart.io/chart?c={type:'pie',data:{labels:['Stocks','Mutual Funds','Gold','Debt/FD'],datasets:[{data:[40,30,15,15]}]}}",
-  "stocks_selected": [
-    {
-      "stock": "PFE",
-      "current_price": 24.73,
-      "week_52_high": "30.43",
-      "week_52_low": "20.92",
-      "pe": "13.10",
-      "pb": "1.59",
-      "eps": "1.88",
-      "roe": "N/A",
-      "roa": "N/A",
-      "dividend_yield": "6.84",
-      "total_debt_to_equity": "0.73",
-      "revenue_growth_yoy": "13.54",
-      "net_profit_margin": "16.85",
-      "current_ratio": "0.92",
-      "chart": "https://r2.chart-img.com/20251028/tradingview/advanced-chart/5a37959c-acf6-47df-81f7-374cb030d311.png",
-      "buy_link": "https://public.com/stocks/pfe",
-      "analysis_summary": {
-        "reason_for_selection(2-3 lines)": "Pfizer (PFE) is selected for its attractive valuation (low PE and PB), high dividend yield, and decent revenue growth, offering a stable component with income potential to the portfolio."
-      }
-    },
-    {
-      "stock": "JNJ",
-      "current_price": 190.9,
-      "week_52_high": "192.10",
-      "week_52_low": "140.68",
-      "pe": "20.27",
-      "pb": "5.85",
-      "eps": "9.35",
-      "roe": "N/A",
-      "roa": "N/A",
-      "dividend_yield": "2.63",
-      "total_debt_to_equity": "0.51",
-      "revenue_growth_yoy": "4.68",
-      "net_profit_margin": "25.00",
-      "current_ratio": "0.78",
-      "chart": "https://r2.chart-img.com/20251028/tradingview/advanced-chart/f25d9b84-e807-4104-a3d2-f58576206264.png",
-      "buy_link": "https://public.com/stocks/jnj",
-      "analysis_summary": {
-        "reason_for_selection(2-3 lines)": "Johnson & Johnson (JNJ) offers stability and consistent performance, characteristic of a diversified healthcare giant. Its strong performance metrics and dividend yield make it a reliable choice for a medium-risk portfolio."
-      }
-    },
-    {
-      "stock": "GOOGL",
-      "current_price": 244.15,
-      "week_52_high": "256.00",
-      "week_52_low": "140.53",
-      "pe": "24.79",
-      "pb": "7.89",
-      "eps": "9.25",
-      "roe": "N/A",
-      "roa": "N/A",
-      "dividend_yield": "0.34",
-      "total_debt_to_equity": "0.04",
-      "revenue_growth_yoy": "13.13",
-      "net_profit_margin": "31.12",
-      "current_ratio": "1.84",
-      "chart": "https://r2.chart-img.com/20251028/tradingview/advanced-chart/d1ed7921-6a49-47e3-a1ca-9c388a1aefee.png",
-      "buy_link": "https://public.com/stocks/googl",
-      "analysis_summary": {
-        "reason_for_selection(2-3 lines)": "Alphabet (GOOGL) is chosen for its robust revenue growth, excellent profit margins, and exceptionally low debt, indicating strong financial health and market leadership in technology."
-      }
+    
+    const text = await res.text();
+    console.log('Raw JSON (first 500 chars):', text.substring(0, 500));
+    console.log('JSON around error position:', text.substring(8600, 8650));
+    
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (parseErr) {
+      throw new Error(`JSON parsing failed: ${parseErr.message}. Check console for details.`);
     }
-  ],
-  "mutual_funds_selected": [
-    {
-      "name": "Vanguard Total Stock Market Index Fund Admiral Shares",
-      "category": "Total Market",
-      "3_year_return": "13%",
-      "5_year_return": "15%",
-      "reason_for_investment": "VTSAX provides broad exposure to the entire U.S. stock market, offering diversification and consistent long-term growth potential, suitable for the core equity portion of a medium-risk portfolio."
-    },
-    {
-      "name": "Vanguard Health Care Fund",
-      "category": "Sectoral",
-      "3_year_return": "15%",
-      "5_year_return": "16.5%",
-      "reason_for_investment": "VGENX offers exposure to the healthcare sector, known for its defensive characteristics and long-term growth driven by demographic trends and innovation. This fund provides a balance of growth and resilience for a medium-risk investor."
-    },
-    {
-      "name": "Vanguard Dividend Growth Fund",
-      "category": "Dividend",
-      "3_year_return": "9.5%",
-      "5_year_return": "10%",
-      "reason_for_investment": "VDIGX focuses on companies with a history of growing dividends, providing a steady income stream and potentially lower volatility compared to pure growth funds. It's a good choice for balancing growth with income in a medium-risk strategy."
+    
+    if (!data || typeof data !== 'object') {
+      throw new Error('Invalid data format');
     }
-  ],
-  "crypto_selected": [],
-  "bond_mutual_funds": {
-    "summary": "The 15% allocation to debt/FD (interpreted as bond mutual funds for diversified debt exposure) aims to provide stability and capital preservation, counterbalancing the equity portion's volatility. This helps lower overall portfolio risk and offers a steady, albeit lower, return."
-  },
-  "Gold": {
-    "summary": "The 15% allocation to Gold acts as a traditional safe-haven asset, providing diversification and a hedge against inflation and economic uncertainties. Gold tends to perform well when other asset classes are struggling, thus reducing overall portfolio risk."
-  },
-  "what_if_analysis": {
-    "conservative_return": "5% return, total value: 15750 USD",
-    "moderate_return": "8% return, total value: 16200 USD",
-    "optimistic_return": "12% return, total value: 16800 USD",
-    "quickchart_url": "https://quickchart.io/chart?c={type:'bar',data:{labels:['Conservative (5%)','Moderate (8%)','Optimistic (12%)'],datasets:[{label:'Projected Value',data:[15750,16200,16800]}]}}"
-  },
-  "summary": "This portfolio of 15,000 USD for a 7-year investment duration with medium risk is allocated 70% to equity (40% stocks, 30% mutual funds) and 30% to diversifiers (15% gold, 15% debt/FD). The selected stocks (PFE, JNJ, GOOGL) offer a blend of value, stability, and growth, while the mutual funds (VTSAX, VGENX, VDIGX) provide broad market exposure, sectoral diversification, and income generation, aiming for a balanced growth with controlled risk.",
-  "risk_analysis": {
-    "mild_crash": "10% drop, 1500 USD lost, portfolio value: 13500 USD",
-    "moderate_crash": "20% drop, 3000 USD lost, portfolio value: 12000 USD",
-    "severe_crash": "30% drop, 4500 USD lost, portfolio value: 10500 USD",
-    "summary": "The portfolio, designed for a medium risk profile, includes diversifiers like gold and debt/FD to mitigate market downturns. While equity allocations are exposed to market fluctuations, the diversification strategy aims to cushion severe impacts, maintaining a balance between growth potential and risk protection.",
-    "quickchart_url": "https://quickchart.io/chart?c={type:'bar',data:{labels:['Mild Crash (10%)','Moderate Crash (20%)','Severe Crash (30%)'],datasets:[{label:'Portfolio Value After Crash',data:[13500,12000,10500]}]}}"
-  },
-  "education_tips": {
-    "diversification_importance": "Diversification across different asset classes (stocks, mutual funds, gold, debt) helps reduce overall portfolio risk. When one asset class underperforms, others may perform better, smoothing out returns over time and protecting against significant losses.",
-    "long_term_perspective": "Investing for the long term (e.g., 7 years as in this portfolio) allows your investments to recover from short-term market volatility and benefit from compounding returns. Patience and consistency are key to achieving financial goals.",
-    "rebalancing_strategy": "Regularly rebalancing your portfolio (e.g., annually) ensures that your asset allocation remains aligned with your risk tolerance and investment objectives. This involves selling assets that have grown significantly and buying those that have underperformed to restore the target percentages.",
-    "understanding_risk": "All investments carry some level of risk. Understanding the risks associated with each asset in your portfolio, such as market risk for stocks or interest rate risk for bonds, is crucial. Your medium-risk profile indicates a willingness to accept some volatility for higher potential returns, balanced by safer assets."
+    
+    renderPortfolio(data);
+    showContent();
+  } catch (err) {
+    console.error('Error loading portfolio:', err);
+    showError(`Could not load portfolio for user "${userId}". ${err.message}`);
   }
 }
-  </script>
 
-  <script>
-    const data = JSON.parse(document.getElementById('portfolio-data').textContent.trim());
+function renderPortfolio(data) {
+  // Summary
+  const summary = safeGet(data, 'summary', 'No summary available');
+  document.getElementById('summaryText').textContent = summary;
 
-    // Summary
-    document.getElementById('summaryText').textContent = data.summary;
+  // Allocation
+  const alloc = data.allocation || {};
+  const equitySleeves = alloc.equity_sleeves || {};
+  const diversifiers = alloc.diversifiers || {};
+  
+  document.getElementById('allocationList').innerHTML = `
+    <div><strong>Stocks:</strong> ${equitySleeves.stocks || '0%'}</div>
+    <div><strong>Mutual Funds:</strong> ${equitySleeves.mutual_funds || '0%'}</div>
+    <div><strong>Crypto:</strong> ${diversifiers.crypto || '0%'}</div>
+    <div><strong>Bond MF:</strong> ${diversifiers.bond_mutual_funds || '0%'}</div>
+    <div><strong>Gold:</strong> ${diversifiers.gold || '0%'}</div>
+  `;
+  
+  const allocChart = safeGet(data, 'chart_url_allocation');
+  document.getElementById('allocationChartContainer').innerHTML = 
+    createImageElement(allocChart, 'Allocation Chart');
 
-    // Allocation
-    const alloc = data.allocation;
-    const allocEl = document.getElementById('allocationList');
-    allocEl.innerHTML = `
-      <div><strong>Stocks:</strong> ${alloc.equity_sleeves.stocks}</div>
-      <div><strong>Mutual Funds:</strong> ${alloc.equity_sleeves.mutual_funds}</div>
-      <div><strong>Crypto:</strong> ${alloc.diversifiers.crypto || '0%'}</div>
-      <div><strong>Bond MF:</strong> ${alloc.diversifiers.bond_mutual_funds}</div>
-      <div><strong>Gold:</strong> ${alloc.diversifiers.gold}</div>
-    `;
+  // Risk Analysis
+  const riskAnalysis = data.risk_analysis || {};
+  document.getElementById('riskSummary').textContent = 
+    riskAnalysis.summary || 'No risk analysis available';
+  
+  const riskChart = safeGet(riskAnalysis, 'quickchart_url');
+  document.getElementById('riskChartContainer').innerHTML = 
+    createImageElement(riskChart, 'Risk Chart');
 
-    // Allocation chart
-    document.getElementById('allocationChart').src = data.chart_url_allocation;
-
-    // Risk analysis
-    document.getElementById('riskSummary').textContent = data.risk_analysis.summary;
-    document.getElementById('riskChart').src = data.risk_analysis.quickchart_url;
-
-    // What-if analysis
-    const whatIf = data.what_if_analysis;
+  // What-if Analysis
+  const whatIf = data.what_if_analysis || {};
+  if (whatIf.conservative_return || whatIf.moderate_return || whatIf.optimistic_return) {
     document.getElementById('whatIfText').innerHTML = `
-      <div class="text-sm muted"><strong>Conservative:</strong> ${whatIf.conservative_return || ''}</div>
-      <div class="text-sm muted"><strong>Moderate:</strong> ${whatIf.moderate_return || ''}</div>
-      <div class="text-sm muted"><strong>Optimistic:</strong> ${whatIf.optimistic_return || ''}</div>
+      <div class="text-sm muted"><strong>Conservative:</strong> ${whatIf.conservative_return || 'N/A'}</div>
+      <div class="text-sm muted"><strong>Moderate:</strong> ${whatIf.moderate_return || 'N/A'}</div>
+      <div class="text-sm muted"><strong>Optimistic:</strong> ${whatIf.optimistic_return || 'N/A'}</div>
     `;
-    document.getElementById('whatIfChart').src = whatIf.quickchart_url || '';
+  }
+  
+  const whatIfChart = safeGet(whatIf, 'quickchart_url');
+  document.getElementById('whatIfChartContainer').innerHTML = 
+    createImageElement(whatIfChart, 'What-if Chart');
 
-    // Education tips
-    const tipsEl = document.getElementById('educationTips');
+  // Education Tips
+  const tipsEl = document.getElementById('educationTips');
+  const tips = data.education_tips || {};
+  const tipValues = Object.values(tips).filter(t => t);
+  
+  if (tipValues.length > 0) {
     tipsEl.innerHTML = '';
-    for (const tip of Object.values(data.education_tips)) {
+    tipValues.forEach(tip => {
       const li = document.createElement('li');
       li.textContent = tip;
       tipsEl.appendChild(li);
-    }
+    });
+  }
 
-    // Stocks grid
-    const stocksGrid = document.getElementById('stocksGrid');
+  // Stocks
+  const stocksGrid = document.getElementById('stocksGrid');
+  const stocks = data.stocks_selected || [];
+  
+  if (stocks.length > 0) {
     stocksGrid.innerHTML = '';
-    (data.stocks_selected || []).forEach(s => {
+    stocks.forEach(s => {
       const card = document.createElement('div');
       card.className = 'p-4 card';
+      
+      const buyLink = s.buy_link ? 
+        `<a href="${s.buy_link}" target="_blank" rel="noopener noreferrer" class="text-sm underline hover:text-blue-400">Buy</a>` : 
+        '';
+      
+      const reason = safeGet(s, 'analysis_summary.reason_for_selection(2-3 lines)', 'No analysis available');
+      
       card.innerHTML = `
         <div class="flex items-start justify-between">
           <div>
-            <h3 class="text-md font-semibold">${s.stock}</h3>
-            <div class="muted text-sm">Price: ${s.current_price}</div>
-            <div class="muted text-sm">PE: ${s.pe} • PB: ${s.pb}</div>
+            <h3 class="text-md font-semibold">${s.stock || 'Unknown'}</h3>
+            <div class="muted text-sm">Price: ${s.current_price || 'N/A'}</div>
+            <div class="muted text-sm">PE: ${s.pe || 'N/A'} • PB: ${s.pb || 'N/A'}</div>
           </div>
-          <div class="text-right">
-            <a href="${s.buy_link || '#'}" target="_blank" class="text-sm underline">Buy</a>
-          </div>
+          <div class="text-right">${buyLink}</div>
         </div>
-        <p class="mt-2 text-sm muted">${s.analysis_summary?.['reason_for_selection(2-3 lines)'] || ''}</p>
+        <p class="mt-2 text-sm muted">${reason}</p>
         <div class="mt-3">
-          <img src="${s.chart}" alt="${s.stock} chart" class="chart-img" />
+          ${createImageElement(s.chart, `${s.stock} chart`, 'Chart not available')}
         </div>
         <div class="mt-3 text-sm muted grid grid-cols-2 gap-2">
           <div><strong>52w High:</strong> ${s.week_52_high || 'N/A'}</div>
@@ -291,65 +259,95 @@
       `;
       stocksGrid.appendChild(card);
     });
+  }
 
-    // Mutual funds
-    const mfList = document.getElementById('mfList');
+  // Mutual Funds
+  const mfList = document.getElementById('mfList');
+  const mutualFunds = data.mutual_funds_selected || [];
+  
+  if (mutualFunds.length > 0) {
     mfList.innerHTML = '';
-    (data.mutual_funds_selected || []).forEach(m => {
+    mutualFunds.forEach(m => {
       const el = document.createElement('div');
       el.className = 'p-3 border-card rounded';
       el.innerHTML = `
-        <div class="text-sm font-medium">${m.name}</div>
-        <div class="muted text-xs">${m.category} • 3y: ${m['3_year_return']} • 5y: ${m['5_year_return']}</div>
-        <div class="mt-2 text-sm muted">${m.reason_for_investment}</div>
+        <div class="text-sm font-medium">${m.name || 'Unknown Fund'}</div>
+        <div class="muted text-xs">${m.category || 'N/A'} • 3y: ${m['3_year_return'] || 'N/A'} • 5y: ${m['5_year_return'] || 'N/A'}</div>
+        <div class="mt-2 text-sm muted">${m.reason_for_investment || 'No reason provided'}</div>
       `;
       mfList.appendChild(el);
     });
+  }
 
-    // Diversifiers (Crypto, Gold, Bond MF)
-    const diversifiersEl = document.getElementById('diversifiersList');
+  // Diversifiers
+  const diversifiersEl = document.getElementById('diversifiersList');
+  const cryptos = data.crypto_selected || [];
+  let hasDiversifiers = false;
+
+  if (cryptos.length > 0) {
     diversifiersEl.innerHTML = '';
-
-    // --- Crypto ---
-    (data.crypto_selected || []).forEach(c => {
+    hasDiversifiers = true;
+    
+    cryptos.forEach(c => {
       const el = document.createElement('div');
       el.className = 'p-3 border-card rounded';
+      const buyLink = c.buy_link ? 
+        `<a href="${c.buy_link}" target="_blank" rel="noopener noreferrer" class="text-xs underline hover:text-blue-400">Buy</a>` : 
+        '';
+      
       el.innerHTML = `
         <div class="flex justify-between items-center">
           <div>
-            <div class="text-sm font-medium">${c.name} (${c.symbol.toUpperCase()})</div>
-            <div class="muted text-xs">Price: ${c.current_price.toLocaleString()} USD</div>
+            <div class="text-sm font-medium">${c.name || 'Unknown'} (${(c.symbol || '').toUpperCase()})</div>
+            <div class="muted text-xs">Price: ${typeof c.current_price === 'number' ? c.current_price.toLocaleString() : c.current_price || 'N/A'} USD</div>
           </div>
-          <a href="${c.buy_link}" target="_blank" class="text-xs underline">Buy</a>
+          ${buyLink}
         </div>
         <div class="mt-2 text-sm muted">ROI: ${c.roi || 'N/A'}</div>
       `;
       diversifiersEl.appendChild(el);
     });
+  }
 
-    // --- Gold ---
-    if (data.allocation.diversifiers.gold) {
-      const goldEl = document.createElement('div');
-      goldEl.className = 'p-3 border-card rounded';
-      goldEl.innerHTML = `
-        <div class="text-sm font-medium">Gold</div>
-        <div class="muted text-xs">Allocation: ${data.allocation.diversifiers.gold}</div>
-        <div class="muted text-xs">WHY: ${data.Gold.summary}</div>
-      `;
-      diversifiersEl.appendChild(goldEl);
-    }
+  // Gold
+  if (diversifiers.gold && diversifiers.gold !== '0%') {
+    if (!hasDiversifiers) diversifiersEl.innerHTML = '';
+    hasDiversifiers = true;
+    
+    const goldEl = document.createElement('div');
+    goldEl.className = 'p-3 border-card rounded';
+    const goldSummary = safeGet(data, 'Gold.summary') || safeGet(data, 'gold.summary', 'Hedge against inflation');
+    goldEl.innerHTML = `
+      <div class="text-sm font-medium">Gold</div>
+      <div class="muted text-xs">Allocation: ${diversifiers.gold}</div>
+      <div class="muted text-xs mt-1">${goldSummary}</div>
+    `;
+    diversifiersEl.appendChild(goldEl);
+  }
 
-    // --- Bond Mutual Funds ---
-    if (data.allocation.diversifiers.bond_mutual_funds) {
-      const bondEl = document.createElement('div');
-      bondEl.className = 'p-3 border-card rounded';
-      bondEl.innerHTML = `
-        <div class="text-sm font-medium">Bond Mutual Funds</div>
-        <div class="muted text-xs">Allocation: ${data.allocation.diversifiers.bond_mutual_funds}</div>
-        <div class="muted text-xs">WHY: ${data.bond_mutual_funds.summary}</div>
-      `;
-      diversifiersEl.appendChild(bondEl);
-    }
-  </script>
+  // Bond Mutual Funds
+  if (diversifiers.bond_mutual_funds && diversifiers.bond_mutual_funds !== '0%') {
+    if (!hasDiversifiers) diversifiersEl.innerHTML = '';
+    hasDiversifiers = true;
+    
+    const bondEl = document.createElement('div');
+    bondEl.className = 'p-3 border-card rounded';
+    const bondSummary = safeGet(data, 'bond_mutual_funds.summary', 'Stable income generation');
+    bondEl.innerHTML = `
+      <div class="text-sm font-medium">Bond Mutual Funds</div>
+      <div class="muted text-xs">Allocation: ${diversifiers.bond_mutual_funds}</div>
+      <div class="muted text-xs mt-1">${bondSummary}</div>
+    `;
+    diversifiersEl.appendChild(bondEl);
+  }
+}
+
+// Set current year in footer
+document.getElementById('footerYear').textContent = new Date().getFullYear();
+
+// Load portfolio on page load
+loadPortfolio();
+</script>
+
 </body>
 </html>
