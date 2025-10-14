@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -18,7 +19,7 @@
   <div class="max-w-6xl mx-auto">
     <header class="mb-6">
       <h1 class="text-2xl font-semibold">Portfolio Dashboard</h1>
-      <p class="text-sm muted">Rendered from provided JSON — interactive, mobile-friendly view.</p>
+      <p class="text-sm muted">BY AJTITAN</p>
     </header>
 
     <main class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -87,7 +88,7 @@
 
   <!-- Embedded JSON data -->
   <script id="portfolio-data" type="application/json">
-    {
+   {
   "allocation": {
     "equity_sleeves": {
       "stocks": "40% and 20000 USD",
@@ -340,6 +341,7 @@
       goldEl.innerHTML = `
         <div class="text-sm font-medium">Gold</div>
         <div class="muted text-xs">Allocation: ${data.allocation.diversifiers.gold}</div>
+        <div class="muted text-xs">WHY: ${data.Gold.summary}</div>
       `;
       diversifiersEl.appendChild(goldEl);
     }
@@ -351,6 +353,7 @@
       bondEl.innerHTML = `
         <div class="text-sm font-medium">Bond Mutual Funds</div>
         <div class="muted text-xs">Allocation: ${data.allocation.diversifiers.bond_mutual_funds}</div>
+        <div class="muted text-xs">WHY: ${data.bond_mutual_funds.summary}</div>
       `;
       diversifiersEl.appendChild(bondEl);
     }
