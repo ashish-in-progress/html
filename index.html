@@ -1,141 +1,631 @@
-  <!doctype html>
-  <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Portfolio Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-      body { background: #111827; color: #f3f4f6; }
-      .card { background: #1f2937; border-radius: 12px; box-shadow: 0 6px 18px rgba(0,0,0,0.5); }
-      .muted { color: #d1d5db; }
-      .chip { background: rgba(255,255,255,0.1); padding: 0.25rem 0.5rem; border-radius: 999px; font-size: 0.75rem; }
-      .chart-img { max-width: 100%; height: auto; border-radius: 8px; }
-      .border-card { border: 1px solid rgba(255,255,255,0.2); }
-      .spinner { border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid #3b82f6; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
-      @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-      .error-box { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; padding: 1rem; }
-      .img-placeholder { background: rgba(255,255,255,0.05); min-height: 200px; display: flex; align-items: center; justify-content: center; border-radius: 8px; }
-    </style>
-  </head>
-  <body class="p-6">
-    <div class="max-w-6xl mx-auto">
-      <header class="mb-6">
-        <h1 class="text-2xl font-semibold">Portfolio Dashboard</h1>
-        <p class="text-sm muted">BY AJTITAN</p>
-      </header>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Portfolio Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body { 
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+      color: #f3f4f6; 
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+    }
+    
+    .card { 
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(51, 65, 85, 0.6) 100%);
+      backdrop-filter: blur(10px);
+      border-radius: 16px; 
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      opacity: 0;
+      animation: fadeInUp 0.6s ease-out forwards;
+    }
+    
+    .card:hover { 
+      transform: translateY(-4px);
+      box-shadow: 0 12px 48px rgba(59, 130, 246, 0.2);
+      border-color: rgba(59, 130, 246, 0.3);
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .muted { color: #d1d5db; }
+    
+    .chip { 
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(147, 51, 234, 0.2) 100%);
+      padding: 0.25rem 0.75rem; 
+      border-radius: 999px; 
+      font-size: 0.75rem;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      transition: all 0.3s ease;
+    }
+    
+    .chip:hover {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(147, 51, 234, 0.3) 100%);
+      transform: scale(1.05);
+    }
+    
+    .chart-img { 
+      max-width: 100%; 
+      height: auto; 
+      border-radius: 12px;
+      transition: transform 0.3s ease;
+    }
+    
+    .chart-img:hover {
+      transform: scale(1.02);
+    }
+    
+    .border-card { 
+      border: 1px solid rgba(255,255,255,0.2);
+      transition: all 0.3s ease;
+    }
+    
+    .border-card:hover {
+      border-color: rgba(59, 130, 246, 0.4);
+      background: rgba(59, 130, 246, 0.05);
+    }
+    
+    .spinner { 
+      border: 3px solid rgba(255,255,255,0.1); 
+      border-top: 3px solid #3b82f6; 
+      border-radius: 50%; 
+      width: 48px; 
+      height: 48px; 
+      animation: spin 1s linear infinite; 
+    }
+    
+    @keyframes spin { 
+      0% { transform: rotate(0deg); } 
+      100% { transform: rotate(360deg); } 
+    }
+    
+    .error-box { 
+      background: rgba(239, 68, 68, 0.1); 
+      border: 1px solid rgba(239, 68, 68, 0.3); 
+      border-radius: 12px; 
+      padding: 1.5rem;
+      animation: shake 0.5s ease;
+    }
+    
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      75% { transform: translateX(10px); }
+    }
+    
+    .img-placeholder { 
+      background: rgba(255,255,255,0.05); 
+      min-height: 200px; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      border-radius: 12px;
+      border: 2px dashed rgba(255,255,255,0.1);
+    }
+    
+    header {
+      animation: slideDown 0.6s ease-out;
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .stat-item {
+      transition: all 0.3s ease;
+      padding: 0.5rem;
+      border-radius: 8px;
+    }
+    
+    .stat-item:hover {
+      background: rgba(59, 130, 246, 0.1);
+      transform: translateX(4px);
+    }
+    
+    button {
+      transition: all 0.3s ease;
+    }
+    
+    button:hover {
+      transform: scale(1.05);
+    }
+    
+    button:active {
+      transform: scale(0.95);
+    }
+    
+    a {
+      transition: all 0.3s ease;
+    }
+    
+    a:hover {
+      color: #60a5fa !important;
+    }
+    
+    .gradient-text {
+      background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .card:nth-child(1) { animation-delay: 0.1s; }
+    .card:nth-child(2) { animation-delay: 0.2s; }
+    .card:nth-child(3) { animation-delay: 0.3s; }
+    .card:nth-child(4) { animation-delay: 0.4s; }
+    .card:nth-child(5) { animation-delay: 0.5s; }
+    .card:nth-child(6) { animation-delay: 0.6s; }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    
+    .pulse {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    
+    html {
+      scroll-behavior: smooth;
+    }
+    
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: rgba(255,255,255,0.05);
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: rgba(59, 130, 246, 0.5);
+      border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(59, 130, 246, 0.7);
+    }
+  </style>
+</head>
+<body class="p-6">
+  
+  <div class="max-w-6xl mx-auto">
+    <header class="mb-8 text-center">
+      <h1 class="text-4xl font-bold gradient-text mb-2">Portfolio Dashboard</h1>
+      <p class="text-sm muted tracking-wider">BY AJTITAN</p>
+    </header>
 
-      <!-- Loading State -->
-      <div id="loadingState" class="flex flex-col items-center justify-center py-20">
-        <div class="spinner"></div>
-        <p class="mt-4 text-sm muted">Loading portfolio data...</p>
-      </div>
-
-      <!-- Error State -->
-      <div id="errorState" class="hidden error-box">
-        <h3 class="font-semibold text-red-400">Failed to Load Portfolio</h3>
-        <p class="mt-2 text-sm muted" id="errorMessage"></p>
-        <button onclick="location.reload()" class="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded text-sm">Retry</button>
-      </div>
-
-      <!-- Main Content -->
-      <main id="mainContent" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Left Column -->
-        <section class="lg:col-span-1 space-y-4">
-          <div class="card p-4">
-            <h2 class="text-lg font-medium">Summary</h2>
-            <p id="summaryText" class="mt-2 text-sm muted">No summary available</p>
-            <div class="mt-4">
-              <h3 class="text-sm font-medium">Allocation</h3>
-              <div id="allocationList" class="mt-2 space-y-2 text-sm"></div>
-              <div class="mt-3" id="allocationChartContainer"></div>
-            </div>
-          </div>
-
-          <div class="card p-4">
-            <h2 class="text-lg font-medium">Risk Analysis</h2>
-            <div id="riskSummary" class="mt-2 text-sm muted">No risk analysis available</div>
-            <div class="mt-3" id="riskChartContainer"></div>
-          </div>
-
-          <div class="card p-4">
-            <h2 class="text-lg font-medium">Education Tips</h2>
-            <ul id="educationTips" class="mt-2 text-sm list-disc list-inside muted">
-              <li>No tips available</li>
-            </ul>
-          </div>
-        </section>
-
-        <!-- Middle Column -->
-        <section class="lg:col-span-2 space-y-4">
-          <div class="card p-4">
-            <div class="flex items-center justify-between">
-              <h2 class="text-lg font-medium">Stocks Selected</h2>
-              <span id="equityChip" class="chip">Equity Sleeve</span>
-            </div>
-            <div id="stocksGrid" class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-              <p class="text-sm muted col-span-2">No stocks selected</p>
-            </div>
-          </div>
-
-          <div class="card p-4">
-            <h2 class="text-lg font-medium">What-if Analysis</h2>
-            <div id="whatIfText" class="mt-2 text-sm muted">No what-if analysis available</div>
-            <div class="mt-3" id="whatIfChartContainer"></div>
-          </div>
-
-          <div class="card p-4">
-            <h2 class="text-lg font-medium">Mutual Funds</h2>
-            <div id="mfList" class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
-              <p class="text-sm muted col-span-2">No mutual funds selected</p>
-            </div>
-          </div>
-
-          <div class="card p-4">
-            <h2 class="text-lg font-medium">Diversifiers</h2>
-            <div id="diversifiersList" class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
-              <p class="text-sm muted col-span-2">No diversifiers selected</p>
-            </div>
-          </div>
-        </section>
-      </main>
-
-      <footer class="mt-6 text-sm muted text-center">
-        <span id="footerYear"></span> . AJTITAN
-      </footer>
+    <!-- Loading State -->
+    <div id="loadingState" class="flex flex-col items-center justify-center py-20">
+      <div class="spinner"></div>
+      <p class="mt-6 text-sm muted pulse">Loading portfolio data...</p>
     </div>
 
-  <script>
-  // Utility functions
-  function safeGet(obj, path, defaultValue = '') {
-    return path.split('.').reduce((acc, part) => acc && acc[part], obj) || defaultValue;
-  }
+    <!-- Error State -->
+    <div id="errorState" class="hidden error-box">
+      <h3 class="font-semibold text-red-400 text-lg">⚠️ Failed to Load Portfolio</h3>
+      <p class="mt-3 text-sm muted" id="errorMessage"></p>
+      <button onclick="location.reload()" class="mt-6 px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium shadow-lg">Retry</button>
+    </div>
 
-  function createImageElement(src, alt, fallbackText = 'Chart unavailable') {
-    if (!src) {
-      return `<div class="img-placeholder text-sm muted">${fallbackText}</div>`;
+    <!-- Main Content -->
+    <main id="mainContent" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Left Column -->
+      <section class="lg:col-span-1 space-y-6">
+        <div class="card p-6">
+          <h2 class="text-xl font-semibold mb-4 flex items-center">
+            <span class="mr-2">📊</span> Summary
+          </h2>
+          <p id="summaryText" class="mt-2 text-sm muted leading-relaxed">No summary available</p>
+          <div class="mt-6">
+            <h3 class="text-sm font-semibold mb-3 flex items-center">
+              <span class="mr-2">💼</span> Allocation
+            </h3>
+            <div id="allocationList" class="mt-2 space-y-2 text-sm"></div>
+            <div class="mt-4" id="allocationChartContainer"></div>
+          </div>
+        </div>
+
+        <div class="card p-6">
+          <h2 class="text-xl font-semibold mb-4 flex items-center">
+            <span class="mr-2">⚠️</span> Risk Analysis
+          </h2>
+          <div id="riskSummary" class="mt-2 text-sm muted leading-relaxed">No risk analysis available</div>
+          <div class="mt-4" id="riskChartContainer"></div>
+        </div>
+
+        <div class="card p-6">
+          <h2 class="text-xl font-semibold mb-4 flex items-center">
+            <span class="mr-2">💡</span> Education Tips
+          </h2>
+          <ul id="educationTips" class="mt-2 text-sm space-y-2 muted">
+            <li>No tips available</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Middle Column -->
+      <section class="lg:col-span-2 space-y-6">
+        <div class="card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-semibold flex items-center">
+              <span class="mr-2">📈</span> Stocks Selected
+            </h2>
+            <span id="equityChip" class="chip">Equity Sleeve</span>
+          </div>
+          <div id="stocksGrid" class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <p class="text-sm muted col-span-2">No stocks selected</p>
+          </div>
+        </div>
+
+        <div class="card p-6">
+          <h2 class="text-xl font-semibold mb-4 flex items-center">
+            <span class="mr-2">🔮</span> What-if Analysis
+          </h2>
+          <div id="whatIfText" class="mt-2 text-sm muted">No what-if analysis available</div>
+          <div class="mt-4" id="whatIfChartContainer"></div>
+        </div>
+
+        <div class="card p-6">
+          <h2 class="text-xl font-semibold mb-4 flex items-center">
+            <span class="mr-2">🏦</span> Mutual Funds
+          </h2>
+          <div id="mfList" class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <p class="text-sm muted col-span-2">No mutual funds selected</p>
+          </div>
+        </div>
+
+        <div class="card p-6">
+          <h2 class="text-xl font-semibold mb-4 flex items-center">
+            <span class="mr-2">🌐</span> Diversifiers
+          </h2>
+          <div id="diversifiersList" class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <p class="text-sm muted col-span-2">No diversifiers selected</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="mt-8 text-sm muted text-center pb-6">
+      <span id="footerYear"></span> • AJTITAN • Built with ❤️
+    </footer>
+  </div>
+
+<script>
+// Utility functions
+function safeGet(obj, path, defaultValue = '') {
+  return path.split('.').reduce((acc, part) => acc && acc[part], obj) || defaultValue;
+}
+
+function parseValue(val) {
+  if (!val || val === 'N/A') return null;
+  const str = String(val).replace(/[₹$,%]/g, '').trim();
+  return parseFloat(str);
+}
+
+function getMetricHTML(label, value, compareValue, type) {
+  const val = parseValue(value);
+  const cmp = parseValue(compareValue);
+  
+  if (val === null) {
+    return `<div class="stat-item muted"><strong>${label}:</strong> N/A</div>`;
+  }
+  
+  let colorClass = 'text-gray-300';
+  let icon = '';
+  
+  if (type === '52h' && cmp !== null) {
+    const diff = ((cmp - val) / val) * 100;
+    if (diff >= -5) {
+      colorClass = 'text-green-400';
+      icon = '📈';
+    } else if (diff <= -15) {
+      colorClass = 'text-red-400';
+      icon = '📉';
+    } else {
+      colorClass = 'text-yellow-400';
+      icon = '➡️';
     }
-    return `<img src="${src}" alt="${alt}" class="chart-img" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'img-placeholder text-sm muted\\'>${fallbackText}</div>';" />`;
+  } else if (type === '52l' && cmp !== null) {
+    const diff = ((val - cmp) / cmp) * 100;
+    if (diff >= 15) {
+      colorClass = 'text-green-400';
+      icon = '📈';
+    } else if (diff <= 5) {
+      colorClass = 'text-red-400';
+      icon = '📉';
+    } else {
+      colorClass = 'text-yellow-400';
+      icon = '➡️';
+    }
+  } else if (type === 'div') {
+    if (val >= 3) {
+      colorClass = 'text-green-400';
+      icon = '💰';
+    } else if (val >= 1.5) {
+      colorClass = 'text-yellow-400';
+      icon = '💵';
+    } else if (val > 0) {
+      colorClass = 'text-orange-400';
+      icon = '💸';
+    }
+  } else if (type === 'debt') {
+    if (val <= 0.5) {
+      colorClass = 'text-green-400';
+      icon = '✅';
+    } else if (val <= 1) {
+      colorClass = 'text-yellow-400';
+      icon = '⚠️';
+    } else {
+      colorClass = 'text-red-400';
+      icon = '🚨';
+    }
   }
+  
+  return `<div class="stat-item ${colorClass}"><strong>${label}:</strong> ${icon} ${value}</div>`;
+}
 
-  function showError(message) {
-    document.getElementById('loadingState').classList.add('hidden');
-    document.getElementById('errorState').classList.remove('hidden');
-    document.getElementById('errorMessage').textContent = message;
+function formatPrice(price) {
+  const val = parseValue(price);
+  return val !== null ? `₹${val.toLocaleString('en-IN')}` : 'N/A';
+}
+
+function formatPE(pe) {
+  const val = parseValue(pe);
+  if (val === null) return '<span class="text-gray-400">PE: N/A</span>';
+  
+  let color = 'text-gray-300';
+  let icon = '';
+  
+  if (val <= 15) {
+    color = 'text-green-400';
+    icon = '✅';
+  } else if (val <= 25) {
+    color = 'text-yellow-400';
+    icon = '⚠️';
+  } else {
+    color = 'text-red-400';
+    icon = '🔴';
   }
+  
+  return `<span class="${color}">${icon} PE: ${pe}</span>`;
+}
 
-  function showContent() {
-    document.getElementById('loadingState').classList.add('hidden');
-    document.getElementById('mainContent').classList.remove('hidden');
+function formatPB(pb) {
+  const val = parseValue(pb);
+  if (val === null) return '<span class="text-gray-400">PB: N/A</span>';
+  
+  let color = 'text-gray-300';
+  let icon = '';
+  
+  if (val <= 1.5) {
+    color = 'text-green-400';
+    icon = '✅';
+  } else if (val <= 3) {
+    color = 'text-yellow-400';
+    icon = '⚠️';
+  } else {
+    color = 'text-red-400';
+    icon = '🔴';
   }
+  
+  return `<span class="${color}">${icon} PB: ${pb}</span>`;
+}
 
-  async function loadPortfolio() {
+function getPriceRangeHTML(current, high, low) {
+  const curr = parseValue(current);
+  const h = parseValue(high);
+  const l = parseValue(low);
+  
+  if (curr === null || h === null || l === null) {
+    return '<div class="text-xs muted">Price range data unavailable</div>';
+  }
+  
+  const range = h - l;
+  const position = ((curr - l) / range) * 100;
+  const fromHigh = ((h - curr) / h) * 100;
+  const fromLow = ((curr - l) / l) * 100;
+  
+  let positionColor = 'bg-yellow-500';
+  let statusText = 'Mid-range';
+  
+  if (position >= 80) {
+    positionColor = 'bg-green-500';
+    statusText = 'Near High 🚀';
+  } else if (position <= 20) {
+    positionColor = 'bg-red-500';
+    statusText = 'Near Low 🔻';
+  }
+  
+  return `
+    <div class="relative w-full h-2 bg-gray-700 rounded-full overflow-hidden mb-2">
+      <div class="absolute h-full ${positionColor} transition-all duration-500" style="width: ${position}%"></div>
+    </div>
+    <div class="flex justify-between text-xs">
+      <span class="text-red-300">Low: ${l.toLocaleString('en-IN')}</span>
+      <span class="font-semibold text-blue-300">${statusText}</span>
+      <span class="text-green-300">High: ${h.toLocaleString('en-IN')}</span>
+    </div>
+    <div class="mt-2 text-xs text-center muted">
+      ${fromHigh.toFixed(1)}% from 52w high • ${fromLow.toFixed(1)}% above 52w low
+    </div>
+  `;
+}
+
+function getAdditionalDetailsHTML(stock) {
+  const details = [];
+  
+  // Market Cap
+  if (stock.market_cap) {
+    const cap = parseValue(stock.market_cap);
+    let capIcon = '🏢';
+    let capLabel = 'Mid Cap';
+    if (cap >= 20000) {
+      capIcon = '🏛️';
+      capLabel = 'Large Cap';
+    } else if (cap < 5000) {
+      capIcon = '🏪';
+      capLabel = 'Small Cap';
+    }
+    details.push(`<div class="stat-item"><strong>${capIcon} ${capLabel}:</strong> ${stock.market_cap} Cr</div>`);
+  }
+  
+ 
+  
+  // EPS Growth
+  if (stock.eps_growth) {
+    const eps = parseValue(stock.eps_growth);
+    let color = 'text-gray-300';
+    let icon = '';
+    if (eps >= 20) {
+      color = 'text-green-400';
+      icon = '📈';
+    } else if (eps >= 10) {
+      color = 'text-yellow-400';
+      icon = '➡️';
+    } else if (eps !== null) {
+      color = 'text-red-400';
+      icon = '📉';
+    }
+    details.push(`<div class="stat-item ${color}"><strong>EPS Growth:</strong> ${icon} ${stock.eps_growth}%</div>`);
+  }
+  
+  // Revenue Growth
+  if (stock.revenue_growth) {
+    const rev = parseValue(stock.revenue_growth);
+    let color = 'text-gray-300';
+    let icon = '';
+    if (rev >= 15) {
+      color = 'text-green-400';
+      icon = '🚀';
+    } else if (rev >= 5) {
+      color = 'text-yellow-400';
+      icon = '📊';
+    } else if (rev !== null) {
+      color = 'text-red-400';
+      icon = '📉';
+    }
+    details.push(`<div class="stat-item ${color}"><strong>Revenue Growth:</strong> ${icon} ${stock.revenue_growth}%</div>`);
+  }
+  
+  // Profit Margin
+  if (stock.profit_margin) {
+    const margin = parseValue(stock.profit_margin);
+    let color = 'text-gray-300';
+    let icon = '';
+    if (margin >= 20) {
+      color = 'text-green-400';
+      icon = '💎';
+    } else if (margin >= 10) {
+      color = 'text-yellow-400';
+      icon = '💰';
+    } else if (margin !== null) {
+      color = 'text-red-400';
+      icon = '⚠️';
+    }
+    details.push(`<div class="stat-item ${color}"><strong>Profit Margin:</strong> ${icon} ${stock.profit_margin}%</div>`);
+  }
+  
+  // Analyst Rating
+  if (stock.analyst_rating) {
+    const rating = stock.analyst_rating.toLowerCase();
+    let color = 'text-gray-300';
+    let icon = '';
+    if (rating.includes('buy') || rating.includes('strong')) {
+      color = 'text-green-400';
+      icon = '👍';
+    } else if (rating.includes('hold')) {
+      color = 'text-yellow-400';
+      icon = '✋';
+    } else if (rating.includes('sell')) {
+      color = 'text-red-400';
+      icon = '👎';
+    }
+    details.push(`<div class="stat-item ${color}"><strong>Analyst:</strong> ${icon} ${stock.analyst_rating}</div>`);
+  }
+  
+  // Sector
+  if (stock.sector) {
+    const sectorIcons = {
+      'Technology': '💻',
+      'Banking': '🏦',
+      'Healthcare': '🏥',
+      'Energy': '⚡',
+      'Auto': '🚗',
+      'FMCG': '🛒',
+      'Pharma': '💊',
+      'Real Estate': '🏗️',
+      'Telecom': '📱'
+    };
+    const icon = Object.keys(sectorIcons).find(key => stock.sector.includes(key)) 
+      ? sectorIcons[Object.keys(sectorIcons).find(key => stock.sector.includes(key))]
+      : '🏢';
+    details.push(`<div class="stat-item"><strong>Sector:</strong> ${icon} ${stock.sector}</div>`);
+  }
+  
+  if (details.length === 0) return '';
+  
+  return `
+    <div class="mt-4 pt-4 border-t border-gray-700">
+      <div class="text-xs font-semibold mb-2">📋 Additional Insights</div>
+      <div class="grid grid-cols-2 gap-3 text-sm">
+        ${details.join('')}
+      </div>
+    </div>
+  `;
+}
+
+function createImageElement(src, alt, fallbackText = 'Chart unavailable') {
+  if (!src) {
+    return `<div class="img-placeholder text-sm muted">${fallbackText}</div>`;
+  }
+  return `<img src="${src}" alt="${alt}" class="chart-img" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'img-placeholder text-sm muted\\'>${fallbackText}</div>';" />`;
+}
+
+function showError(message) {
+  document.getElementById('loadingState').classList.add('hidden');
+  document.getElementById('errorState').classList.remove('hidden');
+  document.getElementById('errorMessage').textContent = message;
+}
+
+function showContent() {
+  document.getElementById('loadingState').classList.add('hidden');
+  document.getElementById('mainContent').classList.remove('hidden');
+}
+
+async function loadPortfolio() {
     const userId = new URLSearchParams(window.location.search).get('user') || 'default';
     const apiUrl = `https://reynaldo-appropriable-jackelyn.ngrok-free.dev/portfolio`;
+    const fallbackUrl = `https://raw.githubusercontent.com/ashish-in-progress/portfolio-json/main/${userId}.json`;
     console.log("Fetching URL:", apiUrl);
 
     const payload = { user: userId };
 
+    let data = null;
+
+    // Try main API first
     try {
         const response = await fetch(apiUrl, {
             method: "POST",
@@ -143,222 +633,282 @@
             body: JSON.stringify(payload)
         });
 
-        const rawText = await response.text();
-        console.log("Raw response (first 500 chars):", rawText.substring(0, 500));
-
-        let data;
-        try {
-            data = JSON.parse(rawText);
-            console.log("Parsed data:", data);
-
-            // Render portfolio only if data exists
-            if (data && Object.keys(data).length > 0) {
-                renderPortfolio(data); // your function to display portfolio
-                showContent();         // show the main content
-            } else {
-                showError("No portfolio data available.");
-            }
-
-        } catch (err) {
-            console.error("Failed to parse JSON:", err);
-            showError("Invalid portfolio data received.");
+        if (!response.ok) {
+            throw new Error(`API responded with status ${response.status}`);
         }
 
+        data = await response.json();
+        console.log("Data loaded from main API:", data);
+
     } catch (err) {
-        console.error("Failed to load portfolio:", err);
-        showError("Could not load portfolio.");
+        console.warn("Primary API failed:", err.message);
+        console.log("Attempting to load fallback JSON...");
+
+        // Try fallback JSON
+        try {
+            const fallbackResponse = await fetch(fallbackUrl);
+            if (!fallbackResponse.ok) {
+                throw new Error(`Fallback JSON not found (status ${fallbackResponse.status})`);
+            }
+            data = await fallbackResponse.json();
+            console.log("Data loaded from fallback JSON:", data);
+
+        } catch (fallbackErr) {
+            console.error("Fallback failed:", fallbackErr.message);
+            showError("Could not load portfolio from API or fallback.");
+            return;
+        }
+    }
+
+    // Render if data exists
+    if (data && Object.keys(data).length > 0) {
+        renderPortfolio(data);
+        showContent();
+    } else {
+        showError("No portfolio data available.");
     }
 }
 
 
 
-  function renderPortfolio(data) {
-    // Summary
-    const summary = safeGet(data, 'summary', 'No summary available');
-    document.getElementById('summaryText').textContent = summary;
+function renderPortfolio(data) {
+  // Summary
+  const summary = safeGet(data, 'summary', 'No summary available');
+  document.getElementById('summaryText').textContent = summary;
 
-    // Allocation
-    const alloc = data.allocation || {};
-    const equitySleeves = alloc.equity_sleeves || {};
-    const diversifiers = alloc.diversifiers || {};
-    
-    document.getElementById('allocationList').innerHTML = `
-      <div><strong>Stocks:</strong> ${equitySleeves.stocks || '0%'}</div>
-      <div><strong>Mutual Funds:</strong> ${equitySleeves.mutual_funds || '0%'}</div>
-      <div><strong>Crypto:</strong> ${diversifiers.crypto || '0%'}</div>
-      <div><strong>Bond MF:</strong> ${diversifiers.bond_mutual_funds || '0%'}</div>
-      <div><strong>Gold:</strong> ${diversifiers.gold || '0%'}</div>
+  // Allocation
+  const alloc = data.allocation || {};
+  const equitySleeves = alloc.equity_sleeves || {};
+  const diversifiers = alloc.diversifiers || {};
+  
+  document.getElementById('allocationList').innerHTML = `
+    <div class="stat-item"><strong>Stocks:</strong> ${equitySleeves.stocks || '0%'}</div>
+    <div class="stat-item"><strong>Mutual Funds:</strong> ${equitySleeves.mutual_funds || '0%'}</div>
+    <div class="stat-item"><strong>Crypto:</strong> ${diversifiers.crypto || '0%'}</div>
+    <div class="stat-item"><strong>Bond MF:</strong> ${diversifiers.bond_mutual_funds || '0%'}</div>
+    <div class="stat-item"><strong>Gold:</strong> ${diversifiers.gold || '0%'}</div>
+  `;
+  
+  const allocChart = safeGet(data, 'chart_url_allocation');
+  document.getElementById('allocationChartContainer').innerHTML = 
+    createImageElement(allocChart, 'Allocation Chart');
+
+  // Risk Analysis
+  const riskAnalysis = data.risk_analysis || {};
+  document.getElementById('riskSummary').textContent = 
+    riskAnalysis.summary || 'No risk analysis available';
+  
+  const riskChart = safeGet(riskAnalysis, 'quickchart_url');
+  document.getElementById('riskChartContainer').innerHTML = 
+    createImageElement(riskChart, 'Risk Chart');
+
+  // What-if Analysis
+  const whatIf = data.what_if_analysis || {};
+  if (whatIf.conservative_return || whatIf.moderate_return || whatIf.optimistic_return) {
+    document.getElementById('whatIfText').innerHTML = `
+      <div class="text-sm muted"><strong>Conservative:</strong> ${whatIf.conservative_return || 'N/A'}</div>
+      <div class="text-sm muted"><strong>Moderate:</strong> ${whatIf.moderate_return || 'N/A'}</div>
+      <div class="text-sm muted"><strong>Optimistic:</strong> ${whatIf.optimistic_return || 'N/A'}</div>
     `;
-    
-    const allocChart = safeGet(data, 'chart_url_allocation');
-    document.getElementById('allocationChartContainer').innerHTML = 
-      createImageElement(allocChart, 'Allocation Chart');
+  }
+  
+  const whatIfChart = safeGet(whatIf, 'quickchart_url');
+  document.getElementById('whatIfChartContainer').innerHTML = 
+    createImageElement(whatIfChart, 'What-if Chart');
 
-    // Risk Analysis
-    const riskAnalysis = data.risk_analysis || {};
-    document.getElementById('riskSummary').textContent = 
-      riskAnalysis.summary || 'No risk analysis available';
-    
-    const riskChart = safeGet(riskAnalysis, 'quickchart_url');
-    document.getElementById('riskChartContainer').innerHTML = 
-      createImageElement(riskChart, 'Risk Chart');
-
-    // What-if Analysis
-    const whatIf = data.what_if_analysis || {};
-    if (whatIf.conservative_return || whatIf.moderate_return || whatIf.optimistic_return) {
-      document.getElementById('whatIfText').innerHTML = `
-        <div class="text-sm muted"><strong>Conservative:</strong> ${whatIf.conservative_return || 'N/A'}</div>
-        <div class="text-sm muted"><strong>Moderate:</strong> ${whatIf.moderate_return || 'N/A'}</div>
-        <div class="text-sm muted"><strong>Optimistic:</strong> ${whatIf.optimistic_return || 'N/A'}</div>
-      `;
-    }
-    
-    const whatIfChart = safeGet(whatIf, 'quickchart_url');
-    document.getElementById('whatIfChartContainer').innerHTML = 
-      createImageElement(whatIfChart, 'What-if Chart');
-
-    // Education Tips
-    const tipsEl = document.getElementById('educationTips');
-    const tips = data.education_tips || {};
-    const tipValues = Object.values(tips).filter(t => t);
-    
-    if (tipValues.length > 0) {
-      tipsEl.innerHTML = '';
-      tipValues.forEach(tip => {
-        const li = document.createElement('li');
-        li.textContent = tip;
-        tipsEl.appendChild(li);
-      });
-    }
-
-    // Stocks
-    const stocksGrid = document.getElementById('stocksGrid');
-    const stocks = data.stocks_selected || [];
-    
-    if (stocks.length > 0) {
-      stocksGrid.innerHTML = '';
-      stocks.forEach(s => {
-        const card = document.createElement('div');
-        card.className = 'p-4 card';
-        
-        const buyLink = s.buy_link ? 
-          `<a href="${s.buy_link}" target="_blank" rel="noopener noreferrer" class="text-sm underline hover:text-blue-400">Buy</a>` : 
-          '';
-        
-        const reason = safeGet(s, 'analysis_summary.reason_for_selection(2-3 lines)', 'No analysis available');
-        
-        card.innerHTML = `
-          <div class="flex items-start justify-between">
-            <div>
-              <h3 class="text-md font-semibold">${s.stock || 'Unknown'}</h3>
-              <div class="muted text-sm">Price: ${s.current_price || 'N/A'}</div>
-              <div class="muted text-sm">PE: ${s.pe || 'N/A'} • PB: ${s.pb || 'N/A'}</div>
-            </div>
-            <div class="text-right">${buyLink}</div>
-          </div>
-          <p class="mt-2 text-sm muted">${reason}</p>
-          <div class="mt-3">
-            ${createImageElement(s.chart, `${s.stock} chart`, 'Chart not available')}
-          </div>
-          <div class="mt-3 text-sm muted grid grid-cols-2 gap-2">
-            <div><strong>52w High:</strong> ${s.week_52_high || 'N/A'}</div>
-            <div><strong>52w Low:</strong> ${s.week_52_low || 'N/A'}</div>
-            <div><strong>Dividend:</strong> ${s.dividend_yield || 'N/A'}</div>
-            <div><strong>Debt/Equity:</strong> ${s.total_debt_to_equity || 'N/A'}</div>
-          </div>
-        `;
-        stocksGrid.appendChild(card);
-      });
-    }
-
-    // Mutual Funds
-    const mfList = document.getElementById('mfList');
-    const mutualFunds = data.mutual_funds_selected || [];
-    
-    if (mutualFunds.length > 0) {
-      mfList.innerHTML = '';
-      mutualFunds.forEach(m => {
-        const el = document.createElement('div');
-        el.className = 'p-3 border-card rounded';
-        el.innerHTML = `
-          <div class="text-sm font-medium">${m.name || 'Unknown Fund'}</div>
-          <div class="muted text-xs">${m.category || 'N/A'} • 3y: ${m['3_year_return'] || 'N/A'} • 5y: ${m['5_year_return'] || 'N/A'}</div>
-          <div class="mt-2 text-sm muted">${m.reason_for_investment || 'No reason provided'}</div>
-        `;
-        mfList.appendChild(el);
-      });
-    }
-
-    // Diversifiers
-    const diversifiersEl = document.getElementById('diversifiersList');
-    const cryptos = data.crypto_selected || [];
-    let hasDiversifiers = false;
-
-    if (cryptos.length > 0) {
-      diversifiersEl.innerHTML = '';
-      hasDiversifiers = true;
-      
-      cryptos.forEach(c => {
-        const el = document.createElement('div');
-        el.className = 'p-3 border-card rounded';
-        const buyLink = c.buy_link ? 
-          `<a href="${c.buy_link}" target="_blank" rel="noopener noreferrer" class="text-xs underline hover:text-blue-400">Buy</a>` : 
-          '';
-        
-        el.innerHTML = `
-          <div class="flex justify-between items-center">
-            <div>
-              <div class="text-sm font-medium">${c.name || 'Unknown'} (${(c.symbol || '').toUpperCase()})</div>
-              <div class="muted text-xs">Price: ${typeof c.current_price === 'number' ? c.current_price.toLocaleString() : c.current_price || 'N/A'} USD</div>
-            </div>
-            ${buyLink}
-          </div>
-          <div class="mt-2 text-sm muted">ROI: ${c.roi || 'N/A'}</div>
-          <div class="mt-2 text-sm muted">Summary: ${c.summary || 'N/A'}</div>
-        `;
-        diversifiersEl.appendChild(el);
-      });
-    }
-
-    // Gold
-    if (diversifiers.gold && diversifiers.gold !== '0%') {
-      if (!hasDiversifiers) diversifiersEl.innerHTML = '';
-      hasDiversifiers = true;
-      
-      const goldEl = document.createElement('div');
-      goldEl.className = 'p-3 border-card rounded';
-      const goldSummary = safeGet(data, 'Gold.summary') || safeGet(data, 'gold.summary', 'Hedge against inflation');
-      goldEl.innerHTML = `
-        <div class="text-sm font-medium">Gold</div>
-        <div class="muted text-xs">Allocation: ${diversifiers.gold}</div>
-        <div class="muted text-xs mt-1">${goldSummary}</div>
-      `;
-      diversifiersEl.appendChild(goldEl);
-    }
-
-    // Bond Mutual Funds
-    if (diversifiers.bond_mutual_funds && diversifiers.bond_mutual_funds !== '0%') {
-      if (!hasDiversifiers) diversifiersEl.innerHTML = '';
-      hasDiversifiers = true;
-      
-      const bondEl = document.createElement('div');
-      bondEl.className = 'p-3 border-card rounded';
-      const bondSummary = safeGet(data, 'bond_mutual_funds.summary', 'Stable income generation');
-      bondEl.innerHTML = `
-        <div class="text-sm font-medium">Bond Mutual Funds</div>
-        <div class="muted text-xs">Allocation: ${diversifiers.bond_mutual_funds}</div>
-        <div class="muted text-xs mt-1">${bondSummary}</div>
-      `;
-      diversifiersEl.appendChild(bondEl);
-    }
+  // Education Tips
+  const tipsEl = document.getElementById('educationTips');
+  const tips = data.education_tips || {};
+  const tipValues = Object.values(tips).filter(t => t);
+  
+  if (tipValues.length > 0) {
+    tipsEl.innerHTML = '';
+    tipValues.forEach((tip, index) => {
+      const li = document.createElement('li');
+      li.className = 'p-2 rounded hover:bg-blue-900 hover:bg-opacity-20 transition-all duration-300';
+      li.style.animationDelay = `${index * 0.1}s`;
+      li.textContent = `• ${tip}`;
+      tipsEl.appendChild(li);
+    });
   }
 
-  // Set current year in footer
-  document.getElementById('footerYear').textContent = new Date().getFullYear();
+  // Stocks
+  const stocksGrid = document.getElementById('stocksGrid');
+  const stocks = data.stocks_selected || [];
+  
+  if (stocks.length > 0) {
+    stocksGrid.innerHTML = '';
+    stocks.forEach((s, index) => {
+      const card = document.createElement('div');
+      card.className = 'p-5 card';
+      card.style.animationDelay = `${index * 0.1}s`;
+      
+      const buyLink = s.buy_link ? 
+        `<a href="${s.buy_link}" target="_blank" rel="noopener noreferrer" class="text-sm px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded-lg transition-all duration-300">Buy</a>` : 
+        '';
+      
+      const reason = safeGet(s, 'analysis_summary.reason_for_selection(2-3 lines)', 'No analysis available');
+      
+      card.innerHTML = `
+        <div class="flex items-start justify-between">
+          <div>
+            <h3 class="text-lg font-semibold">${s.stock || 'Unknown'}</h3>
+            <div class="muted text-sm mt-1">Price: ${s.current_price}</div>
+            <div class="muted text-sm">${formatPE(s.pe)} • ${formatPB(s.pb)}</div>
+            <div class="muted text-sm">Revenue Growth: ${s.revenue_growth_yoy}</div>
+            <div class="muted text-sm">Net Profit Margin: ${s.net_profit_margin}</div>
+          </div>
+          <div class="text-right">${buyLink}</div>
+        </div>
+        <p class="mt-3 text-sm muted leading-relaxed">${reason}</p>
+        <div class="mt-3">
+          
+              ${data.market=="IND"?createImageElement(s.chart, `${s.stock} chart`, 'Chart not available'):`<iframe
+  src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_widget&symbol=${s.stock}&interval=D&hidesidetoolbar=1&symboledit=1&saveimage=0&toolbarbg=f1f3f6&studies=[]&theme=dark&style=1&timezone=Etc%2FUTC&locale=en&allow_symbol_change=1"
+  width="100%"
+  height="300"
+  frameborder="0"
+  allowtransparency="true"
+  scrolling="no"
+  loading="lazy">
+</iframe> `}
 
-  // Load portfolio on page load
-  loadPortfolio();
-  </script>
+        </div>
+        
+        <!-- Price Range Analysis -->
+        <div class="mt-4 p-3 bg-blue-900 bg-opacity-20 rounded-lg">
+          <div class="text-xs font-semibold mb-2">📊 Price Position</div>
+          ${getPriceRangeHTML(s.current_price, s.week_52_high, s.week_52_low)}
+        </div>
+        
+        <!-- Key Metrics Grid -->
+        <div class="mt-4 text-sm grid grid-cols-2 gap-3">
+          ${getMetricHTML('52w High', s.week_52_high, s.current_price, '52h')}
+          ${getMetricHTML('52w Low', s.week_52_low, s.current_price, '52l')}
+          ${getMetricHTML('Dividend', s.dividend_yield, null, 'div')}
+          ${getMetricHTML('Debt/Equity', s.total_debt_to_equity, null, 'debt')}
+        </div>
+        
+        <!-- Additional Details -->
+        ${getAdditionalDetailsHTML(s)}
+      `;
+      stocksGrid.appendChild(card);
+    });
+  }
 
-  </body>
-  </html>
+  // Mutual Funds
+  const mfList = document.getElementById('mfList');
+  const mutualFunds = data.mutual_funds_selected || [];
+  
+  if (mutualFunds.length > 0) {
+    mfList.innerHTML = '';
+    mutualFunds.forEach((m, index) => {
+      const el = document.createElement('div');
+      el.className = 'p-4 border-card rounded-lg';
+      el.style.animationDelay = `${index * 0.1}s`;
+      el.innerHTML = `
+        <div class="text-sm font-semibold">${m.name || 'Unknown Fund'}</div>
+        <div class="muted text-xs mt-1">${m.category || 'N/A'} • 3y: ${m['3_year_return'] || 'N/A'} • 5y: ${m['5_year_return'] || 'N/A'}</div>
+        <div class="mt-3 text-sm muted leading-relaxed">${m.reason_for_investment || 'No reason provided'}</div>
+      `;
+      mfList.appendChild(el);
+    });
+  }
+
+  // Diversifiers
+  const diversifiersEl = document.getElementById('diversifiersList');
+  const cryptos = data.crypto_selected || [];
+  let hasDiversifiers = false;
+
+  if (cryptos.length > 0) {
+    diversifiersEl.innerHTML = '';
+    hasDiversifiers = true;
+    
+    cryptos.forEach((c, index) => {
+      const el = document.createElement('div');
+      el.className = 'p-4 border-card rounded-lg';
+      el.style.animationDelay = `${index * 0.1}s`;
+      const buyLink = c.buy_link ? 
+        `<a href="${c.buy_link}" target="_blank" rel="noopener noreferrer" class="text-xs px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded-lg transition-all duration-300">Buy</a>` : 
+        '';
+      
+      el.innerHTML = `
+        <div class="flex justify-between items-center">
+          <div>
+            <div class="text-sm font-semibold">${c.name || 'Unknown'} (${(c.symbol || '').toUpperCase()})</div>
+            <div class="muted text-xs mt-1">Price: ${typeof c.current_price === 'number' ? c.current_price.toLocaleString() : c.current_price || 'N/A'}</div>
+          </div>
+          ${buyLink}
+        </div>
+        <div class="mt-3 text-sm muted"><strong>ROI:</strong> ${c.roi || 'N/A'}</div>
+        <div class="mt-2 text-sm muted leading-relaxed">${c.summary || 'N/A'}</div>
+        <iframe
+      src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_widget
+      &symbol=${c.symbol}
+      &interval=D
+      &hidesidetoolbar=1
+      &symboledit=1
+      &saveimage=0
+      &toolbarbg=f1f3f6
+      &studies=[]
+      &theme=dark
+      &style=1
+      &timezone=Etc%2FUTC
+      &locale=en
+      &allow_symbol_change=1
+      "
+      width="100%"
+      height="300"
+      frameborder="0"
+      allowtransparency="true"
+      scrolling="no">
+    </iframe>
+      `;
+      diversifiersEl.appendChild(el);
+    });
+  }
+
+  // Gold
+  if (diversifiers.gold && diversifiers.gold !== '0%') {
+    if (!hasDiversifiers) diversifiersEl.innerHTML = '';
+    hasDiversifiers = true;
+    
+    const goldEl = document.createElement('div');
+    goldEl.className = 'p-4 border-card rounded-lg';
+    const goldSummary = safeGet(data, 'Gold.summary') || safeGet(data, 'gold.summary', 'Hedge against inflation');
+    goldEl.innerHTML = `
+      <div class="text-sm font-semibold">🥇 Gold</div>
+      <div class="muted text-xs mt-1">Allocation: ${diversifiers.gold}</div>
+      <div class="muted text-xs mt-2 leading-relaxed">${goldSummary}</div>
+    `;
+    diversifiersEl.appendChild(goldEl);
+  }
+
+  // Bond Mutual Funds
+  if (diversifiers.bond_mutual_funds && diversifiers.bond_mutual_funds !== '0%') {
+    if (!hasDiversifiers) diversifiersEl.innerHTML = '';
+    hasDiversifiers = true;
+    
+    const bondEl = document.createElement('div');
+    bondEl.className = 'p-4 border-card rounded-lg';
+    const bondSummary = safeGet(data, 'bond_mutual_funds.summary', 'Stable income generation');
+    bondEl.innerHTML = `
+      <div class="text-sm font-semibold">📜 Bond Mutual Funds</div>
+      <div class="muted text-xs mt-1">Allocation: ${diversifiers.bond_mutual_funds}</div>
+      <div class="muted text-xs mt-2 leading-relaxed">${bondSummary}</div>
+    `;
+    diversifiersEl.appendChild(bondEl);
+  }
+}
+
+// Set current year in footer
+document.getElementById('footerYear').textContent = new Date().getFullYear();
+
+// Load portfolio on page load
+loadPortfolio();
+</script>
+
+</body>
+</html>
+
+
