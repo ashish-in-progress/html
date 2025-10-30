@@ -315,7 +315,6 @@
 
 <script>
 // Utility functions
-
 function safeGet(obj, path, defaultValue = '') {
   return path.split('.').reduce((acc, part) => acc && acc[part], obj) || defaultValue;
 }
@@ -735,99 +734,67 @@ function renderPortfolio(data) {
 
   // Stocks
   const stocksGrid = document.getElementById('stocksGrid');
-const stocks = data.stocks_selected || [];
-
-// Finnhub API Key
-const FINNHUB_API_KEY = 'd34hcu1r01qnfvbm329gd34hcu1r01qnfvbm32a0';
-
-async function fetchLivePrice(symbol) {
-  try {
-    const response = await fetch(`https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${FINNHUB_API_KEY}`);
-    const json = await response.json();
-    return json.c || 'N/A'; // current price
-  } catch (err) {
-    console.error(`Error fetching price for ${symbol}:`, err);
-    return 'N/A';
-  }
-}
-
-async function renderStocks() {
-  if (stocks.length === 0) return;
-
-  stocksGrid.innerHTML = '';
-
-  for (let index = 0; index < stocks.length; index++) {
-    const s = stocks[index];
-    const card = document.createElement('div');
-    card.className = 'p-5 card';
-    card.style.animationDelay = `${index * 0.1}s`;
-
-    const buyLink = s.buy_link
-      ? `<a href="${s.buy_link}" target="_blank" rel="noopener noreferrer" class="text-sm px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded-lg transition-all duration-300">Buy</a>`
-      : '';
-
-    const reason = safeGet(s, 'analysis_summary.reason_for_selection(2-3 lines)', 'No analysis available');
-
-    // Fetch live price
-    const livePrice = await fetchLivePrice(s.stock);
-
-    card.innerHTML = `
-      <div class="flex items-start justify-between">
-        <div>
-          <h3 class="text-lg font-semibold">${s.stock || 'Unknown'}</h3>
-          <div class="muted text-sm mt-1">Price: ${livePrice !== 'N/A' ? livePrice.toLocaleString('en-IN') : s.current_price}</div>
-          <div class="muted text-sm">${formatPE(s.pe)} • ${formatPB(s.pb)}</div>
-          <div class="muted text-sm">Revenue Growth: ${s.revenue_growth_yoy}</div>
-          <div class="muted text-sm">Net Profit Margin: ${s.net_profit_margin}</div>
+  const stocks = data.stocks_selected || [];
+  
+  if (stocks.length > 0) {
+    stocksGrid.innerHTML = '';
+    stocks.forEach((s, index) => {
+      const card = document.createElement('div');
+      card.className = 'p-5 card';
+      card.style.animationDelay = `${index * 0.1}s`;
+      
+      const buyLink = s.buy_link ? 
+        `<a href="${s.buy_link}" target="_blank" rel="noopener noreferrer" class="text-sm px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded-lg transition-all duration-300">Buy</a>` : 
+        '';
+      
+      const reason = safeGet(s, 'analysis_summary.reason_for_selection(2-3 lines)', 'No analysis available');
+      
+      card.innerHTML = `
+        <div class="flex items-start justify-between">
+          <div>
+            <h3 class="text-lg font-semibold">${s.stock || 'Unknown'}</h3>
+            <div class="muted text-sm mt-1">Price: ${s.current_price}</div>
+            <div class="muted text-sm">${formatPE(s.pe)} • ${formatPB(s.pb)}</div>
+            <div class="muted text-sm">Revenue Growth: ${s.revenue_growth_yoy}</div>
+            <div class="muted text-sm">Net Profit Margin: ${s.net_profit_margin}</div>
+          </div>
+          <div class="text-right">${buyLink}</div>
         </div>
-        <div class="text-right">${buyLink}</div>
-      </div>
+        <p class="mt-3 text-sm muted leading-relaxed">${reason}</p>
+        <div class="mt-3">
+          
+              ${data.market=="IND"?createImageElement(s.chart, `${s.stock} chart`, 'Chart not available'):`<iframe
+  src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_widget&symbol=${s.stock}&interval=D&hidesidetoolbar=1&symboledit=1&saveimage=0&toolbarbg=f1f3f6&studies=[]&theme=dark&style=1&timezone=Etc%2FUTC&locale=en&allow_symbol_change=1"
+  width="100%"
+  height="300"
+  frameborder="0"
+  allowtransparency="true"
+  scrolling="no"
+  loading="lazy">
+</iframe> `}
 
-      <p class="mt-3 text-sm muted leading-relaxed">${reason}</p>
-
-      <div class="mt-3">
-        ${data.market=="IND"
-          ? createImageElement(s.chart, `${s.stock} chart`, 'Chart not available')
-          : `<iframe
-              src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_widget&symbol=${s.stock}&interval=D&hidesidetoolbar=1&symboledit=1&saveimage=0&toolbarbg=f1f3f6&studies=[]&theme=dark&style=1&timezone=Etc%2FUTC&locale=en&allow_symbol_change=1"
-              width="100%"
-              height="300"
-              frameborder="0"
-              allowtransparency="true"
-              scrolling="no"
-              loading="lazy">
-            </iframe>`
-        }
-      </div>
-
-      <!-- Price Range Analysis -->
-      <div class="mt-4 p-3 bg-blue-900 bg-opacity-20 rounded-lg">
-        <div class="text-xs font-semibold mb-2">📊 Price Position</div>
-        ${getPriceRangeHTML(livePrice, s.week_52_high, s.week_52_low)}
-      </div>
-
-      <!-- Key Metrics Grid -->
-      <div class="mt-4 text-sm grid grid-cols-2 gap-3">
-        ${getMetricHTML('52w High', s.week_52_high, livePrice, '52h')}
-        ${getMetricHTML('52w Low', s.week_52_low, livePrice, '52l')}
-        ${getMetricHTML('Dividend', s.dividend_yield, null, 'div')}
-        ${getMetricHTML('Debt/Equity', s.total_debt_to_equity, null, 'debt')}
-      </div>
-
-      <!-- Additional Details -->
-      ${getAdditionalDetailsHTML(s)}
-    `;
-
-    stocksGrid.appendChild(card);
+        </div>
+        
+        <!-- Price Range Analysis -->
+        <div class="mt-4 p-3 bg-blue-900 bg-opacity-20 rounded-lg">
+          <div class="text-xs font-semibold mb-2">📊 Price Position</div>
+          ${getPriceRangeHTML(s.current_price, s.week_52_high, s.week_52_low)}
+        </div>
+        
+        <!-- Key Metrics Grid -->
+        <div class="mt-4 text-sm grid grid-cols-2 gap-3">
+          ${getMetricHTML('52w High', s.week_52_high, s.current_price, '52h')}
+          ${getMetricHTML('52w Low', s.week_52_low, s.current_price, '52l')}
+          ${getMetricHTML('Dividend', s.dividend_yield, null, 'div')}
+          ${getMetricHTML('Debt/Equity', s.total_debt_to_equity, null, 'debt')}
+        </div>
+        
+        <!-- Additional Details -->
+        ${getAdditionalDetailsHTML(s)}
+      `;
+      stocksGrid.appendChild(card);
+    });
   }
-}
-
-// Initial render
-renderStocks();
-
-// Optional: auto-refresh live prices every 60 seconds
-setInterval(renderStocks, 60000);
-
 
   // Mutual Funds
   const mfList = document.getElementById('mfList');
@@ -843,7 +810,6 @@ setInterval(renderStocks, 60000);
         <div class="text-sm font-semibold">${m.name || 'Unknown Fund'}</div>
         <div class="muted text-xs mt-1">${m.category || 'N/A'} • 3y: ${m['3_year_return'] || 'N/A'} • 5y: ${m['5_year_return'] || 'N/A'}</div>
         <div class="mt-3 text-sm muted leading-relaxed">${m.reason_for_investment || 'No reason provided'}</div>
-        <div class="mt-3 text-sm muted leading-relaxed font-semibold">Minimum SIP = ${m.min_sip || 'N/A'}</div>
       `;
       mfList.appendChild(el);
     });
@@ -878,7 +844,7 @@ setInterval(renderStocks, 60000);
         <div class="mt-2 text-sm muted leading-relaxed">${c.summary || 'N/A'}</div>
         <iframe
       src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_widget
-      &symbol=${c.symbol}
+      &symbol=${c.symbol}USD
       &interval=D
       &hidesidetoolbar=1
       &symboledit=1
@@ -944,5 +910,4 @@ loadPortfolio();
 
 </body>
 </html>
-
 
