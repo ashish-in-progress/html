@@ -1,913 +1,1293 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Portfolio Dashboard</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Investment Portfolio Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    
-    body { 
-      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-      color: #f3f4f6; 
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0d1326 0%, #1a2332 100%);
+      color: #e4e6eb;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 20px;
       min-height: 100vh;
     }
-    
-    .card { 
-      background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(51, 65, 85, 0.6) 100%);
-      backdrop-filter: blur(10px);
-      border-radius: 16px; 
-      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-      border: 1px solid rgba(255,255,255,0.1);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      opacity: 0;
-      animation: fadeInUp 0.6s ease-out forwards;
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
     }
-    
-    .card:hover { 
-      transform: translateY(-4px);
-      box-shadow: 0 12px 48px rgba(59, 130, 246, 0.2);
-      border-color: rgba(59, 130, 246, 0.3);
-    }
-    
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    
-    .muted { color: #d1d5db; }
-    
-    .chip { 
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(147, 51, 234, 0.2) 100%);
-      padding: 0.25rem 0.75rem; 
-      border-radius: 999px; 
-      font-size: 0.75rem;
-      border: 1px solid rgba(59, 130, 246, 0.3);
-      transition: all 0.3s ease;
-    }
-    
-    .chip:hover {
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(147, 51, 234, 0.3) 100%);
-      transform: scale(1.05);
-    }
-    
-    .chart-img { 
-      max-width: 100%; 
-      height: auto; 
-      border-radius: 12px;
-      transition: transform 0.3s ease;
-    }
-    
-    .chart-img:hover {
-      transform: scale(1.02);
-    }
-    
-    .border-card { 
-      border: 1px solid rgba(255,255,255,0.2);
-      transition: all 0.3s ease;
-    }
-    
-    .border-card:hover {
-      border-color: rgba(59, 130, 246, 0.4);
-      background: rgba(59, 130, 246, 0.05);
-    }
-    
-    .spinner { 
-      border: 3px solid rgba(255,255,255,0.1); 
-      border-top: 3px solid #3b82f6; 
-      border-radius: 50%; 
-      width: 48px; 
-      height: 48px; 
-      animation: spin 1s linear infinite; 
-    }
-    
-    @keyframes spin { 
-      0% { transform: rotate(0deg); } 
-      100% { transform: rotate(360deg); } 
-    }
-    
-    .error-box { 
-      background: rgba(239, 68, 68, 0.1); 
-      border: 1px solid rgba(239, 68, 68, 0.3); 
-      border-radius: 12px; 
-      padding: 1.5rem;
-      animation: shake 0.5s ease;
-    }
-    
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-10px); }
-      75% { transform: translateX(10px); }
-    }
-    
-    .img-placeholder { 
-      background: rgba(255,255,255,0.05); 
-      min-height: 200px; 
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
-      border-radius: 12px;
-      border: 2px dashed rgba(255,255,255,0.1);
-    }
-    
+
     header {
-      animation: slideDown 0.6s ease-out;
+      text-align: center;
+      margin-bottom: 40px;
+      padding: 30px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 16px;
+      backdrop-filter: blur(10px);
     }
-    
-    @keyframes slideDown {
-      from {
-        opacity: 0;
-        transform: translateY(-20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    
-    .stat-item {
-      transition: all 0.3s ease;
-      padding: 0.5rem;
-      border-radius: 8px;
-    }
-    
-    .stat-item:hover {
-      background: rgba(59, 130, 246, 0.1);
-      transform: translateX(4px);
-    }
-    
-    button {
-      transition: all 0.3s ease;
-    }
-    
-    button:hover {
-      transform: scale(1.05);
-    }
-    
-    button:active {
-      transform: scale(0.95);
-    }
-    
-    a {
-      transition: all 0.3s ease;
-    }
-    
-    a:hover {
-      color: #60a5fa !important;
-    }
-    
-    .gradient-text {
-      background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      background-clip: text;
     }
-    
-    .card:nth-child(1) { animation-delay: 0.1s; }
-    .card:nth-child(2) { animation-delay: 0.2s; }
-    .card:nth-child(3) { animation-delay: 0.3s; }
-    .card:nth-child(4) { animation-delay: 0.4s; }
-    .card:nth-child(5) { animation-delay: 0.5s; }
-    .card:nth-child(6) { animation-delay: 0.6s; }
-    
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
+
+    .portfolio-summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
     }
-    
-    .pulse {
-      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+
+    .summary-card {
+      background: rgba(255,255,255,0.08);
+      padding: 25px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
-    
-    html {
-      scroll-behavior: smooth;
+
+    .summary-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
     }
-    
-    ::-webkit-scrollbar {
-      width: 8px;
+
+    .summary-card h3 {
+      font-size: 0.9em;
+      color: #a0a4a8;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
-    
-    ::-webkit-scrollbar-track {
+
+    .summary-card .value {
+      font-size: 2em;
+      font-weight: bold;
+      color: #667eea;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    .tab {
+      padding: 12px 24px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+
+    .tab:hover {
+      background: rgba(102, 126, 234, 0.2);
+    }
+
+    .tab.active {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-color: #667eea;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .chart-container {
       background: rgba(255,255,255,0.05);
+      padding: 30px;
+      border-radius: 16px;
+      margin-bottom: 30px;
+      border: 1px solid rgba(255,255,255,0.1);
     }
-    
-    ::-webkit-scrollbar-thumb {
-      background: rgba(59, 130, 246, 0.5);
-      border-radius: 4px;
+
+    .chart-title {
+      font-size: 1.5em;
+      margin-bottom: 20px;
+      color: #667eea;
     }
-    
-    ::-webkit-scrollbar-thumb:hover {
-      background: rgba(59, 130, 246, 0.7);
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+
+    .stock-card {
+      background: rgba(255,255,255,0.08);
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: 15px;
+      transition: all 0.3s ease;
+    }
+
+    .stock-card:hover {
+      border-color: #667eea;
+      transform: translateX(5px);
+    }
+
+    .stock-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 15px;
+    }
+
+    .stock-name {
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #667eea;
+    }
+
+    .stock-symbol {
+      font-size: 0.9em;
+      color: #a0a4a8;
+    }
+
+    .stock-price {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #4ade80;
+    }
+
+    .stock-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .detail-item {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .detail-label {
+      color: #a0a4a8;
+      font-size: 0.85em;
+    }
+
+    .detail-value {
+      font-weight: 600;
+      color: #e4e6eb;
+    }
+
+    .stock-description {
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      color: #a0a4a8;
+      font-size: 0.95em;
+      line-height: 1.6;
+    }
+
+    .btn-view-chart {
+      margin-top: 15px;
+      padding: 8px 16px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      border-radius: 6px;
+      color: white;
+      cursor: pointer;
+      font-weight: 500;
+      transition: transform 0.2s ease;
+    }
+
+    .btn-view-chart:hover {
+      transform: scale(1.05);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      z-index: 1000;
+      backdrop-filter: blur(5px);
+    }
+
+    .modal.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background: #1a2332;
+      padding: 30px;
+      border-radius: 16px;
+      max-width: 1000px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 2em;
+      cursor: pointer;
+      color: #a0a4a8;
+      transition: color 0.3s ease;
+    }
+
+    .modal-close:hover {
+      color: #667eea;
+    }
+
+    .period-selector {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .period-btn {
+      padding: 8px 16px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 6px;
+      color: #e4e6eb;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .period-btn:hover {
+      background: rgba(102, 126, 234, 0.2);
+    }
+
+    .period-btn.active {
+      background: #667eea;
+      border-color: #667eea;
+    }
+
+    .fund-card {
+      background: rgba(255,255,255,0.08);
+      padding: 25px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: 20px;
+    }
+
+    .fund-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 15px;
+    }
+
+    .fund-name {
+      font-size: 1.3em;
+      font-weight: bold;
+      color: #667eea;
+    }
+
+    .fund-category {
+      display: inline-block;
+      padding: 4px 12px;
+      background: rgba(102, 126, 234, 0.2);
+      border-radius: 20px;
+      font-size: 0.85em;
+      color: #667eea;
+    }
+
+    .returns-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    .return-item {
+      text-align: center;
+      padding: 15px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+    }
+
+    .return-label {
+      color: #a0a4a8;
+      font-size: 0.85em;
+      margin-bottom: 5px;
+    }
+
+    .return-value {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #4ade80;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #667eea;
+      font-size: 1.2em;
+    }
+
+    .error {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #fca5a5;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .risk-card {
+      background: rgba(255,255,255,0.08);
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 15px;
+    }
+
+    .risk-title {
+      font-size: 1.1em;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #667eea;
+    }
+
+    .risk-description {
+      color: #a0a4a8;
+      line-height: 1.6;
+    }
+
+    .spinner {
+      border: 4px solid rgba(255,255,255,0.1);
+      border-top: 4px solid #667eea;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .loading-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 400px;
+    }
+
+    .error-container {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      padding: 30px;
+      border-radius: 16px;
+      text-align: center;
+      max-width: 600px;
+      margin: 40px auto;
+    }
+
+    .retry-btn {
+      margin-top: 20px;
+      padding: 12px 24px;
+      background: #667eea;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .retry-btn:hover {
+      background: #764ba2;
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 768px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+      
+      h1 {
+        font-size: 1.8em;
+      }
     }
   </style>
 </head>
-<body class="p-6">
-  
-  <div class="max-w-6xl mx-auto">
-    <header class="mb-8 text-center">
-      <h1 class="text-4xl font-bold gradient-text mb-2">Portfolio Dashboard</h1>
-      <p class="text-sm muted tracking-wider">BY AJTITAN</p>
+<body>
+  <div class="container">
+    <header>
+      <h1>📊 Investment Portfolio Dashboard</h1>
+      <p>Smart Portfolio Management for Long-term Growth</p>
     </header>
 
     <!-- Loading State -->
-    <div id="loadingState" class="flex flex-col items-center justify-center py-20">
+    <div id="loadingState" class="loading-container">
       <div class="spinner"></div>
-      <p class="mt-6 text-sm muted pulse">Loading portfolio data...</p>
+      <p class="loading">Loading portfolio data...</p>
     </div>
 
     <!-- Error State -->
-    <div id="errorState" class="hidden error-box">
-      <h3 class="font-semibold text-red-400 text-lg">⚠️ Failed to Load Portfolio</h3>
-      <p class="mt-3 text-sm muted" id="errorMessage"></p>
-      <button onclick="location.reload()" class="mt-6 px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium shadow-lg">Retry</button>
+    <div id="errorState" class="error-container" style="display: none;">
+      <h2 style="color: #fca5a5; margin-bottom: 15px;">⚠️ Failed to Load Portfolio</h2>
+      <p id="errorMessage" style="color: #a0a4a8;">Unable to load portfolio data</p>
+      <button class="retry-btn" onclick="location.reload()">Retry</button>
     </div>
 
     <!-- Main Content -->
-    <main id="mainContent" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <!-- Left Column -->
-      <section class="lg:col-span-1 space-y-6">
-        <div class="card p-6">
-          <h2 class="text-xl font-semibold mb-4 flex items-center">
-            <span class="mr-2">📊</span> Summary
-          </h2>
-          <p id="summaryText" class="mt-2 text-sm muted leading-relaxed">No summary available</p>
-          <div class="mt-6">
-            <h3 class="text-sm font-semibold mb-3 flex items-center">
-              <span class="mr-2">💼</span> Allocation
-            </h3>
-            <div id="allocationList" class="mt-2 space-y-2 text-sm"></div>
-            <div class="mt-4" id="allocationChartContainer"></div>
+    <div id="mainContent" style="display: none;">
+      <div class="portfolio-summary">
+        <div class="summary-card">
+          <h3>Total Investment</h3>
+          <div class="value" id="totalInvestment">Loading...</div>
+        </div>
+        <div class="summary-card">
+          <h3>Target Return</h3>
+          <div class="value" id="targetReturn">Loading...</div>
+        </div>
+        <div class="summary-card">
+          <h3>Time Frame</h3>
+          <div class="value" id="timeFrame">Loading...</div>
+        </div>
+        <div class="summary-card">
+          <h3>Risk Profile</h3>
+          <div class="value" id="riskProfile">Loading...</div>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <div class="tab active" onclick="showTab('overview')">Overview</div>
+        <div class="tab" onclick="showTab('stocks')">Stocks Portfolio</div>
+        <div class="tab" onclick="showTab('funds')">Mutual Funds</div>
+        <div class="tab" onclick="showTab('risks')">Risk Analysis</div>
+        <div class="tab" onclick="showTab('whatif')">What-If Scenarios</div>
+      </div>
+
+      <div id="overview" class="tab-content active">
+        <div class="grid-2">
+          <div class="chart-container">
+            <h2 class="chart-title">Portfolio Allocation</h2>
+            <div id="allocationChart"></div>
+          </div>
+          <div class="chart-container">
+            <h2 class="chart-title">Sector Distribution</h2>
+            <div id="sectorChart"></div>
           </div>
         </div>
-
-        <div class="card p-6">
-          <h2 class="text-xl font-semibold mb-4 flex items-center">
-            <span class="mr-2">⚠️</span> Risk Analysis
-          </h2>
-          <div id="riskSummary" class="mt-2 text-sm muted leading-relaxed">No risk analysis available</div>
-          <div class="mt-4" id="riskChartContainer"></div>
+        
+        <div class="chart-container">
+          <h2 class="chart-title">Asset Class Breakdown</h2>
+          <div id="assetChart"></div>
         </div>
+      </div>
 
-        <div class="card p-6">
-          <h2 class="text-xl font-semibold mb-4 flex items-center">
-            <span class="mr-2">💡</span> Education Tips
-          </h2>
-          <ul id="educationTips" class="mt-2 text-sm space-y-2 muted">
-            <li>No tips available</li>
-          </ul>
-        </div>
-      </section>
-
-      <!-- Middle Column -->
-      <section class="lg:col-span-2 space-y-6">
-        <div class="card p-6">
-          <div class="flex items-center justify-between mb-4">
-            <h2 class="text-xl font-semibold flex items-center">
-              <span class="mr-2">📈</span> Stocks Selected
-            </h2>
-            <span id="equityChip" class="chip">Equity Sleeve</span>
-          </div>
-          <div id="stocksGrid" class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <p class="text-sm muted col-span-2">No stocks selected</p>
+      <div id="stocks" class="tab-content">
+        <div class="chart-container">
+          <h2 class="chart-title">Stock Portfolio</h2>
+          <div id="stocksContainer">
+            <div class="loading">Loading stock data...</div>
           </div>
         </div>
+      </div>
 
-        <div class="card p-6">
-          <h2 class="text-xl font-semibold mb-4 flex items-center">
-            <span class="mr-2">🔮</span> What-if Analysis
-          </h2>
-          <div id="whatIfText" class="mt-2 text-sm muted">No what-if analysis available</div>
-          <div class="mt-4" id="whatIfChartContainer"></div>
+      <div id="funds" class="tab-content">
+        <div class="chart-container">
+          <h2 class="chart-title">Mutual Funds Portfolio</h2>
+          <div id="fundsContainer"></div>
         </div>
+      </div>
 
-        <div class="card p-6">
-          <h2 class="text-xl font-semibold mb-4 flex items-center">
-            <span class="mr-2">🏦</span> Mutual Funds
-          </h2>
-          <div id="mfList" class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <p class="text-sm muted col-span-2">No mutual funds selected</p>
-          </div>
+      <div id="risks" class="tab-content">
+        <div class="chart-container">
+          <h2 class="chart-title">Risk Analysis</h2>
+          <div id="riskChart"></div>
         </div>
+        <div id="riskDetails"></div>
+      </div>
 
-        <div class="card p-6">
-          <h2 class="text-xl font-semibold mb-4 flex items-center">
-            <span class="mr-2">🌐</span> Diversifiers
-          </h2>
-          <div id="diversifiersList" class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <p class="text-sm muted col-span-2">No diversifiers selected</p>
-          </div>
+      <div id="whatif" class="tab-content">
+        <div class="chart-container">
+          <h2 class="chart-title">Return Scenarios</h2>
+          <div id="scenarioChart"></div>
         </div>
-      </section>
-    </main>
-
-    <footer class="mt-8 text-sm muted text-center pb-6">
-      <span id="footerYear"></span> • AJTITAN • Built with ❤️
-    </footer>
-  </div>
-
-<script>
-// Utility functions
-function safeGet(obj, path, defaultValue = '') {
-  return path.split('.').reduce((acc, part) => acc && acc[part], obj) || defaultValue;
-}
-
-function parseValue(val) {
-  if (!val || val === 'N/A') return null;
-  const str = String(val).replace(/[₹$,%]/g, '').trim();
-  return parseFloat(str);
-}
-
-function getMetricHTML(label, value, compareValue, type) {
-  const val = parseValue(value);
-  const cmp = parseValue(compareValue);
-  
-  if (val === null) {
-    return `<div class="stat-item muted"><strong>${label}:</strong> N/A</div>`;
-  }
-  
-  let colorClass = 'text-gray-300';
-  let icon = '';
-  
-  if (type === '52h' && cmp !== null) {
-    const diff = ((cmp - val) / val) * 100;
-    if (diff >= -5) {
-      colorClass = 'text-green-400';
-      icon = '📈';
-    } else if (diff <= -15) {
-      colorClass = 'text-red-400';
-      icon = '📉';
-    } else {
-      colorClass = 'text-yellow-400';
-      icon = '➡️';
-    }
-  } else if (type === '52l' && cmp !== null) {
-    const diff = ((val - cmp) / cmp) * 100;
-    if (diff >= 15) {
-      colorClass = 'text-green-400';
-      icon = '📈';
-    } else if (diff <= 5) {
-      colorClass = 'text-red-400';
-      icon = '📉';
-    } else {
-      colorClass = 'text-yellow-400';
-      icon = '➡️';
-    }
-  } else if (type === 'div') {
-    if (val >= 3) {
-      colorClass = 'text-green-400';
-      icon = '💰';
-    } else if (val >= 1.5) {
-      colorClass = 'text-yellow-400';
-      icon = '💵';
-    } else if (val > 0) {
-      colorClass = 'text-orange-400';
-      icon = '💸';
-    }
-  } else if (type === 'debt') {
-    if (val <= 0.5) {
-      colorClass = 'text-green-400';
-      icon = '✅';
-    } else if (val <= 1) {
-      colorClass = 'text-yellow-400';
-      icon = '⚠️';
-    } else {
-      colorClass = 'text-red-400';
-      icon = '🚨';
-    }
-  }
-  
-  return `<div class="stat-item ${colorClass}"><strong>${label}:</strong> ${icon} ${value}</div>`;
-}
-
-function formatPrice(price) {
-  const val = parseValue(price);
-  return val !== null ? `₹${val.toLocaleString('en-IN')}` : 'N/A';
-}
-
-function formatPE(pe) {
-  const val = parseValue(pe);
-  if (val === null) return '<span class="text-gray-400">PE: N/A</span>';
-  
-  let color = 'text-gray-300';
-  let icon = '';
-  
-  if (val <= 15) {
-    color = 'text-green-400';
-    icon = '✅';
-  } else if (val <= 25) {
-    color = 'text-yellow-400';
-    icon = '⚠️';
-  } else {
-    color = 'text-red-400';
-    icon = '🔴';
-  }
-  
-  return `<span class="${color}">${icon} PE: ${pe}</span>`;
-}
-
-function formatPB(pb) {
-  const val = parseValue(pb);
-  if (val === null) return '<span class="text-gray-400">PB: N/A</span>';
-  
-  let color = 'text-gray-300';
-  let icon = '';
-  
-  if (val <= 1.5) {
-    color = 'text-green-400';
-    icon = '✅';
-  } else if (val <= 3) {
-    color = 'text-yellow-400';
-    icon = '⚠️';
-  } else {
-    color = 'text-red-400';
-    icon = '🔴';
-  }
-  
-  return `<span class="${color}">${icon} PB: ${pb}</span>`;
-}
-
-function getPriceRangeHTML(current, high, low) {
-  const curr = parseValue(current);
-  const h = parseValue(high);
-  const l = parseValue(low);
-  
-  if (curr === null || h === null || l === null) {
-    return '<div class="text-xs muted">Price range data unavailable</div>';
-  }
-  
-  const range = h - l;
-  const position = ((curr - l) / range) * 100;
-  const fromHigh = ((h - curr) / h) * 100;
-  const fromLow = ((curr - l) / l) * 100;
-  
-  let positionColor = 'bg-yellow-500';
-  let statusText = 'Mid-range';
-  
-  if (position >= 80) {
-    positionColor = 'bg-green-500';
-    statusText = 'Near High 🚀';
-  } else if (position <= 20) {
-    positionColor = 'bg-red-500';
-    statusText = 'Near Low 🔻';
-  }
-  
-  return `
-    <div class="relative w-full h-2 bg-gray-700 rounded-full overflow-hidden mb-2">
-      <div class="absolute h-full ${positionColor} transition-all duration-500" style="width: ${position}%"></div>
-    </div>
-    <div class="flex justify-between text-xs">
-      <span class="text-red-300">Low: ${l.toLocaleString('en-IN')}</span>
-      <span class="font-semibold text-blue-300">${statusText}</span>
-      <span class="text-green-300">High: ${h.toLocaleString('en-IN')}</span>
-    </div>
-    <div class="mt-2 text-xs text-center muted">
-      ${fromHigh.toFixed(1)}% from 52w high • ${fromLow.toFixed(1)}% above 52w low
-    </div>
-  `;
-}
-
-function getAdditionalDetailsHTML(stock) {
-  const details = [];
-  
-  // Market Cap
-  if (stock.market_cap) {
-    const cap = parseValue(stock.market_cap);
-    let capIcon = '🏢';
-    let capLabel = 'Mid Cap';
-    if (cap >= 20000) {
-      capIcon = '🏛️';
-      capLabel = 'Large Cap';
-    } else if (cap < 5000) {
-      capIcon = '🏪';
-      capLabel = 'Small Cap';
-    }
-    details.push(`<div class="stat-item"><strong>${capIcon} ${capLabel}:</strong> ${stock.market_cap} Cr</div>`);
-  }
-  
- 
-  
-  // EPS Growth
-  if (stock.eps_growth) {
-    const eps = parseValue(stock.eps_growth);
-    let color = 'text-gray-300';
-    let icon = '';
-    if (eps >= 20) {
-      color = 'text-green-400';
-      icon = '📈';
-    } else if (eps >= 10) {
-      color = 'text-yellow-400';
-      icon = '➡️';
-    } else if (eps !== null) {
-      color = 'text-red-400';
-      icon = '📉';
-    }
-    details.push(`<div class="stat-item ${color}"><strong>EPS Growth:</strong> ${icon} ${stock.eps_growth}%</div>`);
-  }
-  
-  // Revenue Growth
-  if (stock.revenue_growth) {
-    const rev = parseValue(stock.revenue_growth);
-    let color = 'text-gray-300';
-    let icon = '';
-    if (rev >= 15) {
-      color = 'text-green-400';
-      icon = '🚀';
-    } else if (rev >= 5) {
-      color = 'text-yellow-400';
-      icon = '📊';
-    } else if (rev !== null) {
-      color = 'text-red-400';
-      icon = '📉';
-    }
-    details.push(`<div class="stat-item ${color}"><strong>Revenue Growth:</strong> ${icon} ${stock.revenue_growth}%</div>`);
-  }
-  
-  // Profit Margin
-  if (stock.profit_margin) {
-    const margin = parseValue(stock.profit_margin);
-    let color = 'text-gray-300';
-    let icon = '';
-    if (margin >= 20) {
-      color = 'text-green-400';
-      icon = '💎';
-    } else if (margin >= 10) {
-      color = 'text-yellow-400';
-      icon = '💰';
-    } else if (margin !== null) {
-      color = 'text-red-400';
-      icon = '⚠️';
-    }
-    details.push(`<div class="stat-item ${color}"><strong>Profit Margin:</strong> ${icon} ${stock.profit_margin}%</div>`);
-  }
-  
-  // Analyst Rating
-  if (stock.analyst_rating) {
-    const rating = stock.analyst_rating.toLowerCase();
-    let color = 'text-gray-300';
-    let icon = '';
-    if (rating.includes('buy') || rating.includes('strong')) {
-      color = 'text-green-400';
-      icon = '👍';
-    } else if (rating.includes('hold')) {
-      color = 'text-yellow-400';
-      icon = '✋';
-    } else if (rating.includes('sell')) {
-      color = 'text-red-400';
-      icon = '👎';
-    }
-    details.push(`<div class="stat-item ${color}"><strong>Analyst:</strong> ${icon} ${stock.analyst_rating}</div>`);
-  }
-  
-  // Sector
-  if (stock.sector) {
-    const sectorIcons = {
-      'Technology': '💻',
-      'Banking': '🏦',
-      'Healthcare': '🏥',
-      'Energy': '⚡',
-      'Auto': '🚗',
-      'FMCG': '🛒',
-      'Pharma': '💊',
-      'Real Estate': '🏗️',
-      'Telecom': '📱'
-    };
-    const icon = Object.keys(sectorIcons).find(key => stock.sector.includes(key)) 
-      ? sectorIcons[Object.keys(sectorIcons).find(key => stock.sector.includes(key))]
-      : '🏢';
-    details.push(`<div class="stat-item"><strong>Sector:</strong> ${icon} ${stock.sector}</div>`);
-  }
-  
-  if (details.length === 0) return '';
-  
-  return `
-    <div class="mt-4 pt-4 border-t border-gray-700">
-      <div class="text-xs font-semibold mb-2">📋 Additional Insights</div>
-      <div class="grid grid-cols-2 gap-3 text-sm">
-        ${details.join('')}
       </div>
     </div>
-  `;
-}
+  </div>
 
-function createImageElement(src, alt, fallbackText = 'Chart unavailable') {
-  if (!src) {
-    return `<div class="img-placeholder text-sm muted">${fallbackText}</div>`;
-  }
-  return `<img src="${src}" alt="${alt}" class="chart-img" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'img-placeholder text-sm muted\\'>${fallbackText}</div>';" />`;
-}
+  <div id="stockModal" class="modal">
+    <div class="modal-content">
+      <span class="modal-close" onclick="closeModal()">&times;</span>
+      <h2 id="modalStockName" style="color: #667eea; margin-bottom: 20px;"></h2>
+      <div class="period-selector">
+        <button class="period-btn" onclick="updateModalChart('1mo')">1 Month</button>
+        <button class="period-btn" onclick="updateModalChart('6mo')">6 Months</button>
+        <button class="period-btn active" onclick="updateModalChart('1y')">1 Year</button>
+        <button class="period-btn" onclick="updateModalChart('5y')">5 Years</button>
+      </div>
+      <div id="modalChart"></div>
+    </div>
+  </div>
 
-function showError(message) {
-  document.getElementById('loadingState').classList.add('hidden');
-  document.getElementById('errorState').classList.remove('hidden');
-  document.getElementById('errorMessage').textContent = message;
-}
+  <script>
+    const API_BASE = 'https://reynaldo-appropriable-jackelyn.ngrok-free.dev';
+    let portfolioData = null;
 
-function showContent() {
-  document.getElementById('loadingState').classList.add('hidden');
-  document.getElementById('mainContent').classList.remove('hidden');
-}
+    let currentModalStock = null;
+    let modalChart = null;
 
-async function loadPortfolio() {
-    const userId = new URLSearchParams(window.location.search).get('user') || 'default';
-    const apiUrl = `https://reynaldo-appropriable-jackelyn.ngrok-free.dev/portfolio`;
-    const fallbackUrl = `https://raw.githubusercontent.com/ashish-in-progress/portfolio-json/main/${userId}.json`;
-    console.log("Fetching URL:", apiUrl);
+    // Tab switching
+    function showTab(tabName) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      
+      event.target.classList.add('active');
+      document.getElementById(tabName).classList.add('active');
+    }
 
-    const payload = { user: userId };
+    // Show/Hide states
+    function showLoadingState() {
+      document.getElementById('loadingState').style.display = 'flex';
+      document.getElementById('errorState').style.display = 'none';
+      document.getElementById('mainContent').style.display = 'none';
+    }
 
-    let data = null;
+    function showErrorState(message) {
+      document.getElementById('loadingState').style.display = 'none';
+      document.getElementById('errorState').style.display = 'block';
+      document.getElementById('mainContent').style.display = 'none';
+      document.getElementById('errorMessage').textContent = message;
+    }
 
-    // Try main API first
-    try {
+    function showMainContent() {
+      document.getElementById('loadingState').style.display = 'none';
+      document.getElementById('errorState').style.display = 'none';
+      document.getElementById('mainContent').style.display = 'block';
+    }
+
+    // Load portfolio data with fallback
+    async function loadPortfolioData() {
+      const userId = new URLSearchParams(window.location.search).get('user') || 'default';
+      const apiUrl = `${API_BASE}/portfolio`;
+      const fallbackUrl = `https://raw.githubusercontent.com/ashish-in-progress/portfolio-json/main/${userId}.json`;
+      
+      console.log("Loading portfolio for user:", userId);
+
+      showLoadingState();
+
+      const payload = { user: userId };
+
+      // Try main API first
+      try {
+        console.log("Attempting to fetch from main API...");
         const response = await fetch(apiUrl, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true"
+          },
+          body: JSON.stringify(payload)
         });
 
         if (!response.ok) {
-            throw new Error(`API responded with status ${response.status}`);
+          throw new Error(`API responded with status ${response.status}`);
         }
 
-        data = await response.json();
-        console.log("Data loaded from main API:", data);
+        portfolioData = await response.json();
+        console.log("Data loaded from main API:", portfolioData);
+        return true;
 
-    } catch (err) {
+      } catch (err) {
         console.warn("Primary API failed:", err.message);
         console.log("Attempting to load fallback JSON...");
 
         // Try fallback JSON
         try {
-            const fallbackResponse = await fetch(fallbackUrl);
-            if (!fallbackResponse.ok) {
-                throw new Error(`Fallback JSON not found (status ${fallbackResponse.status})`);
-            }
-            data = await fallbackResponse.json();
-            console.log("Data loaded from fallback JSON:", data);
+          const fallbackResponse = await fetch(fallbackUrl);
+          if (!fallbackResponse.ok) {
+            throw new Error(`Fallback JSON not found (status ${fallbackResponse.status})`);
+          }
+          portfolioData = await fallbackResponse.json();
+          console.log("Data loaded from fallback JSON:", portfolioData);
+          return true;
 
         } catch (fallbackErr) {
-            console.error("Fallback failed:", fallbackErr.message);
-            showError("Could not load portfolio from API or fallback.");
-            return;
+          console.error("Fallback failed:", fallbackErr.message);
+          showErrorState("Could not load portfolio from API or GitHub fallback. Please check your connection and try again.");
+          return false;
         }
+      }
     }
 
-    // Render if data exists
-    if (data && Object.keys(data).length > 0) {
-        renderPortfolio(data);
-        showContent();
-    } else {
-        showError("No portfolio data available.");
+    // Initialize charts
+    async function initCharts() {
+      if (!portfolioData) {
+        showErrorState("No portfolio data available");
+        return;
+      }
+
+      showMainContent();
+      
+      // Update summary cards with data from portfolio
+      const userProfile = portfolioData.user_profile || {};
+      document.getElementById('totalInvestment').textContent = '₹' + (userProfile.budget || 0).toLocaleString('en-IN');
+      document.getElementById('targetReturn').textContent = userProfile.goals || 'N/A';
+      document.getElementById('timeFrame').textContent = userProfile.time_frame || 'N/A';
+      const riskValue = userProfile.risk || 'moderate';
+      document.getElementById('riskProfile').textContent = riskValue.charAt(0).toUpperCase() + riskValue.slice(1);
+      
+      createAllocationChart();
+      createSectorChart();
+      createAssetChart();
+      await loadStocksData();
+      createFundsView();
+      createRiskChart();
+      createScenarioChart();
     }
-}
 
-
-
-function renderPortfolio(data) {
-  // Summary
-  const summary = safeGet(data, 'summary', 'No summary available');
-  document.getElementById('summaryText').textContent = summary;
-
-  // Allocation
-  const alloc = data.allocation || {};
-  const equitySleeves = alloc.equity_sleeves || {};
-  const diversifiers = alloc.diversifiers || {};
-  
-  document.getElementById('allocationList').innerHTML = `
-    <div class="stat-item"><strong>Stocks:</strong> ${equitySleeves.stocks || '0%'}</div>
-    <div class="stat-item"><strong>Mutual Funds:</strong> ${equitySleeves.mutual_funds || '0%'}</div>
-    <div class="stat-item"><strong>Crypto:</strong> ${diversifiers.crypto || '0%'}</div>
-    <div class="stat-item"><strong>Bond MF:</strong> ${diversifiers.bond_mutual_funds || '0%'}</div>
-    <div class="stat-item"><strong>Gold:</strong> ${diversifiers.gold || '0%'}</div>
-  `;
-  
-  const allocChart = safeGet(data, 'chart_url_allocation');
-  document.getElementById('allocationChartContainer').innerHTML = 
-    createImageElement(allocChart, 'Allocation Chart');
-
-  // Risk Analysis
-  const riskAnalysis = data.risk_analysis || {};
-  document.getElementById('riskSummary').textContent = 
-    riskAnalysis.summary || 'No risk analysis available';
-  
-  const riskChart = safeGet(riskAnalysis, 'quickchart_url');
-  document.getElementById('riskChartContainer').innerHTML = 
-    createImageElement(riskChart, 'Risk Chart');
-
-  // What-if Analysis
-  const whatIf = data.what_if_analysis || {};
-  if (whatIf.conservative_return || whatIf.moderate_return || whatIf.optimistic_return) {
-    document.getElementById('whatIfText').innerHTML = `
-      <div class="text-sm muted"><strong>Conservative:</strong> ${whatIf.conservative_return || 'N/A'}</div>
-      <div class="text-sm muted"><strong>Moderate:</strong> ${whatIf.moderate_return || 'N/A'}</div>
-      <div class="text-sm muted"><strong>Optimistic:</strong> ${whatIf.optimistic_return || 'N/A'}</div>
-    `;
-  }
-  
-  const whatIfChart = safeGet(whatIf, 'quickchart_url');
-  document.getElementById('whatIfChartContainer').innerHTML = 
-    createImageElement(whatIfChart, 'What-if Chart');
-
-  // Education Tips
-  const tipsEl = document.getElementById('educationTips');
-  const tips = data.education_tips || {};
-  const tipValues = Object.values(tips).filter(t => t);
-  
-  if (tipValues.length > 0) {
-    tipsEl.innerHTML = '';
-    tipValues.forEach((tip, index) => {
-      const li = document.createElement('li');
-      li.className = 'p-2 rounded hover:bg-blue-900 hover:bg-opacity-20 transition-all duration-300';
-      li.style.animationDelay = `${index * 0.1}s`;
-      li.textContent = `• ${tip}`;
-      tipsEl.appendChild(li);
-    });
-  }
-
-  // Stocks
-  const stocksGrid = document.getElementById('stocksGrid');
-  const stocks = data.stocks_selected || [];
-  
-  if (stocks.length > 0) {
-    stocksGrid.innerHTML = '';
-    stocks.forEach((s, index) => {
-      const card = document.createElement('div');
-      card.className = 'p-5 card';
-      card.style.animationDelay = `${index * 0.1}s`;
+    function createAllocationChart() {
+      const alloc = portfolioData.allocation || {};
+      const equitySleeve = alloc.equity_sleeve || {};
+      const diversifiers = alloc.diversifiers || {};
       
-      const buyLink = s.buy_link ? 
-        `<a href="${s.buy_link}" target="_blank" rel="noopener noreferrer" class="text-sm px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded-lg transition-all duration-300">Buy</a>` : 
-        '';
+      const equityAmount = equitySleeve.total_amount || 0;
+      const diversifiersAmount = diversifiers.total_amount || 0;
+
+      const options = {
+        series: [equityAmount, diversifiersAmount],
+        chart: {
+          type: 'donut',
+          height: 350,
+          background: 'transparent'
+        },
+        labels: ['Equity Sleeve', 'Diversifiers'],
+        colors: ['#667eea', '#4ade80'],
+        legend: {
+          labels: { colors: '#e4e6eb' },
+          position: 'bottom'
+        },
+        dataLabels: {
+          style: { colors: ['#fff'] }
+        },
+        plotOptions: {
+          pie: {
+            donut: {
+              labels: {
+                show: true,
+                total: {
+                  show: true,
+                  label: 'Total Investment',
+                  formatter: () => {
+                    const budget = portfolioData.user_profile?.budget || 200000;
+                    return '₹' + budget.toLocaleString('en-IN');
+                  },
+                  color: '#e4e6eb'
+                }
+              }
+            }
+          }
+        },
+        tooltip: {
+          theme: 'dark',
+          y: {
+            formatter: (val) => '₹' + val.toLocaleString('en-IN')
+          }
+        }
+      };
+
+      new ApexCharts(document.querySelector("#allocationChart"), options).render();
+    }
+
+    function createSectorChart() {
+      const sectors = {};
+      const stocks = portfolioData.stocks_selected || [];
       
-      const reason = safeGet(s, 'analysis_summary.reason_for_selection(2-3 lines)', 'No analysis available');
+      stocks.forEach(stock => {
+        const sector = stock.sector || 'Other';
+        const amount = stock.allocated_amount || 0;
+        sectors[sector] = (sectors[sector] || 0) + amount;
+      });
+
+      if (Object.keys(sectors).length === 0) {
+        document.getElementById('sectorChart').innerHTML = '<p class="loading">No sector data available</p>';
+        return;
+      }
+
+      const options = {
+        series: Object.values(sectors),
+        chart: {
+          type: 'pie',
+          height: 350,
+          background: 'transparent'
+        },
+        labels: Object.keys(sectors),
+        colors: ['#667eea', '#764ba2', '#f093fb', '#4facfe', '#43e97b', '#fa709a'],
+        legend: {
+          labels: { colors: '#e4e6eb' },
+          position: 'bottom'
+        },
+        dataLabels: {
+          style: { colors: ['#fff'] }
+        },
+        tooltip: {
+          theme: 'dark',
+          y: {
+            formatter: (val) => '₹' + val.toLocaleString('en-IN')
+          }
+        }
+      };
+
+      new ApexCharts(document.querySelector("#sectorChart"), options).render();
+    }
+
+    function createAssetChart() {
+      const alloc = portfolioData.allocation || {};
+      const equitySleeve = alloc.equity_sleeve || {};
+      const diversifiers = alloc.diversifiers || {};
       
-      card.innerHTML = `
-        <div class="flex items-start justify-between">
-          <div>
-            <h3 class="text-lg font-semibold">${s.stock || 'Unknown'}</h3>
-            <div class="muted text-sm mt-1">Price: ${s.current_price}</div>
-            <div class="muted text-sm">${formatPE(s.pe)} • ${formatPB(s.pb)}</div>
-            <div class="muted text-sm">Revenue Growth: ${s.revenue_growth_yoy}</div>
-            <div class="muted text-sm">Net Profit Margin: ${s.net_profit_margin}</div>
-          </div>
-          <div class="text-right">${buyLink}</div>
-        </div>
-        <p class="mt-3 text-sm muted leading-relaxed">${reason}</p>
-        <div class="mt-3">
+      const categories = [];
+      const amounts = [];
+      
+      // Add equity sleeve items
+      if (equitySleeve.stocks) {
+        categories.push('Stocks');
+        amounts.push(equitySleeve.stocks.amount || 0);
+      }
+      if (equitySleeve.mutual_funds) {
+        categories.push('Mutual Funds');
+        amounts.push(equitySleeve.mutual_funds.amount || 0);
+      }
+      
+      // Add diversifiers
+      if (diversifiers.fd) {
+        categories.push('Fixed Deposit');
+        amounts.push(diversifiers.fd.amount || 0);
+      }
+      if (diversifiers.gold) {
+        categories.push('Gold');
+        amounts.push(diversifiers.gold.amount || 0);
+      }
+      if (diversifiers.debt_funds) {
+        categories.push('Debt Funds');
+        amounts.push(diversifiers.debt_funds.amount || 0);
+      }
+
+      const options = {
+        series: [{
+          name: 'Amount',
+          data: amounts
+        }],
+        chart: {
+          type: 'bar',
+          height: 350,
+          background: 'transparent',
+          toolbar: { show: false }
+        },
+        plotOptions: {
+          bar: {
+            borderRadius: 8,
+            horizontal: false,
+            columnWidth: '60%',
+            distributed: true
+          }
+        },
+        dataLabels: {
+          enabled: true,
+          formatter: (val) => '₹' + (val/1000).toFixed(0) + 'k',
+          style: { colors: ['#fff'] }
+        },
+        xaxis: {
+          categories: categories,
+          labels: { style: { colors: '#e4e6eb' } }
+        },
+        yaxis: {
+          labels: {
+            style: { colors: '#e4e6eb' },
+            formatter: (val) => '₹' + (val/1000) + 'k'
+          }
+        },
+        colors: ['#667eea', '#764ba2', '#f093fb', '#4facfe', '#43e97b'],
+        legend: { show: false },
+        tooltip: {
+          theme: 'dark',
+          y: {
+            formatter: (val) => '₹' + val.toLocaleString('en-IN')
+          }
+        }
+      };
+
+      new ApexCharts(document.querySelector("#assetChart"), options).render();
+    }
+
+    async function loadStocksData() {
+      const container = document.getElementById('stocksContainer');
+      container.innerHTML = '';
+
+      const stocks = portfolioData.stocks_selected || [];
+      
+      if (stocks.length === 0) {
+        container.innerHTML = '<p class="loading">No stocks in portfolio</p>';
+        return;
+      }
+
+      for (const stock of stocks) {
+        try {
+          let currentPrice = stock.current_price;
           
-              ${data.market=="IND"?createImageElement(s.chart, `${s.stock} chart`, 'Chart not available'):`<iframe
-  src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_widget&symbol=${s.stock}&interval=D&hidesidetoolbar=1&symboledit=1&saveimage=0&toolbarbg=f1f3f6&studies=[]&theme=dark&style=1&timezone=Etc%2FUTC&locale=en&allow_symbol_change=1"
-  width="100%"
-  height="300"
-  frameborder="0"
-  allowtransparency="true"
-  scrolling="no"
-  loading="lazy">
-</iframe> `}
+          // Try to fetch current price from API
+          try {
+            const response = await fetch(`${API_BASE}/current?symbol=${stock.symbol}`, {
+              headers: { 'ngrok-skip-browser-warning': 'true' }
+            });
+            if (response.ok) {
+              const data = await response.json();
+              currentPrice = data.current_price || stock.current_price;
+            }
+          } catch (e) {
+            console.log(`Using stored price for ${stock.symbol}`);
+          }
 
-        </div>
-        
-        <!-- Price Range Analysis -->
-        <div class="mt-4 p-3 bg-blue-900 bg-opacity-20 rounded-lg">
-          <div class="text-xs font-semibold mb-2">📊 Price Position</div>
-          ${getPriceRangeHTML(s.current_price, s.week_52_high, s.week_52_low)}
-        </div>
-        
-        <!-- Key Metrics Grid -->
-        <div class="mt-4 text-sm grid grid-cols-2 gap-3">
-          ${getMetricHTML('52w High', s.week_52_high, s.current_price, '52h')}
-          ${getMetricHTML('52w Low', s.week_52_low, s.current_price, '52l')}
-          ${getMetricHTML('Dividend', s.dividend_yield, null, 'div')}
-          ${getMetricHTML('Debt/Equity', s.total_debt_to_equity, null, 'debt')}
-        </div>
-        
-        <!-- Additional Details -->
-        ${getAdditionalDetailsHTML(s)}
-      `;
-      stocksGrid.appendChild(card);
-    });
-  }
+          const card = document.createElement('div');
+          card.className = 'stock-card';
+          card.innerHTML = `
+            <div class="stock-header">
+              <div>
+                <div class="stock-name">${stock.name || stock.stock}</div>
+                <div class="stock-symbol">${stock.symbol} • ${stock.sector || 'N/A'}</div>
+              </div>
+              <div class="stock-price">₹${parseFloat(currentPrice).toFixed(2)}</div>
+            </div>
+            <div class="stock-details">
+              <div class="detail-item">
+                <span class="detail-label">Allocated</span>
+                <span class="detail-value">₹${(stock.allocated_amount || 0).toLocaleString('en-IN')}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">P/E Ratio</span>
+                <span class="detail-value">${stock.pe_ratio || stock.pe || 'N/A'}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">ROE</span>
+                <span class="detail-value">${stock.roe || 'N/A'}%</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Dividend Yield</span>
+                <span class="detail-value">${stock.dividend_yield || 'N/A'}%</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Revenue Growth</span>
+                <span class="detail-value">${stock.revenue_growth || stock.revenue_growth_yoy || 'N/A'}%</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Profit Margin</span>
+                <span class="detail-value">${stock.profit_margins || stock.net_profit_margin || 'N/A'}%</span>
+              </div>
+            </div> <div class="stock-description">
+              <strong>Why Invest:</strong> ${stock.why_invest || stock.reason_for_investment || 'Solid fundamentals'}
+            </div>
+            <button class="btn-view-chart" onclick="openStockChart('${stock.symbol}', '${(stock.name || stock.stock).replace(/'/g, "\\'")}')">View Historical Chart</button>
+          `;
+          container.appendChild(card);
+        } catch (error) {
+          console.error('Error loading stock:', stock.symbol, error);
+        }
+      }
+    }
 
-  // Mutual Funds
-  const mfList = document.getElementById('mfList');
-  const mutualFunds = data.mutual_funds_selected || [];
-  
-  if (mutualFunds.length > 0) {
-    mfList.innerHTML = '';
-    mutualFunds.forEach((m, index) => {
-      const el = document.createElement('div');
-      el.className = 'p-4 border-card rounded-lg';
-      el.style.animationDelay = `${index * 0.1}s`;
-      el.innerHTML = `
-        <div class="text-sm font-semibold">${m.name || 'Unknown Fund'}</div>
-        <div class="muted text-xs mt-1">${m.category || 'N/A'} • 3y: ${m['3_year_return'] || 'N/A'} • 5y: ${m['5_year_return'] || 'N/A'}</div>
-        <div class="mt-3 text-sm muted leading-relaxed">${m.reason_for_investment || 'No reason provided'}</div>
-      `;
-      mfList.appendChild(el);
-    });
-  }
+    async function loadStockChart(symbol, period) {
+      try {
+        const response = await fetch(`${API_BASE}/history?symbol=${symbol}&period=${period}`, {
+          headers: { 'ngrok-skip-browser-warning': 'true' }
+        });
+        const data = await response.json();
 
-  // Diversifiers
-  const diversifiersEl = document.getElementById('diversifiersList');
-  const cryptos = data.crypto_selected || [];
-  let hasDiversifiers = false;
+        const seriesData = data.data.map(d => ({
+          x: new Date(d.date),
+          y: d.close
+        }));
 
-  if (cryptos.length > 0) {
-    diversifiersEl.innerHTML = '';
-    hasDiversifiers = true;
-    
-    cryptos.forEach((c, index) => {
-      const el = document.createElement('div');
-      el.className = 'p-4 border-card rounded-lg';
-      el.style.animationDelay = `${index * 0.1}s`;
-      const buyLink = c.buy_link ? 
-        `<a href="${c.buy_link}" target="_blank" rel="noopener noreferrer" class="text-xs px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded-lg transition-all duration-300">Buy</a>` : 
-        '';
+        const options = {
+          series: [{
+            name: symbol,
+            data: seriesData
+          }],
+          chart: {
+            type: 'area',
+            height: 250,
+            background: 'transparent',
+            zoom: { enabled: false },
+            toolbar: { show: false }
+          },
+          stroke: {
+            curve: 'smooth',
+            width: 2
+          },
+          fill: {
+            type: 'gradient',
+            gradient: {
+              shadeIntensity: 1,
+              opacityFrom: 0.4,
+              opacityTo: 0.1,
+            }
+          },
+          xaxis: {
+            type: 'datetime',
+            labels: { style: { colors: '#e4e6eb' } }
+          },
+          yaxis: {
+            labels: {
+              style: { colors: '#e4e6eb' },
+              formatter: (val) => '₹' + val.toFixed(2)
+            }
+          },
+          tooltip: {
+            theme: 'dark',
+            x: { format: 'dd MMM yyyy' }
+          },
+          colors: ['#667eea'],
+          grid: {
+            borderColor: '#2d3748'
+          }
+        };
+
+        const chart = new ApexCharts(document.querySelector(`#chart-${symbol}`), options);
+        await chart.render();
+      } catch (error) {
+        console.error(`Error loading chart for ${symbol}:`, error);
+        document.getElementById(`chart-${symbol}`).innerHTML = 
+          '<div class="error" style="margin: 10px 0;">Chart data unavailable</div>';
+      }
+    }
+
+    async function updateStockChart(symbol, period, button) {
+      // Update active button
+      button.parentElement.querySelectorAll('.period-btn').forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+
+      // Reload chart
+      const chartDiv = document.getElementById(`chart-${symbol}`);
+      chartDiv.innerHTML = '<div class="loading">Loading...</div>';
+      await loadStockChart(symbol, period);
+    }
+
+    function createFundsView() {
+      const container = document.getElementById('fundsContainer');
+      container.innerHTML = '';
+
+      const funds = portfolioData.mutual_funds_selected || [];
       
-      el.innerHTML = `
-        <div class="flex justify-between items-center">
-          <div>
-            <div class="text-sm font-semibold">${c.name || 'Unknown'} (${(c.symbol || '').toUpperCase()})</div>
-            <div class="muted text-xs mt-1">Price: ${typeof c.current_price === 'number' ? c.current_price.toLocaleString() : c.current_price || 'N/A'}</div>
+      if (funds.length === 0) {
+        container.innerHTML = '<p class="loading">No mutual funds in portfolio</p>';
+        return;
+      }
+
+      funds.forEach(fund => {
+        const card = document.createElement('div');
+        card.className = 'fund-card';
+        card.innerHTML = `
+          <div class="fund-header">
+            <div>
+              <div class="fund-name">${fund.name}</div>
+              <span class="fund-category">${fund.category || 'N/A'}</span>
+            </div>
           </div>
-          ${buyLink}
+          <div class="returns-grid">
+            <div class="return-item">
+              <div class="return-label">Allocated</div>
+              <div class="return-value" style="font-size: 1.2em;">₹${((fund.allocated_amount || 0)/1000).toFixed(0)}k</div>
+            </div>
+            <div class="return-item">
+              <div class="return-label">SIP Amount</div>
+              <div class="return-value" style="font-size: 1.2em;">₹${((fund.sip_amount || 0)/1000).toFixed(0)}k</div>
+            </div>
+            <div class="return-item">
+              <div class="return-label">3Y Returns</div>
+              <div class="return-value">${fund.returns_3y || fund['3_year_return'] || 'N/A'}%</div>
+            </div>
+            <div class="return-item">
+              <div class="return-label">5Y Returns</div>
+              <div class="return-value">${fund.returns_5y || fund['5_year_return'] || 'N/A'}%</div>
+            </div>
+            <div class="return-item">
+              <div class="return-label">Expense Ratio</div>
+              <div class="return-value" style="color: #fbbf24;">${fund.expense_ratio || 'N/A'}%</div>
+            </div>
+          </div>
+          <div class="stock-description">
+            <strong>Why Invest:</strong> ${fund.why_invest || fund.reason_for_investment || 'Strong consistent returns'}
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function createRiskChart() {
+      const riskAnalysis = portfolioData.risk_analysis || {};
+      
+      const categories = ['Mild Crash\n(-10%)', 'Moderate Crash\n(-20%)', 'Severe Crash\n(-30%)'];
+      const portfolioValues = [186000, 172000, 159000];
+      const losses = [14000, 28000, 41000];
+
+      const options = {
+        series: [{
+          name: 'Portfolio Value',
+          data: portfolioValues
+        }, {
+          name: 'Loss Amount',
+          data: losses
+        }],
+        chart: {
+          type: 'bar',
+          height: 350,
+          background: 'transparent',
+          toolbar: { show: false }
+        },
+        plotOptions: {
+          bar: {
+            horizontal: false,
+            columnWidth: '55%',
+            borderRadius: 8
+          }
+        },
+        dataLabels: {
+          enabled: true,
+          formatter: (val) => '₹' + (val/1000).toFixed(0) + 'k',
+          style: { colors: ['#fff'] }
+        },
+        stroke: {
+          show: true,
+          width: 2,
+          colors: ['transparent']
+        },
+        xaxis: {
+          categories: categories,
+          labels: { style: { colors: '#e4e6eb' } }
+        },
+        yaxis: {
+          labels: {
+            style: { colors: '#e4e6eb' },
+            formatter: (val) => '₹' + (val/1000) + 'k'
+          }
+        },
+        colors: ['#4ade80', '#ef4444'],
+        fill: { opacity: 1 },
+        tooltip: {
+          theme: 'dark',
+          y: {
+            formatter: (val) => '₹' + val.toLocaleString()
+          }
+        }
+      };
+
+      new ApexCharts(document.querySelector("#riskChart"), options).render();
+
+      const detailsContainer = document.getElementById('riskDetails');
+      detailsContainer.innerHTML = `
+        <div class="risk-card">
+          <div class="risk-title">🟡 Mild Crash (10% Correction)</div>
+          <div class="risk-description">${riskAnalysis.mild_crash || 'Portfolio can withstand minor market corrections with diversification.'}</div>
         </div>
-        <div class="mt-3 text-sm muted"><strong>ROI:</strong> ${c.roi || 'N/A'}</div>
-        <div class="mt-2 text-sm muted leading-relaxed">${c.summary || 'N/A'}</div>
-        <iframe
-      src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_widget
-      &symbol=${c.symbol}USD
-      &interval=D
-      &hidesidetoolbar=1
-      &symboledit=1
-      &saveimage=0
-      &toolbarbg=f1f3f6
-      &studies=[]
-      &theme=dark
-      &style=1
-      &timezone=Etc%2FUTC
-      &locale=en
-      &allow_symbol_change=1
-      "
-      width="100%"
-      height="300"
-      frameborder="0"
-      allowtransparency="true"
-      scrolling="no">
-    </iframe>
+        <div class="risk-card">
+          <div class="risk-title">🟠 Moderate Crash (20% Fall)</div>
+          <div class="risk-description">${riskAnalysis.moderate_crash || 'Significant impact expected, but recovery possible within timeframe.'}</div>
+        </div>
+        <div class="risk-card">
+          <div class="risk-title">🔴 Severe Crash (30% Drawdown)</div>
+          <div class="risk-description">${riskAnalysis.severe_crash || 'Major losses possible. Long-term holding recommended for recovery.'}</div>
+        </div>
+        <div class="risk-card" style="background: rgba(102, 126, 234, 0.1); border: 1px solid rgba(102, 126, 234, 0.3);">
+          <div class="risk-title">💡 Summary</div>
+          <div class="risk-description">${riskAnalysis.summary || 'Diversified portfolio with moderate risk. Regular monitoring recommended.'}</div>
+        </div>
       `;
-      diversifiersEl.appendChild(el);
+    }
+
+    function createScenarioChart() {
+      const whatIf = portfolioData.what_if_analysis || {};
+      
+      const scenarios = ['Conservative\n(10% p.a.)', 'Moderate\n(12% p.a.)', 'Optimistic\n(16% p.a.)'];
+      const values = [242000, 250880, 269120];
+      const gains = [42000, 50880, 69120];
+
+      const options = {
+        series: [{
+          name: 'Final Value',
+          data: values
+        }, {
+          name: 'Profit',
+          data: gains
+        }],
+        chart: {
+          type: 'bar',
+          height: 350,
+          background: 'transparent',
+          toolbar: { show: false }
+        },
+        plotOptions: {
+          bar: {
+            horizontal: false,
+            columnWidth: '60%',
+            borderRadius: 8
+          }
+        },
+        dataLabels: {
+          enabled: true,
+          formatter: (val) => '₹' + (val/1000).toFixed(0) + 'k',
+          style: { colors: ['#fff'] }
+        },
+        stroke: {
+          show: true,
+          width: 2,
+          colors: ['transparent']
+        },
+        xaxis: {
+          categories: scenarios,
+          labels: { style: { colors: '#e4e6eb' } }
+        },
+        yaxis: {
+          labels: {
+            style: { colors: '#e4e6eb' },
+            formatter: (val) => '₹' + (val/1000) + 'k'
+          }
+        },
+        colors: ['#667eea', '#4ade80'],
+        fill: { opacity: 1 },
+        tooltip: {
+          theme: 'dark',
+          y: {
+            formatter: (val) => '₹' + val.toLocaleString()
+          }
+        }
+      };
+
+      new ApexCharts(document.querySelector("#scenarioChart"), options).render();
+    }
+
+    async function openStockChart(symbol, name) {
+      currentModalStock = symbol;
+      document.getElementById('modalStockName').textContent = name;
+      document.getElementById('stockModal').classList.add('active');
+      await updateModalChart('1y');
+    }
+
+    function closeModal() {
+      document.getElementById('stockModal').classList.remove('active');
+      if (modalChart) {
+        modalChart.destroy();
+        modalChart = null;
+      }
+    }
+
+    async function updateModalChart(period) {
+      document.querySelectorAll('#stockModal .period-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+
+      try {
+        const response = await fetch(`${API_BASE}/history?symbol=${currentModalStock}&period=${period}`, {
+          headers: { 'ngrok-skip-browser-warning': 'true' }
+        });
+        const data = await response.json();
+
+        const seriesData = data.data.map(d => ({
+          x: new Date(d.date),
+          y: d.close
+        }));
+
+        const options = {
+          series: [{
+            name: currentModalStock,
+            data: seriesData
+          }],
+          chart: {
+            type: 'line',
+            height: 400,
+            background: 'transparent',
+            zoom: { enabled: true },
+            toolbar: { show: true }
+          },
+          stroke: {
+            curve: 'smooth',
+            width: 3
+          },
+          xaxis: {
+            type: 'datetime',
+            labels: { style: { colors: '#e4e6eb' } }
+          },
+          yaxis: {
+            labels: {
+              style: { colors: '#e4e6eb' },
+              formatter: (val) => '₹' + val.toFixed(2)
+            }
+          },
+          tooltip: {
+            theme: 'dark',
+            x: { format: 'dd MMM yyyy' }
+          },
+          colors: ['#667eea'],
+          grid: {
+            borderColor: '#2d3748'
+          }
+        };
+
+        if (!modalChart) {
+          modalChart = new ApexCharts(document.querySelector("#modalChart"), options);
+          await modalChart.render();
+        } else {
+          await modalChart.updateOptions(options);
+        }
+      } catch (error) {
+        console.error('Error loading chart:', error);
+        document.getElementById('modalChart').innerHTML = `
+          <div class="error">Failed to load chart data. Please try again.</div>
+        `;
+      }
+    }
+
+    // Close modal on outside click
+    document.getElementById('stockModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeModal();
+      }
     });
-  }
 
-  // Gold
-  if (diversifiers.gold && diversifiers.gold !== '0%') {
-    if (!hasDiversifiers) diversifiersEl.innerHTML = '';
-    hasDiversifiers = true;
-    
-    const goldEl = document.createElement('div');
-    goldEl.className = 'p-4 border-card rounded-lg';
-    const goldSummary = safeGet(data, 'Gold.summary') || safeGet(data, 'gold.summary', 'Hedge against inflation');
-    goldEl.innerHTML = `
-      <div class="text-sm font-semibold">🥇 Gold</div>
-      <div class="muted text-xs mt-1">Allocation: ${diversifiers.gold}</div>
-      <div class="muted text-xs mt-2 leading-relaxed">${goldSummary}</div>
-    `;
-    diversifiersEl.appendChild(goldEl);
-  }
-
-  // Bond Mutual Funds
-  if (diversifiers.bond_mutual_funds && diversifiers.bond_mutual_funds !== '0%') {
-    if (!hasDiversifiers) diversifiersEl.innerHTML = '';
-    hasDiversifiers = true;
-    
-    const bondEl = document.createElement('div');
-    bondEl.className = 'p-4 border-card rounded-lg';
-    const bondSummary = safeGet(data, 'bond_mutual_funds.summary', 'Stable income generation');
-    bondEl.innerHTML = `
-      <div class="text-sm font-semibold">📜 Bond Mutual Funds</div>
-      <div class="muted text-xs mt-1">Allocation: ${diversifiers.bond_mutual_funds}</div>
-      <div class="muted text-xs mt-2 leading-relaxed">${bondSummary}</div>
-    `;
-    diversifiersEl.appendChild(bondEl);
-  }
-}
-
-// Set current year in footer
-document.getElementById('footerYear').textContent = new Date().getFullYear();
-
-// Load portfolio on page load
-loadPortfolio();
-</script>
-
+    // Initialize on page load
+    window.addEventListener('load', async () => {
+      const success = await loadPortfolioData();
+      if (success && portfolioData) {
+        await initCharts();
+      }
+    });
+  </script>
 </body>
 </html>
-
