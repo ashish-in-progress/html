@@ -1231,69 +1231,77 @@
     }
 
     async function updateModalChart(period) {
-      document.querySelectorAll('#stockModal .period-btn').forEach(btn => btn.classList.remove('active'));
-      event.target.classList.add('active');
+  document.querySelectorAll('#stockModal .period-btn').forEach(btn => btn.classList.remove('active'));
+  event.target.classList.add('active');
 
-      try {
-        const response = await fetch(`${API_BASE}/history?symbol=${currentModalStock}&period=${period}`, {
-          headers: { 'ngrok-skip-browser-warning': 'true' }
-        });
-        const data = await response.json();
+  try {
+    const response = await fetch(`${API_BASE}/history?symbol=${currentModalStock}&period=${period}`, {
+      headers: { 'ngrok-skip-browser-warning': 'true' }
+    });
+    const data = await response.json();
 
-        const seriesData = data.data.map(d => ({
-          x: new Date(d.date),
-          y: d.close
-        }));
+    // Transform data for candlestick chart
+    const seriesData = data.data.map(d => ({
+      x: new Date(d.date),
+      y: [d.open, d.high, d.low, d.close]  // [open, high, low, close]
+    }));
 
-        const options = {
-          series: [{
-            name: currentModalStock,
-            data: seriesData
-          }],
-          chart: {
-            type: 'line',
-            height: 400,
-            background: 'transparent',
-            zoom: { enabled: true },
-            toolbar: { show: true }
+    const options = {
+      series: [{
+        name: currentModalStock,
+        data: seriesData
+      }],
+      chart: {
+        type: 'candlestick',  // Changed to candlestick
+        height: 400,
+        background: 'transparent',
+        zoom: { enabled: true },
+        toolbar: { show: true }
+      },
+      plotOptions: {
+        candlestick: {
+          colors: {
+            upward: '#4ade80',   // Green for bullish candles
+            downward: '#ef4444'  // Red for bearish candles
           },
-          stroke: {
-            curve: 'smooth',
-            width: 3
-          },
-          xaxis: {
-            type: 'datetime',
-            labels: { style: { colors: '#e4e6eb' } }
-          },
-          yaxis: {
-            labels: {
-              style: { colors: '#e4e6eb' },
-              formatter: (val) => '₹' + val.toFixed(2)
-            }
-          },
-          tooltip: {
-            theme: 'dark',
-            x: { format: 'dd MMM yyyy' }
-          },
-          colors: ['#667eea'],
-          grid: {
-            borderColor: '#2d3748'
+          wick: {
+            useFillColor: true
           }
-        };
-
-        if (!modalChart) {
-          modalChart = new ApexCharts(document.querySelector("#modalChart"), options);
-          await modalChart.render();
-        } else {
-          await modalChart.updateOptions(options);
         }
-      } catch (error) {
-        console.error('Error loading chart:', error);
-        document.getElementById('modalChart').innerHTML = `
-          <div class="error">Failed to load chart data. Please try again.</div>
-        `;
+      },
+      xaxis: {
+        type: 'datetime',
+        labels: { style: { colors: '#e4e6eb' } }
+      },
+      yaxis: {
+        tooltip: { enabled: true },
+        labels: {
+          style: { colors: '#e4e6eb' },
+          formatter: (val) => '₹' + val.toFixed(2)
+        }
+      },
+      tooltip: {
+        theme: 'dark',
+        x: { format: 'dd MMM yyyy' }
+      },
+      grid: {
+        borderColor: '#2d3748'
       }
+    };
+
+    if (!modalChart) {
+      modalChart = new ApexCharts(document.querySelector("#modalChart"), options);
+      await modalChart.render();
+    } else {
+      await modalChart.updateOptions(options);
     }
+  } catch (error) {
+    console.error('Error loading chart:', error);
+    document.getElementById('modalChart').innerHTML = `
+      <div class="error">Failed to load chart data. Please try again.</div>
+    `;
+  }
+}
 
     // Close modal on outside click
     document.getElementById('stockModal').addEventListener('click', function(e) {
