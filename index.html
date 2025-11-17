@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -436,6 +435,26 @@
       transform: scale(1.05);
     }
 
+    /* Modern Dark Scrollbar */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #1e2533;
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #6366f1, #4338ca);
+      border-radius: 10px;
+      border: 2px solid #1e2533;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(180deg, #4f46e5, #3730a3);
+    }
+
     @media (max-width: 768px) {
       .grid-2 {
         grid-template-columns: 1fr;
@@ -444,26 +463,6 @@
       h1 {
         font-size: 1.8em;
       }
-      /* ==== MODERN DARK SCROLLBAR ==== */
-::-webkit-scrollbar {
-  width: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: #1e2533;
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #6366f1, #4338ca);
-  border-radius: 10px;
-  border: 2px solid #1e2533;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #4f46e5, #3730a3);
-}
-
     }
   </style>
 </head>
@@ -571,12 +570,33 @@
     <div class="modal-content">
       <span class="modal-close" onclick="closeModal()">&times;</span>
       <h2 id="modalStockName" style="color: #667eea; margin-bottom: 20px;"></h2>
-      <div class="period-selector">
-        <button class="period-btn" onclick="updateModalChart('1mo')">1 Month</button>
-        <button class="period-btn" onclick="updateModalChart('6mo')">6 Months</button>
-        <button class="period-btn active" onclick="updateModalChart('1y')">1 Year</button>
-        <button class="period-btn" onclick="updateModalChart('5y')">5 Years</button>
+      
+      <div style="margin-bottom: 15px;">
+        <h3 style="color: #a0a4a8; font-size: 0.9em; margin-bottom: 10px;">TIMEFRAME</h3>
+        <div class="period-selector">
+          <button class="period-btn" onclick="updateModalChart('1d', '1d')">1 Day</button>
+          <button class="period-btn" onclick="updateModalChart('5d', '5d')">5 Days</button>
+          <button class="period-btn" onclick="updateModalChart('1mo', '1mo')">1 Month</button>
+          <button class="period-btn" onclick="updateModalChart('3mo', '3mo')">3 Months</button>
+          <button class="period-btn" onclick="updateModalChart('6mo', '6mo')">6 Months</button>
+          <button class="period-btn active" onclick="updateModalChart('1y', '1y')">1 Year</button>
+          <button class="period-btn" onclick="updateModalChart('5y', '5y')">5 Years</button>
+        </div>
       </div>
+
+      <div style="margin-bottom: 20px;">
+        <h3 style="color: #a0a4a8; font-size: 0.9em; margin-bottom: 10px;">INTERVAL</h3>
+        <div class="period-selector" id="intervalSelector">
+          <button class="period-btn" onclick="updateInterval('1m')">1 Min</button>
+          <button class="period-btn" onclick="updateInterval('5m')">5 Min</button>
+          <button class="period-btn" onclick="updateInterval('15m')">15 Min</button>
+          <button class="period-btn" onclick="updateInterval('30m')">30 Min</button>
+          <button class="period-btn" onclick="updateInterval('1h')">1 Hour</button>
+          <button class="period-btn active" onclick="updateInterval('1d')">Daily</button>
+          <button class="period-btn" onclick="updateInterval('1wk')">Weekly</button>
+        </div>
+      </div>
+
       <div id="modalChart"></div>
     </div>
   </div>
@@ -584,9 +604,250 @@
   <script>
     const API_BASE = 'https://reynaldo-appropriable-jackelyn.ngrok-free.dev';
     let portfolioData = null;
-
     let currentModalStock = null;
     let modalChart = null;
+    let currentPeriod = '1y';
+    let currentInterval = '1d';
+
+    // Modal chart functions - defined first
+    async function openStockChart(symbol, name) {
+      currentModalStock = symbol;
+      currentPeriod = '1y';
+      currentInterval = '1d';
+      document.getElementById('modalStockName').textContent = name;
+      document.getElementById('stockModal').classList.add('active');
+      await loadModalChart();
+    }
+
+    function closeModal() {
+      document.getElementById('stockModal').classList.remove('active');
+      if (modalChart) {
+        modalChart.destroy();
+        modalChart = null;
+      }
+    }
+
+    async function updateModalChart(period, resetInterval) {
+      currentPeriod = period;
+      
+      // Update active button for period
+      event.target.closest('.period-selector').querySelectorAll('.period-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
+      
+      // Reset to daily interval for longer periods
+      if (resetInterval) {
+        const intradayIntervals = ['1m', '5m', '15m', '30m', '1h'];
+        if (intradayIntervals.includes(currentInterval) && !['1d', '5d', '1mo'].includes(period)) {
+          currentInterval = '1d';
+          document.querySelectorAll('#intervalSelector .period-btn').forEach(btn => {
+            btn.classList.remove('active');
+          });
+          document.querySelector('#intervalSelector .period-btn[onclick*="1d"]').classList.add('active');
+        }
+      }
+      
+      await loadModalChart();
+    }
+
+    async function updateInterval(interval) {
+      currentInterval = interval;
+      
+      // Update active button for interval
+      event.target.closest('.period-selector').querySelectorAll('.period-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
+      
+      // Auto-adjust period based on interval to get meaningful candles
+      const intradayIntervals = ['1m', '5m', '15m', '30m', '1h'];
+      if (intradayIntervals.includes(interval)) {
+        // Set appropriate period for intraday intervals to get more candles
+        const periodMap = {
+          '1m': '1d',    // 1 min candles for 1 day = ~390 candles
+          '5m': '5d',    // 5 min candles for 5 days = ~390 candles
+          '15m': '5d',   // 15 min candles for 5 days = ~130 candles
+          '30m': '1mo',  // 30 min candles for 1 month = ~260 candles
+          '1h': '1mo'    // 1 hour candles for 1 month = ~130 candles
+        };
+        currentPeriod = periodMap[interval] || '5d';
+        
+        // Update period button to reflect the change
+        document.querySelectorAll('.period-selector').forEach(selector => {
+          if (selector.id !== 'intervalSelector') {
+            selector.querySelectorAll('.period-btn').forEach(btn => btn.classList.remove('active'));
+            const periodBtn = Array.from(selector.querySelectorAll('.period-btn')).find(btn => 
+              btn.textContent.toLowerCase().includes(currentPeriod === '1d' ? '1 day' : 
+                currentPeriod === '5d' ? '5 days' : 
+                currentPeriod === '1mo' ? '1 month' : '')
+            );
+            if (periodBtn) periodBtn.classList.add('active');
+          }
+        });
+      }
+      
+      await loadModalChart();
+    }
+
+    async function loadModalChart() {
+      document.getElementById('modalChart').innerHTML = '<div class="loading">Loading candlestick chart...</div>';
+
+      try {
+        const response = await fetch(`${API_BASE}/history?symbol=${currentModalStock}&period=${currentPeriod}&interval=${currentInterval}`, {
+          headers: { 'ngrok-skip-browser-warning': 'true' }
+        });
+        
+        if (!response.ok) {
+          throw new Error(`API error: ${response.status}`);
+        }
+        
+        const data = await response.json();
+
+        if (!data.data || data.data.length === 0) {
+          document.getElementById('modalChart').innerHTML = `
+            <div class="error">
+              No data available for ${currentModalStock} with ${currentInterval} interval and ${currentPeriod} period.
+              <br><br>
+              <strong>Tips:</strong><br>
+              • Try a different time period or interval<br>
+              • Intraday data may not be available outside market hours<br>
+              • Some stocks have limited historical intraday data
+            </div>
+          `;
+          return;
+        }
+
+        // Transform data for candlestick chart
+        const seriesData = data.data.map(d => ({
+          x: d.timestamp || new Date(d.date).getTime(),
+          y: [d.open, d.high, d.low, d.close]
+        }));
+
+        const candleCountText = data.data_points === 1 
+          ? '⚠️ Only 1 candle available - try different period/interval'
+          : `${data.data_points} candles`;
+
+        const options = {
+          series: [{
+            name: currentModalStock,
+            data: seriesData
+          }],
+          chart: {
+            type: 'candlestick',
+            height: 400,
+            background: 'transparent',
+            zoom: { enabled: true },
+            toolbar: { 
+              show: true,
+              tools: {
+                download: true,
+                selection: true,
+                zoom: true,
+                zoomin: true,
+                zoomout: true,
+                pan: true,
+                reset: true
+              }
+            }
+          },
+          title: {
+            text: `${candleCountText} • ${currentInterval.toUpperCase()} interval • ${currentPeriod.toUpperCase()} period • IST`,
+            align: 'left',
+            style: {
+              color: data.data_points === 1 ? '#fbbf24' : '#a0a4a8',
+              fontSize: '12px'
+            }
+          },
+          annotations: data.data_points === 1 ? {
+            points: [{
+              x: seriesData[0].x,
+              y: seriesData[0].y[3],
+              marker: {
+                size: 0
+              },
+              label: {
+                text: 'Limited data - try longer period',
+                style: {
+                  background: '#fbbf24',
+                  color: '#1a2332'
+                }
+              }
+            }]
+          } : {},
+          plotOptions: {
+            candlestick: {
+              colors: {
+                upward: '#4ade80',
+                downward: '#ef4444'
+              },
+              wick: {
+                useFillColor: true
+              }
+            }
+          },  
+          xaxis: {
+            type: 'datetime',
+            labels: { 
+              style: { colors: '#e4e6eb' },
+              datetimeFormatter: {
+                year: 'yyyy',
+                month: 'MMM yyyy',
+                day: 'dd MMM',
+                hour: 'HH:mm'
+              }
+            }
+          },
+          yaxis: {
+            tooltip: { enabled: true },
+            labels: {
+              style: { colors: '#e4e6eb' },
+              formatter: (val) => '₹' + val.toFixed(2)
+            }
+          },
+          tooltip: {
+  theme: 'dark',
+  x: { 
+    format: currentInterval.includes('m') || currentInterval.includes('h') ? 'dd MMM HH:mm' : 'dd MMM yyyy',
+    formatter: function(value) {
+      const date = new Date(value);
+      const options = currentInterval.includes('m') || currentInterval.includes('h') 
+        ? { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', hour12: true }
+        : { day: '2-digit', month: 'short', year: 'numeric' };
+      return date.toLocaleString('en-IN', options) + ' IST';
+    }
+  },
+  y: {
+    formatter: (val) => '₹' + val.toFixed(2)
+  }
+},
+          grid: {
+            borderColor: '#2d3748'
+          }
+        };
+
+        if (modalChart) {
+          modalChart.destroy();
+        }
+
+        modalChart = new ApexCharts(document.querySelector("#modalChart"), options);
+        await modalChart.render();
+
+      } catch (error) {
+        console.error('Error loading candlestick chart:', error);
+        document.getElementById('modalChart').innerHTML = `
+          <div class="error">
+            Failed to load candlestick data: ${error.message}
+            <br><br>
+            <strong>Possible causes:</strong><br>
+            • API connection issue<br>
+            • Stock symbol not found<br>
+            • Data not available for this time period<br>
+            • Try a different interval or period
+          </div>
+        `;
+      }
+    }
 
     // Tab switching
     function showTab(tabName) {
@@ -624,7 +885,6 @@
       const fallbackUrl = `https://raw.githubusercontent.com/ashish-in-progress/portfolio-json/main/${userId}.json`;
       
       console.log("Loading portfolio for user:", userId);
-
       showLoadingState();
 
       const payload = { user: userId };
@@ -934,92 +1194,17 @@
                 <span class="detail-label">Profit Margin</span>
                 <span class="detail-value">${stock.profit_margins || stock.net_profit_margin || 'N/A'}%</span>
               </div>
-            </div> <div class="stock-description">
+            </div>
+            <div class="stock-description">
               <strong>Why Invest:</strong> ${stock.why_invest || stock.reason_for_investment || 'Solid fundamentals'}
             </div>
-            <button class="btn-view-chart" onclick="openStockChart('${stock.symbol}', '${(stock.name || stock.stock).replace(/'/g, "\\'")}')">View Historical Chart</button>
+            <button class="btn-view-chart" onclick="openStockChart('${stock.symbol}', '${(stock.name || stock.stock).replace(/'/g, "\\'")}')">View Candlestick Chart</button>
           `;
           container.appendChild(card);
         } catch (error) {
           console.error('Error loading stock:', stock.symbol, error);
         }
       }
-    }
-
-    async function loadStockChart(symbol, period) {
-      try {
-        const response = await fetch(`${API_BASE}/history?symbol=${symbol}&period=${period}`, {
-          headers: { 'ngrok-skip-browser-warning': 'true' }
-        });
-        const data = await response.json();
-
-        const seriesData = data.data.map(d => ({
-          x: new Date(d.date),
-          y: d.close
-        }));
-
-        const options = {
-          series: [{
-            name: symbol,
-            data: seriesData
-          }],
-          chart: {
-            type: 'area',
-            height: 250,
-            background: 'transparent',
-            zoom: { enabled: false },
-            toolbar: { show: false }
-          },
-          stroke: {
-            curve: 'smooth',
-            width: 2
-          },
-          fill: {
-            type: 'gradient',
-            gradient: {
-              shadeIntensity: 1,
-              opacityFrom: 0.4,
-              opacityTo: 0.1,
-            }
-          },
-          xaxis: {
-            type: 'datetime',
-            labels: { style: { colors: '#e4e6eb' } }
-          },
-          yaxis: {
-            labels: {
-              style: { colors: '#e4e6eb' },
-              formatter: (val) => '₹' + val.toFixed(2)
-            }
-          },
-          tooltip: {
-            theme: 'dark',
-            x: { format: 'dd MMM yyyy' }
-          },
-          colors: ['#667eea'],
-          grid: {
-            borderColor: '#2d3748'
-          }
-        };
-
-        const chart = new ApexCharts(document.querySelector(`#chart-${symbol}`), options);
-        await chart.render();
-      } catch (error) {
-        console.error(`Error loading chart for ${symbol}:`, error);
-        document.getElementById(`chart-${symbol}`).innerHTML = 
-          '<div class="error" style="margin: 10px 0;">Chart data unavailable</div>';
-      }
-    }
-
-    async function updateStockChart(symbol, period, button) {
-      // Update active button
-      button.parentElement.querySelectorAll('.period-btn').forEach(btn => btn.classList.remove('active'));
-      button.classList.add('active');
-
-      // Reload chart
-      const chartDiv = document.getElementById(`chart-${symbol}`);
-      chartDiv.innerHTML = '<div class="loading">Loading...</div>';
-      await loadStockChart(symbol, period);
     }
 
     function createFundsView() {
@@ -1217,9 +1402,11 @@
 
     async function openStockChart(symbol, name) {
       currentModalStock = symbol;
+      currentPeriod = '1y';
+      currentInterval = '1d';
       document.getElementById('modalStockName').textContent = name;
       document.getElementById('stockModal').classList.add('active');
-      await updateModalChart('1y');
+      await loadModalChart();
     }
 
     function closeModal() {
@@ -1230,78 +1417,172 @@
       }
     }
 
-    async function updateModalChart(period) {
-  document.querySelectorAll('#stockModal .period-btn').forEach(btn => btn.classList.remove('active'));
-  event.target.classList.add('active');
-
-  try {
-    const response = await fetch(`${API_BASE}/history?symbol=${currentModalStock}&period=${period}`, {
-      headers: { 'ngrok-skip-browser-warning': 'true' }
-    });
-    const data = await response.json();
-
-    // Transform data for candlestick chart
-    const seriesData = data.data.map(d => ({
-      x: new Date(d.date),
-      y: [d.open, d.high, d.low, d.close]  // [open, high, low, close]
-    }));
-
-    const options = {
-      series: [{
-        name: currentModalStock,
-        data: seriesData
-      }],
-      chart: {
-        type: 'candlestick',  // Changed to candlestick
-        height: 400,
-        background: 'transparent',
-        zoom: { enabled: true },
-        toolbar: { show: true }
-      },
-      plotOptions: {
-        candlestick: {
-          colors: {
-            upward: '#4ade80',   // Green for bullish candles
-            downward: '#ef4444'  // Red for bearish candles
-          },
-          wick: {
-            useFillColor: true
-          }
+    async function updateModalChart(period, resetInterval) {
+      currentPeriod = period;
+      
+      // Update active button for period
+      event.target.closest('.period-selector').querySelectorAll('.period-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
+      
+      // Reset to daily interval for longer periods
+      if (resetInterval) {
+        const intradayIntervals = ['1m', '5m', '15m', '30m', '1h'];
+        if (intradayIntervals.includes(currentInterval) && !['1d', '5d', '1mo'].includes(period)) {
+          currentInterval = '1d';
+          document.querySelectorAll('#intervalSelector .period-btn').forEach(btn => {
+            btn.classList.remove('active');
+          });
+          document.querySelector('#intervalSelector .period-btn[onclick*="1d"]').classList.add('active');
         }
-      },
-      xaxis: {
-        type: 'datetime',
-        labels: { style: { colors: '#e4e6eb' } }
-      },
-      yaxis: {
-        tooltip: { enabled: true },
-        labels: {
-          style: { colors: '#e4e6eb' },
-          formatter: (val) => '₹' + val.toFixed(2)
-        }
-      },
-      tooltip: {
-        theme: 'dark',
-        x: { format: 'dd MMM yyyy' }
-      },
-      grid: {
-        borderColor: '#2d3748'
       }
-    };
-
-    if (!modalChart) {
-      modalChart = new ApexCharts(document.querySelector("#modalChart"), options);
-      await modalChart.render();
-    } else {
-      await modalChart.updateOptions(options);
+      
+      await loadModalChart();
     }
-  } catch (error) {
-    console.error('Error loading chart:', error);
-    document.getElementById('modalChart').innerHTML = `
-      <div class="error">Failed to load chart data. Please try again.</div>
-    `;
-  }
-}
+
+    async function updateInterval(interval) {
+      currentInterval = interval;
+      
+      // Update active button for interval
+      event.target.closest('.period-selector').querySelectorAll('.period-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
+      
+      // Adjust period for intraday intervals
+      const intradayIntervals = ['1m', '5m', '15m', '30m', '1h'];
+      if (intradayIntervals.includes(interval)) {
+        const validPeriods = ['1d', '5d', '1mo'];
+        if (!validPeriods.includes(currentPeriod)) {
+          currentPeriod = '1d';
+          // Update period button
+          document.querySelectorAll('.period-selector').forEach(selector => {
+            if (selector.id !== 'intervalSelector') {
+              selector.querySelectorAll('.period-btn').forEach(btn => btn.classList.remove('active'));
+              selector.querySelector('.period-btn[onclick*="1d"]')?.classList.add('active');
+            }
+          });
+        }
+      }
+      
+      await loadModalChart();
+    }
+
+    async function loadModalChart() {
+      document.getElementById('modalChart').innerHTML = '<div class="loading">Loading candlestick chart...</div>';
+
+      try {
+        const response = await fetch(`${API_BASE}/history?symbol=${currentModalStock}&period=${currentPeriod}&interval=${currentInterval}`, {
+          headers: { 'ngrok-skip-browser-warning': 'true' }
+        });
+        
+        if (!response.ok) {
+          throw new Error(`API error: ${response.status}`);
+        }
+        
+        const data = await response.json();
+
+        // Transform data for candlestick chart
+        const seriesData = data.data.map(d => {
+  let timestamp = d.timestamp || new Date(d.date).getTime();
+  // Convert UTC to IST (UTC + 5:30)
+  timestamp = timestamp + (5.5 * 60 * 60 * 1000);
+  return {
+    x: timestamp,
+    y: [d.open, d.high, d.low, d.close]
+  };
+});
+
+        const options = {
+          series: [{
+            name: currentModalStock,
+            data: seriesData
+          }],
+          chart: {
+            type: 'candlestick',
+            height: 400,
+            background: 'transparent',
+            zoom: { enabled: true },
+            toolbar: { 
+              show: true,
+              tools: {
+                download: true,
+                selection: true,
+                zoom: true,
+                zoomin: true,
+                zoomout: true,
+                pan: true,
+                reset: true
+              }
+            }
+          },
+          title: {
+            text: `${data.data_points} candles • ${currentInterval.toUpperCase()} interval`,
+            align: 'left',
+            style: {
+              color: '#a0a4a8',
+              fontSize: '12px'
+            }
+          },
+          plotOptions: {
+            candlestick: {
+              colors: {
+                upward: '#4ade80',
+                downward: '#ef4444'
+              },
+              wick: {
+                useFillColor: true
+              }
+            }
+          },
+          xaxis: {
+            type: 'datetime',
+            labels: { 
+              style: { colors: '#e4e6eb' },
+              datetimeFormatter: {
+                year: 'yyyy',
+                month: 'MMM yyyy',
+                day: 'dd MMM',
+                hour: 'HH:mm'
+              }
+            }
+          },
+          yaxis: {
+            tooltip: { enabled: true },
+            labels: {
+              style: { colors: '#e4e6eb' },
+              formatter: (val) => '₹' + val.toFixed(2)
+            }
+          },
+          tooltip: {
+            theme: 'dark',
+            x: { 
+              format: currentInterval.includes('m') || currentInterval.includes('h') ? 'dd MMM HH:mm' : 'dd MMM yyyy'
+            },
+            y: {
+              formatter: (val) => '₹' + val.toFixed(2)
+            }
+          },
+          grid: {
+            borderColor: '#2d3748'
+          }
+        };
+
+        if (modalChart) {
+          modalChart.destroy();
+        }
+
+        modalChart = new ApexCharts(document.querySelector("#modalChart"), options);
+        await modalChart.render();
+
+      } catch (error) {
+        console.error('Error loading candlestick chart:', error);
+        document.getElementById('modalChart').innerHTML = `
+          <div class="error">Failed to load candlestick data. ${error.message}</div>
+        `;
+      }
+    }
 
     // Close modal on outside click
     document.getElementById('stockModal').addEventListener('click', function(e) {
